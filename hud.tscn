@@ -1,20 +1,34 @@
-[gd_scene load_steps=2 format=3 uid="uid://b42bdovwphais"]
+[gd_scene load_steps=2 format=3 uid="uid://do87xsd6klgia"]
 
-[ext_resource type="Script" path="res://HUD.gd" id="1_51w7f"]
+[sub_resource type="GDScript" id="GDScript_cno3g"]
+script/source = "extends CanvasLayer
+
+signal start_game
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+
+func _on_start_button_pressed():
+	$StartButton.hide()
+	start_game.emit()
+
+func show_game_over():
+	$StartButton.show()
+"
 
 [node name="HUD" type="CanvasLayer"]
-script = ExtResource("1_51w7f")
+script = SubResource("GDScript_cno3g")
 
 [node name="StartButton" type="Button" parent="."]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -23.0
-offset_top = -15.5
-offset_right = 23.0
-offset_bottom = 15.5
+offset_right = 640.0
+offset_bottom = 480.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Start"

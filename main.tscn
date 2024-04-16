@@ -1,58 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://cmk3hagle0fu2"]
+[gd_scene load_steps=3 format=3 uid="uid://cmk3hagle0fu2"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1_ncbg6"]
-[ext_resource type="PackedScene" uid="uid://h65kgvcii8eq" path="res://bullet.tscn" id="2_5ac2w"]
-[ext_resource type="PackedScene" uid="uid://b42bdovwphais" path="res://hud.tscn" id="2_dlw2d"]
-[ext_resource type="PackedScene" uid="uid://klg148t7x232" path="res://boss.tscn" id="3_05wnj"]
-[ext_resource type="PackedScene" uid="uid://c1hk63e4h347l" path="res://player.tscn" id="4_c1871"]
-
-[sub_resource type="Curve2D" id="Curve2D_dcwdq"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 240, 120, 0, 0, 0, 0, 80, 120, 0, 0, 0, 0, 400, 120, 0, 0, 0, 0, 240, 120)
-}
-point_count = 4
+[ext_resource type="PackedScene" uid="uid://drx7rpanh7acp" path="res://game/TitleScreen.tscn" id="2_q00wp"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_ncbg6")
-bullet_scene = ExtResource("2_5ac2w")
 
-[node name="StartTimer" type="Timer" parent="."]
-one_shot = true
+[node name="TitleScreen" parent="." instance=ExtResource("2_q00wp")]
 
-[node name="BossSpawnTimer" type="Timer" parent="."]
-wait_time = 0.001
-one_shot = true
-
-[node name="BossMovementTimer" type="Timer" parent="."]
-wait_time = 5.0
-
-[node name="BossAttackTimer" type="Timer" parent="."]
-
-[node name="PlayerStartPosition" type="Marker2D" parent="."]
-position = Vector2(240, 680)
-
-[node name="BossStartPosition" type="Marker2D" parent="."]
-position = Vector2(240, 120)
-
-[node name="BossPath" type="Path2D" parent="."]
-curve = SubResource("Curve2D_dcwdq")
-
-[node name="BossMovementLocation" type="PathFollow2D" parent="BossPath"]
-position = Vector2(240, 120)
-rotation = 3.14159
-
-[node name="HUD" parent="." instance=ExtResource("2_dlw2d")]
-
-[node name="Boss" parent="." instance=ExtResource("3_05wnj")]
-position = Vector2(240, 120)
-
-[node name="Player" parent="." instance=ExtResource("4_c1871")]
-position = Vector2(244, 470)
-
-[connection signal="boss_movement" from="." to="Boss" method="_on_main_boss_movement"]
-[connection signal="timeout" from="StartTimer" to="." method="_on_start_timer_timeout"]
-[connection signal="timeout" from="BossSpawnTimer" to="." method="_on_boss_spawn_timer_timeout"]
-[connection signal="timeout" from="BossMovementTimer" to="." method="_on_boss_movement_timer_timeout"]
-[connection signal="timeout" from="BossAttackTimer" to="." method="_on_boss_attack_timer_timeout"]
-[connection signal="start_game" from="HUD" to="." method="new_game"]
-[connection signal="hit" from="Player" to="." method="game_over"]
+[connection signal="newgame" from="TitleScreen" to="." method="new_game"]
