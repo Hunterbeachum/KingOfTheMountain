@@ -149,7 +149,7 @@ size = Vector2(20, 47)
 
 [sub_resource type="Curve2D" id="Curve2D_1aqwq"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 240, 120, 0, 0, 0, 0, 80, 120, 0, 0, 0, 0, 400, 120, 0, 0, 0, 0, 240, 120)
+"points": PackedVector2Array(0, 0, 0, 0, 208, 96, 0, 0, 0, 0, 120, 96, 0, 0, 0, 0, 296, 96, 0, 0, 0, 0, 208, 96)
 }
 point_count = 4
 
@@ -163,23 +163,28 @@ bullet_scene = ExtResource("2_qjqyo")
 sprite_frames = SubResource("SpriteFrames_c0cfo")
 animation = &"aya_start_move"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="BossHitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1.5)
 shape = SubResource("RectangleShape2D_61cu2")
 
 [node name="BossAttackTimer" type="Timer" parent="."]
 
 [node name="BossStartTimer" type="Timer" parent="."]
+one_shot = true
 
 [node name="BossMovementTimer" type="Timer" parent="."]
 wait_time = 5.0
 
 [node name="BossPath" type="Path2D" parent="."]
 curve = SubResource("Curve2D_1aqwq")
+metadata/_edit_group_ = true
 
 [node name="BossMovementLocation" type="PathFollow2D" parent="BossPath"]
-position = Vector2(240, 120)
+position = Vector2(208, 96)
 rotation = 3.14159
 
 [node name="BossStartPosition" type="Marker2D" parent="."]
-position = Vector2(240, 120)
+position = Vector2(180, 96)
+
+[connection signal="timeout" from="BossStartTimer" to="." method="_on_boss_start_timer_timeout"]
+[connection signal="timeout" from="BossMovementTimer" to="." method="_on_boss_movement_timer_timeout"]

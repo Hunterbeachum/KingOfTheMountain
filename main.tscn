@@ -1,11 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cmk3hagle0fu2"]
+[gd_scene load_steps=2 format=3 uid="uid://cmk3hagle0fu2"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1_ncbg6"]
-[ext_resource type="PackedScene" uid="uid://drx7rpanh7acp" path="res://game/TitleScreen.tscn" id="2_q00wp"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_ncbg6")
-
-[node name="TitleScreen" parent="." instance=ExtResource("2_q00wp")]
-
-[connection signal="newgame" from="TitleScreen" to="." method="new_game"]

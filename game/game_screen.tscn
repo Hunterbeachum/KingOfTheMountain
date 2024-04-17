@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://c36w0vu7vuk1t"]
+
+[ext_resource type="Script" path="res://game/game_screen.gd" id="1_eq35e"]
+[ext_resource type="Texture2D" uid="uid://cxdmv6f24ndtn" path="res://art/BGtile.png" id="3_u0qv8"]
+
+[node name="GameScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_eq35e")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 16
+
+[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 480.0
+texture = ExtResource("3_u0qv8")
+expand_mode = 1
+stretch_mode = 1

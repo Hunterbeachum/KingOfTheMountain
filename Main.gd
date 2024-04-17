@@ -2,9 +2,14 @@ extends Node
 signal boss_movement
 signal player_location
 var boss_movement_location
+var title_screen_instance
+var game_screen_instance
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	var title_screen = load("res://game/TitleScreen.tscn")
+	title_screen_instance = title_screen.instantiate()
+	add_child(title_screen_instance)
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -12,12 +17,12 @@ func _process(delta):
 	pass
 
 func new_game():
-	
-	$TitleScreen.hide()
-	get_tree().call_group("bullets", "queue_free")
-
-func _on_boss_spawn_timer_timeout():
-	$Boss.start($BossStartPosition.position)
+	# game window 384x448
+	# position 32,16
+	title_screen_instance.queue_free()
+	var game_screen = load("res://game/game_screen.tscn")
+	game_screen_instance = game_screen.instantiate()
+	add_child(game_screen_instance)
 
 func _on_start_timer_timeout():
 	$Player.start($PlayerStartPosition.position)

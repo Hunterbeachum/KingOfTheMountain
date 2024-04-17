@@ -10,7 +10,7 @@ var opacity = 0.0
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	screen_size = get_viewport_rect().size
-	hide()
+	start($PlayerStartPosition.position)
 	$Body.play("idle")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -73,10 +73,10 @@ func _on_body_entered(body):
 	hide() # Player disappears after being hit.
 	hit.emit()
 	# Must be deferred as we can't change physics properties on a physics callback.
-	$HitBoxCollision.set_deferred("disabled", true)
+	$PlayerHitBox.set_deferred("disabled", true)
 
 
 func start(pos):
 	position = pos
 	show()
-	$HitBoxCollision.disabled = false
+	$PlayerHitBox.disabled = false

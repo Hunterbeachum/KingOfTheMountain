@@ -39,5 +39,5 @@ func _on_main_menu_actioned(item):
 
 
 func _on_start_timer_timeout():
-	newgame.emit()
+	get_parent().new_game()
 	pass # Replace with function body.

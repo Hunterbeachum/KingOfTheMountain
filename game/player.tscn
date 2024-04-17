@@ -226,7 +226,7 @@ metadata/_edit_group_ = true
 sprite_frames = SubResource("SpriteFrames_0e17y")
 animation = &"move_left"
 
-[node name="HitBoxCollision" type="CollisionShape2D" parent="."]
+[node name="PlayerHitBox" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ge4x3")
 
 [node name="HitBox" type="AnimatedSprite2D" parent="."]
@@ -236,6 +236,6 @@ sprite_frames = SubResource("SpriteFrames_o6kwq")
 animation = &"hitbox"
 
 [node name="PlayerStartPosition" type="Marker2D" parent="."]
-position = Vector2(240, 680)
+position = Vector2(208, 440)
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
