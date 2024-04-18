@@ -1,9 +1,9 @@
 extends RigidBody2D
-var bullet_lifespan = 0
 var homing = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$BulletLifespan.start()
 	show()
 
 
@@ -16,14 +16,11 @@ func _process(delta):
 func _on_visible_on_screen_notifier_2d_screen_exited():
 	queue_free()
 
-
-func _update_bullet_lifespan():
-	bullet_lifespan += 1
-
 func _update_linear_velocity(pos):
 	if position.distance_to(pos) < 50:
 		homing = false
-	if bullet_lifespan < 6 and bullet_lifespan >= 1 and homing == true:
+	# TODO logic is all wrong
+	if $BulletLifespan.time_left < 6:
 		var direction = position.angle_to_point(pos)
 		var old_linear_velocity = linear_velocity
 		var new_linear_velocity = Vector2(100.0, 0.0).rotated(direction)

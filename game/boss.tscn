@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://game/Boss.gd" id="1_tex4m"]
 [ext_resource type="Texture2D" uid="uid://d16kwgl7mct8d" path="res://art/MOFenemies.png" id="2_4ndpc"]
-[ext_resource type="PackedScene" uid="uid://h65kgvcii8eq" path="res://game/bullet.tscn" id="2_qjqyo"]
+[ext_resource type="PackedScene" uid="uid://i4wshaa0jskp" path="res://game/bullet_handler.tscn" id="2_ldrgy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_h2dcb"]
 atlas = ExtResource("2_4ndpc")
@@ -157,7 +157,7 @@ point_count = 4
 collision_mask = 0
 gravity_scale = 0.0
 script = ExtResource("1_tex4m")
-bullet_scene = ExtResource("2_qjqyo")
+bullet_handler = ExtResource("2_ldrgy")
 
 [node name="BossBody" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_c0cfo")
@@ -186,5 +186,6 @@ rotation = 3.14159
 [node name="BossStartPosition" type="Marker2D" parent="."]
 position = Vector2(180, 96)
 
+[connection signal="timeout" from="BossAttackTimer" to="." method="_on_boss_attack_timer_timeout"]
 [connection signal="timeout" from="BossStartTimer" to="." method="_on_boss_start_timer_timeout"]
 [connection signal="timeout" from="BossMovementTimer" to="." method="_on_boss_movement_timer_timeout"]

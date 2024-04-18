@@ -1,6 +1,7 @@
 extends RigidBody2D
 var destination
-@export var bullet_scene: PackedScene
+var current_pattern = ""
+@export var bullet_handler: PackedScene
 # Called when the node enters the scene tree for the first time.
 
 
@@ -54,8 +55,9 @@ func _boss_movement():
 
 
 func _on_boss_attack_timer_timeout():
-	get_tree().call_group("bullets", "_update_bullet_lifespan")
-	var bullet_spawn_location = position
+	# TODO current_pattern = pattern_list.next()?
+	current_pattern = "test_pattern_1"
+	'''var bullet_spawn_location = position
 	var direction = bullet_spawn_location.angle_to_point($Player.position)
 	var direction_list = []
 	for n in range(5):
@@ -65,7 +67,7 @@ func _on_boss_attack_timer_timeout():
 		var bullet_velocity = Vector2(100.0, 0.0)
 		bullet.position = bullet_spawn_location
 		bullet.linear_velocity = bullet_velocity.rotated(n)
-		add_child(bullet)
+		add_child(bullet)'''
 
 func _on_boss_movement_timer_timeout():
 	destination = $BossPath/BossMovementLocation
