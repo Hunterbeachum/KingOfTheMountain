@@ -58,12 +58,12 @@ func generate_pattern():
 				for i in range(3):
 					var bullet_spawn_location = bullet_path.global_position
 					bullet_spawn_location.x = bullet_spawn_location.x + (i - 1) * 100
-					var direction = bullet_spawn_location.angle_to_point(GameState.player_position)
+					var direction = GameState.boss_position.angle_to_point(GameState.player_position)
 					var direction_list = []
 					var bullet = bullet_scene.instantiate()
 					bullet.global_position = bullet_spawn_location
 					# bullet_velocity.rotated(n)
-					bullet.linear_velocity = initial_velocity.rotated((direction) + (i - 1) * PI / 15 )
+					bullet.linear_velocity = initial_velocity.rotated((direction) + (i - 1) * PI / 10 )
 					add_child(bullet)
 					bullet.add_to_group("bullets" + str(i))
 					if bullet_path.progress_ratio >= 1.0:
@@ -77,6 +77,7 @@ func generate_pattern():
 # reset the drawing loops
 func _on_pattern_lifespan_timeout():
 	drawing_pattern = true
+	bullet_path.global_position = GameState.boss_position
 	bullet_path.progress_ratio = 0.0
 
 func UpdateDrawingPattern() -> void:

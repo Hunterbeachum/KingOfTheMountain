@@ -14,7 +14,6 @@ metadata/_edit_group_ = true
 [node name="PatternLifespan" type="Timer" parent="."]
 
 [node name="BulletPath" type="PathFollow2D" parent="."]
-position = Vector2(224, 32)
 rotation = -1.20362
 rotates = false
 cubic_interp = false
