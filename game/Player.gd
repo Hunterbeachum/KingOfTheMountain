@@ -84,4 +84,4 @@ func start(pos):
 	$PlayerHitBox.disabled = false
 
 func UpdatePosition() -> void:
-	GameState.player_position = global_position
+	GameState.player_position = position

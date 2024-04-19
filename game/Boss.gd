@@ -79,4 +79,4 @@ func _on_boss_movement_timer_timeout():
 		_boss_movement()
 
 func UpdatePosition() -> void:
-	GameState.boss_position = global_position
+	GameState.boss_position = position

@@ -1,5 +1,7 @@
 extends Path2D
 
+# True if patterns_dict[name]["position"] == trrue
+var center_position : bool
 # Number of frames the pattern has existed
 var pattern_frames : int
 # Number of frames between each bullet instantiation
@@ -24,9 +26,12 @@ func _ready():
 
 func load_pattern(name: String):
 	if patterns_dict[name]["position"] == "boss_position":
-		global_position = GameState.boss_position
+		position = Vector2(0.0, 0.0)
+		center_position = false
 	elif patterns_dict[name]["position"] == "center_position":
-		global_position = Vector2(0.0, 0.0)
+		center_position = true
+		top_level = true
+		global_position = GameState.CENTERSCREEN
 	speed = patterns_dict[name]["draw_speed"]
 	var points_to_draw = patterns_dict[name]["points"]
 	var curve = get_curve()
@@ -56,18 +61,23 @@ func generate_pattern():
 			bullet_path.progress += speed
 			if current_delay <= 0:
 				for i in range(3):
-					var bullet_spawn_location = bullet_path.global_position
+					var bullet_spawn_location = bullet_path.position
 					bullet_spawn_location.x = bullet_spawn_location.x + (i - 1) * 100
-					var direction = GameState.boss_position.angle_to_point(GameState.player_position)
+					var direction
+					if center_position:
+						direction = GameState.CENTERSCREEN.angle_to_point(GameState.player_position)
+					else:
+						direction = GameState.boss_position.angle_to_point(GameState.player_position)
 					var direction_list = []
 					var bullet = bullet_scene.instantiate()
-					bullet.global_position = bullet_spawn_location
+					bullet.position = bullet_spawn_location
 					# bullet_velocity.rotated(n)
-					bullet.linear_velocity = initial_velocity.rotated((direction) + (i - 1) * PI / 10 )
+					bullet.linear_velocity = initial_velocity.rotated((direction) + (i - 1) * PI / 3 )
 					add_child(bullet)
+					var test = bullet.global_position
 					bullet.add_to_group("bullets" + str(i))
 					if bullet_path.progress_ratio >= 1.0:
-						get_tree().call_group("bullets" + str(i), "set_linear_velocity", Vector2(100.0, 0.0).rotated((direction) + (i - 1) * PI / 15 ))
+						get_tree().call_group("bullets" + str(i), "set_linear_velocity", Vector2(100.0, 0.0).rotated((direction) - (i - 1) * PI / 30 ))
 						drawing_pattern = false
 				current_delay = frame_delay
 			else:

@@ -177,6 +177,8 @@ one_shot = true
 wait_time = 5.0
 
 [node name="BossPath" type="Path2D" parent="."]
+light_mask = 0
+visibility_layer = 0
 curve = SubResource("Curve2D_1aqwq")
 metadata/_edit_group_ = true
 

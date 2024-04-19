@@ -3,7 +3,7 @@
 	"test_pattern_1": {
 			"position": "center_position",
 			"style": "drawn",
-			"points": [[184, 136], [224, 32], [264, 136], [168, 72], [280, 72], [184, 136]],
+			"points": [[-40, 52], [0, -52], [40, 52], [-56, -14], [56, -14], [-40, 52]],
 			"draw_speed": 7,
 			"loop_time": 8,
 			"frame_delay": 1,

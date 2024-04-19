@@ -9,3 +9,6 @@ var current_pattern : String = "test_pattern_1"
 
 # Pattern properties
 var drawing_pattern = false
+
+# Constants
+const CENTERSCREEN = Vector2(180.0, 96.0)
