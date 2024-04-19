@@ -6,6 +6,7 @@ var screen_size
 var direction = 0
 var current_modulate
 var opacity = 0.0
+@onready var player_vars = get_node("/root/playervariables")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -15,6 +16,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	UpdatePosition()
 	# Rotate the hitbox
 	direction += PI/180
 	$HitBox.rotation = direction
@@ -80,3 +82,6 @@ func start(pos):
 	position = pos
 	show()
 	$PlayerHitBox.disabled = false
+
+func UpdatePosition() -> void:
+	GameState.player_position = global_position

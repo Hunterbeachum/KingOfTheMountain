@@ -11,4 +11,5 @@ func _ready():
 	var boss = load("res://game/boss.tscn")
 	boss_instance = boss.instantiate()
 	add_child(boss_instance)
+	
 	pass # Replace with function body.

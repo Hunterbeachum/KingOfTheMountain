@@ -168,6 +168,7 @@ position = Vector2(0, -1.5)
 shape = SubResource("RectangleShape2D_61cu2")
 
 [node name="BossAttackTimer" type="Timer" parent="."]
+one_shot = true
 
 [node name="BossStartTimer" type="Timer" parent="."]
 one_shot = true

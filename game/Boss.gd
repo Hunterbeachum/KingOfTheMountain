@@ -17,6 +17,7 @@ func _on_boss_start_timer_timeout():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	UpdatePosition()
 	if destination != null:
 		if position.distance_to(destination.position) < 10:
 			linear_velocity = Vector2(0.0, 0)
@@ -52,27 +53,30 @@ func start(pos):
 func _boss_movement():
 	var direction = position.angle_to_point(destination.position)
 	linear_velocity = Vector2(200.0, 0.0).rotated(direction)
+	$BossMovementTimer.start(5.0)
 
 
 func _on_boss_attack_timer_timeout():
 	# TODO current_pattern = pattern_list.next()?
 	current_pattern = "test_pattern_1"
-	'''var bullet_spawn_location = position
-	var direction = bullet_spawn_location.angle_to_point($Player.position)
-	var direction_list = []
-	for n in range(5):
-		direction_list.append(direction + (n - 2) * PI/15)
-	for n in direction_list:
-		var bullet = bullet_scene.instantiate()
-		var bullet_velocity = Vector2(100.0, 0.0)
-		bullet.position = bullet_spawn_location
-		bullet.linear_velocity = bullet_velocity.rotated(n)
-		add_child(bullet)'''
+	UpdatePattern()
+	var new_bullet_handler = bullet_handler.instantiate()
+	add_child(new_bullet_handler)
+	
+
+func UpdatePattern() -> void:
+	GameState.current_pattern = current_pattern
 
 func _on_boss_movement_timer_timeout():
-	destination = $BossPath/BossMovementLocation
-	destination.progress_ratio = randf()
-	while destination.position.distance_to(position) < 20:
+	if GameState.drawing_pattern:
+		$BossMovementTimer.start(1.0)
+	else:
 		destination = $BossPath/BossMovementLocation
 		destination.progress_ratio = randf()
-	_boss_movement()
+		while destination.position.distance_to(position) < 50:
+			destination = $BossPath/BossMovementLocation
+			destination.progress_ratio = randf()
+		_boss_movement()
+
+func UpdatePosition() -> void:
+	GameState.boss_position = global_position

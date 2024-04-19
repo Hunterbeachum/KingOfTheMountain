@@ -10,6 +10,7 @@ offset_bottom = 40.0
 
 [node name="GameField" type="SubViewport" parent="."]
 handle_input_locally = false
+size = Vector2i(384, 448)
 render_target_update_mode = 4
 script = ExtResource("1_7cqeg")
 

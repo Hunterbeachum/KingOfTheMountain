@@ -1,11 +1,26 @@
-{
-"test_pattern_1": {
-"bullet count": 50.0
-},
-"test_pattern_2": {
-"bullet count": 100.0
-},
-"test_pattern_3": {
-"bullet count": 10.0
-}
+{ 
+	"aya_pattern_groups": [["test_pattern_1", "test_pattern_2"], ["test_pattern_3", "test_pattern_4"]],
+	"test_pattern_1": {
+			"position": "center_position",
+			"style": "drawn",
+			"points": [[184, 136], [224, 32], [264, 136], [168, 72], [280, 72], [184, 136]],
+			"draw_speed": 7,
+			"loop_time": 8,
+			"frame_delay": 1,
+			"initial_velocity": 1,
+			"initial_direction": 0,
+			"initial_damp": 0,
+			"initial_angular_velocity": 0,
+			"soft_tracking": false,
+			"updates": [["acceleration", 1, 2], ["shape", 60, "snowball"]]
+		},
+	"test_pattern_2": {
+			"position": "start_position",
+			"points": [[184, 136], [224, 32], [264, 136], [168, 72], [280, 72], [184, 136]],
+			"loop_time": 8,
+			"frequency": 1
+		},
+	"test_pattern_3": {
+		"bullet count": 10.0
+		}
 }
