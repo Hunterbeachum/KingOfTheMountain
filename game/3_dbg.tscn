@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://crgrkaj1f2mwc"]
+
+[ext_resource type="Script" path="res://3dbg.gd" id="1_l5t40"]
+
+[node name="3dbg" type="Node3D"]
+script = ExtResource("1_l5t40")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0888743, -0.0810805, 0.0498825)

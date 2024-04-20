@@ -6,7 +6,6 @@ var screen_size
 var direction = 0
 var current_modulate
 var opacity = 0.0
-@onready var player_vars = get_node("/root/playervariables")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
