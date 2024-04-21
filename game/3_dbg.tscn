@@ -1,9 +1,34 @@
-[gd_scene load_steps=2 format=3 uid="uid://crgrkaj1f2mwc"]
+[gd_scene load_steps=5 format=3 uid="uid://crgrkaj1f2mwc"]
 
 [ext_resource type="Script" path="res://3dbg.gd" id="1_l5t40"]
+[ext_resource type="Texture2D" uid="uid://dj3fki62cl5kw" path="res://art/bg1.png" id="2_ppm3w"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dkq14"]
+albedo_texture = ExtResource("2_ppm3w")
+uv1_scale = Vector3(10, 1, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rem3s"]
+size = Vector2(10, 2)
 
 [node name="3dbg" type="Node3D"]
 script = ExtResource("1_l5t40")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0888743, -0.0810805, 0.0498825)
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.75)
+fov = 65.0
+near = 0.1
+
+[node name="OmniLight1" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25091, 2.43155, 4.90467)
+light_color = Color(1, 0.915375, 0.816406, 1)
+light_energy = 5.0
+
+[node name="OmniLight2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5788, 1.43155, 2.43657)
+light_color = Color(0.816406, 1, 0.995697, 1)
+light_energy = 5.0
+
+[node name="bg_plane" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_dkq14")
+mesh = SubResource("PlaneMesh_rem3s")
