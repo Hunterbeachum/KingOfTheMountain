@@ -2,6 +2,7 @@ extends Area2D
 signal hit
 
 @export var speed = 200
+var loading_in : bool = false
 var screen_size
 var direction = 0
 var current_modulate
@@ -10,8 +11,8 @@ var opacity = 0.0
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	screen_size = get_viewport_rect().size
-	start($PlayerStartPosition.position)
 	$Body.play("idle")
+	start()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -20,28 +21,34 @@ func _process(delta):
 	direction += PI/180
 	$HitBox.rotation = direction
 	var velocity = Vector2.ZERO # The player's movement vector
-	if Input.is_action_pressed("move_right"):
-		velocity.x += 1
-	if Input.is_action_pressed("move_left"):
-		velocity.x -= 1	
-	if Input.is_action_pressed("move_down"):
-		velocity.y += 1
-	if Input.is_action_pressed("move_up"):
-		velocity.y -= 1
-	
-	if Input.is_action_pressed("focus"):
-		speed = 100
-		opacity += .1
-		opacity = clamp(opacity, 0, 1)
-		$HitBox.set_self_modulate(Color(1, 1, 1, opacity))
-	else:
-		speed = 200
-		opacity -= .1
-		opacity = clamp(opacity, 0, 1)
-		$HitBox.set_self_modulate(Color(1, 1, 1, opacity))
-	
-	if velocity.length() > 0:
-		velocity = velocity.normalized() * speed
+	if not loading_in:
+		if Input.is_action_pressed("move_right"):
+			velocity.x += 1
+		if Input.is_action_pressed("move_left"):
+			velocity.x -= 1	
+		if Input.is_action_pressed("move_down"):
+			velocity.y += 1
+		if Input.is_action_pressed("move_up"):
+			velocity.y -= 1
+		
+		if Input.is_action_pressed("focus"):
+			speed = 100
+			opacity += .1
+			opacity = clamp(opacity, 0, 1)
+			$HitBox.set_self_modulate(Color(1, 1, 1, opacity))
+		else:
+			speed = 200
+			opacity -= .1
+			opacity = clamp(opacity, 0, 1)
+			$HitBox.set_self_modulate(Color(1, 1, 1, opacity))
+		
+		if velocity.length() > 0:
+			velocity = velocity.normalized() * speed
+		
+		position += velocity * delta
+		position = position.clamp(Vector2.ZERO, screen_size)
+	elif loading_in:
+		position = position.lerp($PlayerStartPosition.position, .05)
 	# Manage animation based on x velocity
 	# x == 0 = reverse from L/R animation then idle
 	if velocity.x == 0:
@@ -66,8 +73,6 @@ func _process(delta):
 		elif $Body.animation != "move_left":
 			$Body.play("start_left")
 	
-	position += velocity * delta
-	position = position.clamp(Vector2.ZERO, screen_size)
 
 
 func _on_body_entered(body):
@@ -77,10 +82,17 @@ func _on_body_entered(body):
 	$PlayerHitBox.set_deferred("disabled", true)
 
 
-func start(pos):
-	position = pos
+func start() -> void:
+	loading_in = true
+	$PlayerHitBox.disabled = true
+	$StartTimer.start()
+	position = $PlayerStartPosition.position - Vector2(0.0, 60.0)
 	show()
-	$PlayerHitBox.disabled = false
 
 func UpdatePosition() -> void:
 	GameState.player_position = position
+
+func _on_start_timer_timeout():
+	loading_in = false
+	$PlayerHitBox.set_deferred("disabled", false)
+

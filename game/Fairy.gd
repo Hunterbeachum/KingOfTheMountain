@@ -1,15 +1,18 @@
 extends RigidBody2D
-var destination
-var current_pattern = ""
+var color : String = ""
+var stop_position : Vector2
+var leave_position : Vector2
+var enemy_name : String = ""
+var speed : int = 0
+var health : int = 100
+var pattern : Array = []
+var death_pattern : Array = []
+var enemy_position_appended : bool = false
+var enemy_index : int
 @export var bullet_handler: PackedScene
-# Called when the node enters the scene tree for the first time.
 
 
 func _ready():
-	$BossBody.play("aya")
-	start($BossStartPosition.position)
-	$BossAttackTimer.start()
-	$BossMovementTimer.start()
 	pass
 
 func _on_boss_start_timer_timeout():
@@ -20,7 +23,7 @@ func _process(delta):
 	UpdatePosition()
 	if destination != null:
 		if position.distance_to(destination.position) < 10:
-			linear_velocity = Vector2.ZERO
+			linear_velocity = Vector2(0.0, 0)
 	# Manage animation based on x velocity
 	# x == 0 = reverse from L/R animation then idle
 	if linear_velocity.x == 0:
@@ -65,7 +68,7 @@ func _on_boss_attack_timer_timeout():
 	
 
 func UpdatePattern() -> void:
-	GameState.current_boss_pattern = current_pattern
+	GameState.current_pattern = current_pattern
 
 func _on_boss_movement_timer_timeout():
 	if GameState.drawing_pattern:
@@ -78,5 +81,38 @@ func _on_boss_movement_timer_timeout():
 			destination.progress_ratio = randf()
 		_boss_movement()
 
+func load_enemy(name : String):
+	enemy_name = name
+	set_color(GameState.data["enemy"][enemy_name]["color"])
+	set_speed(GameState.data["enemy"][enemy_name]["speed"])
+	set_health(GameState.data["enemy"][enemy_name]["health"])
+	set_pattern(GameState.data["enemy"][enemy_name]["pattern"])
+
+func set_color(clr : String)-> void:
+	color = clr
+
+func set_stop_position(pos : Vector2) -> void:
+	stop_position = pos
+
+func set_leave_position(pos : Vector2) -> void:
+	leave_position = pos
+
+func set_speed(value : int) -> void:
+	speed = value
+
+func set_health(value : int) -> void:
+	health = value
+
+func set_pattern(pattern_name : Array) -> void:
+	pattern = pattern_name
+
+func set_death_pattern(pattern_name : Array) -> void:
+	death_pattern = pattern_name
+
 func UpdatePosition() -> void:
-	GameState.boss_position = position
+	if not enemy_position_appended:
+		enemy_index = GameState.enemy_positions.size()
+		GameState.enemy_positions.append([position.x, position.y])
+		enemy_position_appended = true
+	elif enemy_position_appended:
+		GameState.enemy_positions[enemy_index] = position

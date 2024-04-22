@@ -1,0 +1,95 @@
+{ 
+"stage":{
+	"stage_1":{
+		"stage_boss": "aya",
+		"stage_midboss": "momiji",
+		"stage_duration": 120,
+		"stage_texture": "res://art/bg1.png",
+		"stage_camera_commands": [[0, "low"], [3, "top_down"], [60, "low"], [110, "top_down"]],
+		"stage_scroll_commands": [[0, "SCROLL_SPEED_HIGH"], [3, "SCROLL_SPEED_MID"], [60, "SCROLL_SPEED_HIGH"], [110, "SCROLL_SPEED_LOW"]],
+		"stage_enemy_layout": [["enemy_wave_1", 5, 5], ["enemy_wave_2", 10, 5]],
+		"stage_soundtrack": "res://music/1.wav"
+		}
+	},
+"enemy":{
+	"red_fairy_1":{
+		"color": "red",
+		"health": 100,
+		"speed": 100,
+		"pattern": ["enemy_1"],
+		"death_pattern": []
+		},
+	"red_fairy_2":{
+		"color": "red",
+		"health": 100,
+		"speed": 100,
+		"pattern": ["enemy_2"],
+		"death_pattern": []
+		}
+	},
+"enemy_wave":{
+	"enemy_wave_1":{
+		"enemy_name": "red_fairy_1",
+		"enemy_count": 5,
+		"wave_duration": 10,
+		"spawn_position": [0, -40],
+		"stop_position": [32, 32],
+		"leave_position": [192, 680],
+		"spawn_offset": [32, 0]
+		},
+	"enemy_wave_2":{
+		"enemy_name": "red_fairy_2",
+		"enemy_count": 5,
+		"wave_duration": 10,
+		"spawn_position": [400, -40],
+		"stop_position": [368, 32],
+		"leave_position": [192, 680],
+		"spawn_offset": [-32, 0]
+		}
+	},
+"pattern":{
+	"enemy_1":{
+		"position": "center_enemy",
+		"bullet_model": "red_orb",
+		"style": "free_fire",
+		"points": [[0, 0]],
+		"draw_speed": 0,
+		"loop_time": 0,
+		"frame_delay": 3,
+		"spread": 5,
+		"initial_velocity": 200,
+		"initial_direction": "player",
+		"initial_damp": 0,
+		"initial_angular_velocity": 0,
+		"updates": [["acceleration", 1, 2]]
+		},
+	"enemy_2":{
+		"position": "center_enemy",
+		"bullet_model": "red_orb",
+		"style": "free_fire",
+		"points": [[0, 0]],
+		"draw_speed": 0,
+		"loop_time": 0,
+		"frame_delay": 3,
+		"spread": 5,
+		"initial_velocity": 200,
+		"initial_direction": "player",
+		"initial_damp": 0,
+		"initial_angular_velocity": 0,
+		"updates": [["acceleration", 1, 2]]
+		}
+	},
+"boss":{
+	"aya":{
+		"boss_model": "aya",
+		"boss_pattern_groups": ["pattern_group1", "pattern_group2"],
+		"boss_health": 1000
+		}
+	},
+"pattern_group":{
+	"aya":{
+		"pattern_group1": ["stars", "enemy_1"],
+		"pattern_group2": ["homing_orb_line", "big_circles_360"]
+		}
+	}
+}

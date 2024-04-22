@@ -1,6 +1,6 @@
 extends Path2D
 
-# True if patterns_dict[name]["position"] == trrue
+# True if patterns_dict[name]["position"] == true
 var center_position : bool
 # Number of frames the pattern has existed
 var pattern_frames : int

@@ -10,13 +10,9 @@ const ANGLE_TOP = Vector3.ZERO
 @onready var bg_plane : MeshInstance3D = $bg_plane
 @onready var camera : Camera3D = $Camera
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	set_bg_material(bg_plane, "res://art/bg1.png")
-	pass # Replace with function body.
+	set_bg_material(bg_plane, GameState.data["stage"][GameState.current_stage]["stage_texture"])
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if tilt == "top_down":
 		camera.rotation_degrees = camera.rotation_degrees.lerp(ANGLE_TOP, .1)
@@ -34,6 +30,7 @@ func _process(delta):
 	if bg_plane.position.y < -2.0:
 		bg_plane.translate(Vector3(4.0, 0.0, 0.0))
 
+# Sets the texture on the flat plane 3d object projected onto the gamefield subviewport
 func set_bg_material(background_surface : MeshInstance3D, texture_path : String):
 	var image = Image.new()
 	image.load(texture_path)
@@ -43,8 +40,10 @@ func set_bg_material(background_surface : MeshInstance3D, texture_path : String)
 		# TODO May have to redefine the tiling? is there a way to fit relative to 256x256?
 		background_surface.material_override.uv1_scale = Vector3(10.0, 1.0, 1.0)
 
+# Assigns a string value to tilt: "top_down" (camera perpindicular), "low" (camera pans up)
 func set_tilt(tilt_name):
 	tilt = tilt_name
 
+# Assigns a string value to scroll_command: "low" 25%, "mid" 50%, "high" 100% speed
 func set_speed(speed_name):
 	scroll_command = speed_name
