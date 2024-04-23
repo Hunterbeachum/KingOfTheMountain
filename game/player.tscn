@@ -238,4 +238,9 @@ animation = &"hitbox"
 [node name="PlayerStartPosition" type="Marker2D" parent="."]
 position = Vector2(208, 440)
 
+[node name="StartTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="StartTimer" to="." method="_on_start_timer_timeout"]

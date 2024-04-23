@@ -6,6 +6,7 @@ func _ready():
 	var game_field = load("res://game/game_field_container.tscn")
 	game_field_instance = game_field.instantiate()
 	$MarginContainer/HSplitContainer.add_child(game_field_instance)
+	# TODO load on the other side the UI
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

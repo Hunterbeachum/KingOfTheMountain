@@ -1,7 +1,8 @@
-[gd_scene load_steps=54 format=3 uid="uid://bu3mkp8335one"]
+[gd_scene load_steps=55 format=3 uid="uid://bu3mkp8335one"]
 
 [ext_resource type="Script" path="res://game/Fairy.gd" id="1_wyogd"]
 [ext_resource type="Texture2D" uid="uid://d16kwgl7mct8d" path="res://art/MOFenemies.png" id="2_4gaof"]
+[ext_resource type="PackedScene" uid="uid://i4wshaa0jskp" path="res://game/bullet_handler.tscn" id="2_qcv3q"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g27j7"]
 atlas = ExtResource("2_4gaof")
@@ -407,17 +408,22 @@ animations = [{
 [sub_resource type="Curve2D" id="Curve2D_kp764"]
 
 [node name="Fairy" type="RigidBody2D"]
+collision_layer = 0
+collision_mask = 0
+gravity_scale = 0.0
 script = ExtResource("1_wyogd")
+bullet_handler = ExtResource("2_qcv3q")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="Body" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_ufwwe")
-animation = &"yellowidle"
-frame_progress = 0.412484
+animation = &"bluestart_move"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="EnemyHitbox" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_xkks0")
 
 [node name="Path2D" type="Path2D" parent="."]
 curve = SubResource("Curve2D_kp764")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+
+[node name="EnemyAttackTimer" type="Timer" parent="."]

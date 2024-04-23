@@ -1,4 +1,4 @@
-{ 
+{
 "stage":{
 	"stage_1":{
 		"stage_boss": "aya",
@@ -7,7 +7,16 @@
 		"stage_texture": "res://art/bg1.png",
 		"stage_camera_commands": [[0, "low"], [3, "top_down"], [60, "low"], [110, "top_down"]],
 		"stage_scroll_commands": [[0, "SCROLL_SPEED_HIGH"], [3, "SCROLL_SPEED_MID"], [60, "SCROLL_SPEED_HIGH"], [110, "SCROLL_SPEED_LOW"]],
-		"stage_enemy_layout": [["enemy_wave_1", 5, 5], ["enemy_wave_2", 10, 5]],
+		"stage_enemy_layout":{
+			"enemy_wave_1":{
+				"spawn_time": 5,
+				"spawn_interval": 5
+				},
+			"enemy_wave_2":{
+				"spawn_time": 10,
+				"spawn_interval": 5
+				}
+		},
 		"stage_soundtrack": "res://music/1.wav"
 		}
 	},
@@ -49,12 +58,13 @@
 	},
 "pattern":{
 	"enemy_1":{
-		"position": "center_enemy",
+		"position": "on_enemy",
 		"bullet_model": "red_orb",
 		"style": "free_fire",
 		"points": [[0, 0]],
 		"draw_speed": 0,
-		"loop_time": 0,
+		"loop_time": 5,
+		"loop_count": 1,
 		"frame_delay": 3,
 		"spread": 5,
 		"initial_velocity": 200,
@@ -64,12 +74,13 @@
 		"updates": [["acceleration", 1, 2]]
 		},
 	"enemy_2":{
-		"position": "center_enemy",
+		"position": "on_enemy",
 		"bullet_model": "red_orb",
 		"style": "free_fire",
 		"points": [[0, 0]],
 		"draw_speed": 0,
-		"loop_time": 0,
+		"loop_time": 5,
+		"loop_count": 1,
 		"frame_delay": 3,
 		"spread": 5,
 		"initial_velocity": 200,

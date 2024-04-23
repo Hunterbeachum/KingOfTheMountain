@@ -4,13 +4,12 @@ signal options
 signal quit
 var fade = false
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	set_modulate(Color(0,0,0,1))
 	$Pointer.hide()
 	await get_tree().create_timer(3).timeout
 	$Pointer.show()
-	pass # Replace with function body.
 
 func fade_in():
 	set_modulate(lerp(get_modulate(), Color(1,1,1,1), 0.04))

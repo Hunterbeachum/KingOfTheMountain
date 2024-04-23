@@ -12,6 +12,7 @@ bullet_scene = ExtResource("2_h6v0d")
 metadata/_edit_group_ = true
 
 [node name="PatternLifespan" type="Timer" parent="."]
+one_shot = true
 
 [node name="BulletPath" type="PathFollow2D" parent="."]
 rotation = -1.20362
