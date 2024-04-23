@@ -11,7 +11,7 @@ script = ExtResource("1_1n73f")
 bullet_scene = ExtResource("2_h6v0d")
 metadata/_edit_group_ = true
 
-[node name="PatternLifespan" type="Timer" parent="."]
+[node name="LoopTimer" type="Timer" parent="."]
 one_shot = true
 
 [node name="BulletPath" type="PathFollow2D" parent="."]
@@ -20,4 +20,7 @@ rotates = false
 cubic_interp = false
 loop = false
 
-[connection signal="timeout" from="PatternLifespan" to="." method="_on_pattern_lifespan_timeout"]
+[node name="DrawTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="LoopTimer" to="." method="_on_loop_timer_timeout"]

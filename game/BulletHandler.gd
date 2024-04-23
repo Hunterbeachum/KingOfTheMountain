@@ -8,16 +8,19 @@ var updates_queue : Array
 var pattern_frames : int
 var frame_delay : int
 var current_delay : int
+var draw_time : float
+var loop_time : float
 var loop_count : int
 var spread : int
 var style : String
 var initial_velocity : Vector2 = Vector2(0.0, 0.0)
 var initial_direction : String
 var initial_damp : float
-var speed : int = 0
+var draw_speed : int = 0
 @export var bullet_scene: PackedScene
 @onready var bullet_path : PathFollow2D = $BulletPath
-@onready var pattern_lifespan : Timer = $PatternLifespan
+@onready var loop_timer : Timer = $LoopTimer
+@onready var draw_timer : Timer = $DrawTimer
 var drawing_pattern = false
 
 func _ready():
@@ -31,12 +34,15 @@ func load_pattern():
 	elif pattern_data["position"] == "center_screen":
 		top_level = true #TODO is this needed?
 		global_position = GameState.CENTERSCREEN
-	speed = pattern_data["draw_speed"]
+	draw_speed = pattern_data["draw_speed"]
 	var points_to_draw = pattern_data["points"]
 	var curve = get_curve()
 	for point in points_to_draw:
 		curve.add_point(Vector2(point[0], point[1]))
-		pattern_lifespan.start(pattern_data["loop_time"])
+	draw_time = pattern_data["draw_time"]
+	draw_timer.start(draw_time)
+	loop_time = pattern_data["loop_time"]
+	loop_timer.start(loop_time)
 	loop_count = pattern_data["loop_count"]
 	pattern_frames = 0
 	frame_delay = pattern_data["frame_delay"]
@@ -54,12 +60,13 @@ func load_pattern():
 func _process(delta):
 	pattern_frames += 1
 	if not pattern_data.is_empty():
-		generate_pattern()
+		if not draw_timer.is_stopped():
+			generate_pattern()
 	pass
 
 func generate_pattern() -> void:
 	if not updates_queue.is_empty():
-		if pattern_data["loop_time"] - pattern_lifespan.time_left > updates_queue[0][1]:
+		if pattern_data["loop_time"] - loop_timer.time_left > updates_queue[0][1]:
 			run_update(updates_queue.pop_front())
 	if current_delay <= 0:
 		if style == "free_fire":
@@ -107,14 +114,15 @@ func run_update(update_data : Array) -> void:
 	pass
 
 # reset the drawing loops
-func _on_pattern_lifespan_timeout():
+func _on_loop_timer_timeout():
 	loop_count -= 1
 	if loop_count <= 0:
 		pattern_data.clear()
 		if not parent_is_boss:
 			get_parent().enemy_movement(get_parent().leave_position)
 	else:
-		pattern_lifespan.start(pattern_data["loop_time"])
+		loop_timer.start(loop_time)
+		draw_timer.start(loop_time)
 
 func set_parent(is_boss : bool, name : String, index : int, pattern : String):
 	if is_boss:
