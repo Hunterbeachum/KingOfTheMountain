@@ -5,6 +5,7 @@ var parent : Array = []
 var pattern_data : Dictionary
 var pattern_name : String = ""
 var updates_queue : Array
+var active_updates : Array
 var pattern_frames : int
 var frame_delay : int
 var current_delay : int
@@ -14,13 +15,15 @@ var loop_count : int
 var spread : int
 var style : String
 var initial_velocity : Vector2 = Vector2(0.0, 0.0)
-var initial_direction : String
+var target : String
+var direction : float
 var initial_damp : float
 var draw_speed : int = 0
 @export var bullet_scene: PackedScene
 @onready var bullet_path : PathFollow2D = $BulletPath
 @onready var loop_timer : Timer = $LoopTimer
 @onready var draw_timer : Timer = $DrawTimer
+@onready var update_timer : Timer = $UpdateTimer
 var drawing_pattern = false
 
 func _ready():
@@ -50,7 +53,7 @@ func load_pattern():
 	spread = pattern_data["spread"]
 	style = pattern_data["style"]
 	initial_velocity.x = pattern_data["initial_velocity"]
-	initial_direction = pattern_data["initial_direction"]
+	target = pattern_data["target"]
 	initial_damp = pattern_data["initial_damp"]
 	for update in pattern_data["updates"]:
 		updates_queue.append(update)
@@ -66,8 +69,10 @@ func _process(delta):
 
 func generate_pattern() -> void:
 	if not updates_queue.is_empty():
-		if pattern_data["loop_time"] - loop_timer.time_left > updates_queue[0][1]:
-			run_update(updates_queue.pop_front())
+		if pattern_data["draw_time"] - draw_timer.time_left > updates_queue[0][1]:
+			load_update(updates_queue.pop_front())
+	if not active_updates.is_empty():
+		run_update(active_updates)
 	if current_delay <= 0:
 		if style == "free_fire":
 			free_fire()
@@ -80,14 +85,20 @@ func generate_pattern() -> void:
 func free_fire() -> void:
 	for i in range(spread):
 		var bullet = bullet_scene.instantiate()
-		var bullet_direction
-		if pattern_data["position"] == "on_enemy":
-			bullet_direction = get_parent().position.angle_to_point(GameState.player_position)
-		elif pattern_data["position"] == "center_screen":
-			bullet_direction = GameState.CENTERSCREEN.angle_to_point(GameState.player_position)
-		bullet.linear_velocity = initial_velocity.rotated(bullet_direction + (i - (spread / 2)) * PI / 15)
+		bullet.linear_velocity = initial_velocity.rotated(calculate_targeting() + (i - (spread / 2)) * PI / 15)
 		bullet.add_to_group("bullets" + str(parent[1]))
 		add_child(bullet)
+
+func calculate_targeting() -> float:
+	if target == "player":
+		if pattern_data["position"] == "on_enemy":
+			return get_parent().position.angle_to_point(GameState.player_position)
+		elif pattern_data["position"] == "center_screen":
+			return GameState.CENTERSCREEN.angle_to_point(GameState.player_position)
+		else:
+			return 0.0
+	else:
+		return 0.0
 
 func draw() -> void:
 	for i in range(spread):
@@ -110,8 +121,21 @@ func draw() -> void:
 			get_tree().call_group("bullets" + str(i), "set_linear_velocity", Vector2(100.0, 0.0).rotated((direction) - (i - 1) * PI / 30 ))
 			drawing_pattern = false
 
-func run_update(update_data : Array) -> void:
+func load_update(update_data : Array) -> void:
+	active_updates.append(update_data)
+	var update_name = update_data[0]
+	await get_tree().create_timer(update_data[2]).timeout
+	active_updates.erase(update_data)
 	pass
+
+func run_update(active_update_list : Array):
+	for active_update in active_update_list:
+		var update_name = active_update[0]
+		if update_name == "spin":
+			if current_delay <= 0:
+				initial_velocity = initial_velocity.rotated(active_update[3] * PI/15)
+		elif update_name == "accelerate":
+			get_tree().call_group("bullets" + str(parent[1]), "accelerate", active_update[1], active_update[3])
 
 # reset the drawing loops
 func _on_loop_timer_timeout():

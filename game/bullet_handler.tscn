@@ -23,4 +23,7 @@ loop = false
 [node name="DrawTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="UpdateTimer" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="timeout" from="LoopTimer" to="." method="_on_loop_timer_timeout"]

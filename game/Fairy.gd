@@ -24,7 +24,7 @@ func _process(delta):
 	UpdateEnemyGameState()
 	if current_destination != null:
 		if position.distance_to(current_destination) < 5:
-			linear_velocity = Vector2(0.0, 0)
+			linear_velocity = Vector2.ZERO
 			if current_destination == stop_position:
 				for pattern in pattern_list:
 					if not pattern[1]:
@@ -60,7 +60,7 @@ func start() -> void:
 func enemy_movement(destination) -> void:
 	current_destination = destination
 	var direction = position.angle_to_point(current_destination)
-	linear_velocity = Vector2(200.0, 0.0).rotated(direction)
+	linear_velocity = Vector2(speed, 0.0).rotated(direction)
 
 func load_enemy(name : String):
 	enemy_name = name

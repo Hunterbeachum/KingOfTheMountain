@@ -1,5 +1,6 @@
 extends RigidBody2D
 var homing = true
+@onready var bullet_lifespan = $BulletLifespan
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -27,8 +28,11 @@ func _update_linear_velocity(pos):
 		var comparison = (new_linear_velocity - old_linear_velocity)
 		linear_velocity = old_linear_velocity + .5 * comparison
 
-
 func _zero_velocity():
 	linear_velocity = linear_velocity * .04
 	set_linear_damp(0.0)
+
+func accelerate(age : float, magnitude : float) -> void:
+	if 60.0 - bullet_lifespan.time_left > age:
+		linear_velocity = linear_velocity.lerp(linear_velocity * magnitude, .001)
 
