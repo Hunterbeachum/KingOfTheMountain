@@ -22,6 +22,8 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	UpdateEnemyGameState()
+	if health <= 0:
+		perish()
 	if current_destination != null:
 		if position.distance_to(current_destination) < 5:
 			linear_velocity = Vector2.ZERO
@@ -110,3 +112,10 @@ func UpdateEnemyGameState() -> void:
 		enemy_gamestate_appended = true
 	elif enemy_gamestate_appended:
 		GameState.enemy_gamestate[enemy_index] = [position.x, position.y, pattern_list]
+
+func get_hit() -> void:
+	health -= 1
+	$Body.self_modulate.a = 0.1 if Engine.get_frames_drawn() % 3 in [0, 1] else 1.0
+
+func perish() -> void:
+	self.queue_free()

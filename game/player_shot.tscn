@@ -1,0 +1,66 @@
+[gd_scene load_steps=9 format=3 uid="uid://bwv271inll7eu"]
+
+[ext_resource type="Script" path="res://game/PlayerShot.gd" id="1_dxruh"]
+[ext_resource type="Texture2D" uid="uid://bhenfbk6tnlnc" path="res://art/MOFchara.png" id="2_nfl0e"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6iout"]
+atlas = ExtResource("2_nfl0e")
+region = Rect2(280, 160, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6u7it"]
+atlas = ExtResource("2_nfl0e")
+region = Rect2(312, 160, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5pnep"]
+atlas = ExtResource("2_nfl0e")
+region = Rect2(344, 160, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rty28"]
+atlas = ExtResource("2_nfl0e")
+region = Rect2(376, 160, 32, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8yuvv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6iout")
+}],
+"loop": true,
+"name": &"marisa",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6u7it")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5pnep")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rty28")
+}],
+"loop": true,
+"name": &"marisa_hit",
+"speed": 15.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_krwx1"]
+size = Vector2(20, 33)
+
+[node name="PlayerShot" type="RigidBody2D"]
+collision_layer = 4
+mass = 0.01
+gravity_scale = 0.0
+script = ExtResource("1_dxruh")
+
+[node name="Body" type="AnimatedSprite2D" parent="."]
+rotation = 4.71239
+sprite_frames = SubResource("SpriteFrames_8yuvv")
+animation = &"marisa_hit"
+frame_progress = 0.601157
+
+[node name="ShotHitBox" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_krwx1")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

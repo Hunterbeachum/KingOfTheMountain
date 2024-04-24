@@ -1,8 +1,10 @@
-[gd_scene load_steps=32 format=3 uid="uid://c1hk63e4h347l"]
+[gd_scene load_steps=34 format=3 uid="uid://c1hk63e4h347l"]
 
 [ext_resource type="Script" path="res://game/Player.gd" id="1_grwyw"]
 [ext_resource type="Texture2D" uid="uid://bhenfbk6tnlnc" path="res://art/MOFchara.png" id="2_dw0v3"]
+[ext_resource type="PackedScene" uid="uid://bwv271inll7eu" path="res://game/player_shot.tscn" id="2_xmonj"]
 [ext_resource type="Texture2D" uid="uid://cr7vm785mx0ly" path="res://art/MOFprojectiles.png" id="3_xiplg"]
+[ext_resource type="Texture2D" uid="uid://d0dhj3jql6ybi" path="res://art/death.tres" id="4_pv51q"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3xgd0"]
 atlas = ExtResource("2_dw0v3")
@@ -219,12 +221,14 @@ animations = [{
 }]
 
 [node name="Player" type="Area2D"]
+collision_mask = 11
 script = ExtResource("1_grwyw")
+playershot_scene = ExtResource("2_xmonj")
 metadata/_edit_group_ = true
 
 [node name="Body" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_0e17y")
-animation = &"move_left"
+animation = &"idle"
 
 [node name="PlayerHitBox" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ge4x3")
@@ -236,11 +240,19 @@ sprite_frames = SubResource("SpriteFrames_o6kwq")
 animation = &"hitbox"
 
 [node name="PlayerStartPosition" type="Marker2D" parent="."]
-position = Vector2(208, 440)
+position = Vector2(208, 400)
 
 [node name="StartTimer" type="Timer" parent="."]
 wait_time = 2.0
 one_shot = true
 
+[node name="DeathAnimation" type="Sprite2D" parent="."]
+texture = ExtResource("4_pv51q")
+
+[node name="DeathTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="StartTimer" to="." method="_on_start_timer_timeout"]
+[connection signal="timeout" from="DeathTimer" to="." method="_on_death_timer_timeout"]
