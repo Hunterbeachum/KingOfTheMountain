@@ -14,6 +14,7 @@ var background_instance
 
 
 func _ready():
+	GameState.player_lives = 3
 	load_stage(current_stage)
 
 func _process(delta):
@@ -67,3 +68,6 @@ func spawn_enemy(enemy_name : String, i : int, spawn_position : Vector2, stop_po
 	enemy_instance.set_stop_position(stop_position + i * spawn_offset)
 	enemy_instance.set_leave_position(leave_position + i * spawn_offset)
 	add_child(enemy_instance)
+
+func game_over():
+	get_tree().call_group("bullets", "_zero_velocity")

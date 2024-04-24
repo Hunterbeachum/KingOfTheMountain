@@ -25,6 +25,7 @@ var draw_speed : int = 0
 @onready var draw_timer : Timer = $DrawTimer
 @onready var update_timer : Timer = $UpdateTimer
 var drawing_pattern = false
+var stop_firing : bool = false
 
 func _ready():
 	load_pattern()
@@ -61,10 +62,11 @@ func load_pattern():
 	pass
 
 func _process(delta):
-	pattern_frames += 1
-	if not pattern_data.is_empty():
-		if not draw_timer.is_stopped():
-			generate_pattern()
+	if not stop_firing:
+		pattern_frames += 1
+		if not pattern_data.is_empty():
+			if not draw_timer.is_stopped():
+				generate_pattern()
 	pass
 
 func generate_pattern() -> void:
@@ -114,11 +116,12 @@ func draw() -> void:
 		bullet.position = bullet_spawn_location
 		# bullet_velocity.rotated(n)
 		bullet.linear_velocity = initial_velocity.rotated((direction) + (i - 1) * PI / 3 )
+		bullet.add_to_group("bullets" + str(parent[1]))
 		add_child(bullet)
 		var test = bullet.global_position
-		bullet.add_to_group("bullets" + str(i))
+		bullet.add_to_group("bullets" + str(parent[1]) + "drawn" + str(i))
 		if bullet_path.progress_ratio >= 1.0:
-			get_tree().call_group("bullets" + str(i), "set_linear_velocity", Vector2(100.0, 0.0).rotated((direction) - (i - 1) * PI / 30 ))
+			get_tree().call_group("bullets" + str(parent[1]) + "drawn" + str(i), "set_linear_velocity", Vector2(100.0, 0.0).rotated((direction) - (i - 1) * PI / 30 ))
 			drawing_pattern = false
 
 func load_update(update_data : Array) -> void:
@@ -159,3 +162,6 @@ func set_parent(is_boss : bool, name : String, index : int, pattern : String):
 
 func UpdateDrawingPattern() -> void:
 	GameState.drawing_pattern = drawing_pattern
+
+func stop_fire():
+	stop_firing = true

@@ -221,7 +221,7 @@ animations = [{
 }]
 
 [node name="Player" type="Area2D"]
-collision_mask = 11
+collision_mask = 12
 script = ExtResource("1_grwyw")
 playershot_scene = ExtResource("2_xmonj")
 metadata/_edit_group_ = true

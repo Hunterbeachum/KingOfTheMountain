@@ -22,8 +22,19 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	UpdateEnemyGameState()
-	if health <= 0:
+	if $EnemyDeathTimer.time_left > 0:
+		$DeathAnimation.show()
+		$DeathAnimation.self_modulate = $DeathAnimation.self_modulate.lerp(Color(1,1,1,0), .2)
+		$DeathAnimation.scale += $DeathAnimation.scale * .1
+	if health <= 0 and $Body.visible:
 		perish()
+	if not $Body.visible:
+		if len(get_tree().get_nodes_in_group("bullets" + str(enemy_index))) <= 0:
+			queue_free()
+	if $EnemyFlashTimer.time_left > 0 and Engine.get_frames_drawn() % 3 == 0:
+		flash()
+	else:
+		$Body.material.set_shader_parameter("solid_color", Color(1, 1, 1, 0))
 	if current_destination != null:
 		if position.distance_to(current_destination) < 5:
 			linear_velocity = Vector2.ZERO
@@ -56,8 +67,8 @@ func _process(delta):
 
 func start() -> void:
 	show()
+	$DeathAnimation.hide()
 	$Body.play(color + "idle")
-	$EnemyHitbox.disabled = false
 
 func enemy_movement(destination) -> void:
 	current_destination = destination
@@ -77,6 +88,7 @@ func play_pattern(pattern : String) -> void:
 	var new_bullet_handler = bullet_handler.instantiate()
 	new_bullet_handler.set_parent(false, enemy_name, enemy_index, pattern)
 	add_child(new_bullet_handler)
+	new_bullet_handler.add_to_group("patterns" + str(enemy_index))
 	await get_tree().create_timer(GameState.data["pattern"][pattern]["loop_time"]).timeout
 	pattern_list.erase([pattern, true])
 
@@ -114,8 +126,14 @@ func UpdateEnemyGameState() -> void:
 		GameState.enemy_gamestate[enemy_index] = [position.x, position.y, pattern_list]
 
 func get_hit() -> void:
-	health -= 1
-	$Body.self_modulate.a = 0.1 if Engine.get_frames_drawn() % 3 in [0, 1] else 1.0
+	$EnemyFlashTimer.start()
+	health -= 5
+
+func flash() -> void:
+	$Body.material.set_shader_parameter("solid_color", Color.WHITE)
 
 func perish() -> void:
-	self.queue_free()
+	get_tree().call_group("patterns" + str(enemy_index), "stop_fire")
+	$EnemyHitBox.set_deferred("disabled", false)
+	$EnemyDeathTimer.start()
+	$Body.hide()

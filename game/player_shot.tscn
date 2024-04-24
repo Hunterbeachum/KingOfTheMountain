@@ -45,22 +45,21 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_krwx1"]
-size = Vector2(20, 33)
+size = Vector2(20, 56)
 
-[node name="PlayerShot" type="RigidBody2D"]
-collision_layer = 4
-mass = 0.01
-gravity_scale = 0.0
+[node name="PlayerShot" type="Area2D"]
+collision_layer = 2
+collision_mask = 4
 script = ExtResource("1_dxruh")
 
 [node name="Body" type="AnimatedSprite2D" parent="."]
-rotation = 4.71239
+rotation = -1.5708
 sprite_frames = SubResource("SpriteFrames_8yuvv")
 animation = &"marisa_hit"
-frame_progress = 0.601157
+frame_progress = 0.210765
 
 [node name="ShotHitBox" type="CollisionShape2D" parent="."]
-position = Vector2(0, 0.5)
+position = Vector2(0, -11)
 shape = SubResource("RectangleShape2D_krwx1")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

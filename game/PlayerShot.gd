@@ -1,5 +1,7 @@
-extends RigidBody2D
+extends Area2D
 
+var speed : int = 1000
+var velocity : Vector2 = Vector2.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -8,10 +10,15 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	velocity.y = -speed * delta
+	translate(velocity)
+	if $Body.animation == "marisa_hit" and $Body.frame == 2:
+		queue_free()
 
 
 func _on_body_entered(body):
-	linear_velocity = Vector2.ZERO
+	$ShotHitBox.set_deferred("disabled", true)
+	speed = 0
 	body.get_hit()
 	$Body.play("marisa_hit")
+	pass
