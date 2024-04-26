@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3bgp66sa5g0k"]
+
+[ext_resource type="Script" path="res://game/Interface.gd" id="1_b3tmk"]
+[ext_resource type="FontFile" uid="uid://dnbulrnmet0bk" path="res://font/DFKakuTaiHiStd-W4.otf" id="3_sp4rl"]
+
+[node name="Interface" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 30
+script = ExtResource("1_b3tmk")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="DifficultyContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="LivesContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Player" type="Label" parent="VBoxContainer/LivesContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_sp4rl")
+text = "Player"
+
+[node name="BombsContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Bomb" type="Label" parent="VBoxContainer/BombsContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_sp4rl")
+text = "Bomb"
+
+[node name="PowerContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Power" type="Label" parent="VBoxContainer/PowerContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_sp4rl")
+text = "Power"
+
+[node name="PowerValue" type="Label" parent="VBoxContainer/PowerContainer"]
+layout_mode = 2
+
+[node name="GrazeContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Graze" type="Label" parent="VBoxContainer/GrazeContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_sp4rl")
+text = "Graze"
+
+[node name="GrazeValue" type="Label" parent="VBoxContainer/GrazeContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_sp4rl")

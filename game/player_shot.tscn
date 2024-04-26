@@ -56,7 +56,7 @@ script = ExtResource("1_dxruh")
 rotation = -1.5708
 sprite_frames = SubResource("SpriteFrames_8yuvv")
 animation = &"marisa_hit"
-frame_progress = 0.210765
+frame_progress = 0.00767698
 
 [node name="ShotHitBox" type="CollisionShape2D" parent="."]
 position = Vector2(0, -11)

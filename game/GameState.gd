@@ -5,6 +5,7 @@ var data : Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://g
 
 # Player properties
 var player_position : Vector2 = Vector2(208.0, 440.0) # Player's position
+const STARTING_LIVES : int = 3
 var player_lives : int
 
 # Boss properties

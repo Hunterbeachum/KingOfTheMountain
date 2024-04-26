@@ -1,13 +1,18 @@
 extends Control
 
 var game_field_instance
+var interface_instance
 
 func _ready():
 	var game_field = load("res://game/game_field_container.tscn")
 	game_field_instance = game_field.instantiate()
 	$MarginContainer/HSplitContainer.add_child(game_field_instance)
 	# TODO load on the other side the UI
-	pass # Replace with function body.
+	var interface = load("res://game/interface.tscn")
+	interface_instance = interface.instantiate()
+	$MarginContainer/HSplitContainer.add_child(interface_instance)
+	await get_tree().create_timer(2.0).timeout
+	game_field_instance.get_node("GameField/player_instance").connect("hit", interface_instance.update_lives())
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

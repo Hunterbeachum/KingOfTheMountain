@@ -15,7 +15,6 @@ func _process(delta):
 	if $Body.animation == "marisa_hit" and $Body.frame == 2:
 		queue_free()
 
-
 func _on_body_entered(body):
 	$ShotHitBox.set_deferred("disabled", true)
 	speed = 0
