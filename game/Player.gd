@@ -121,5 +121,5 @@ func _on_start_timer_timeout():
 	$PlayerHitBox.set_deferred("disabled", false)
 
 func _on_death_timer_timeout():
-	if GameState.player_lives > 1:
+	if GameState.player_lives >= 1:
 		start()

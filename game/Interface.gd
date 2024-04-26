@@ -20,9 +20,6 @@ func _process(delta):
 	pass
 
 func update_lives():
-	var life_texture = load("res://art/LifeIcon.tres")
-	var life_icon = TextureRect.new()
-	life_icon.set_texture(life_texture)
-	life_icon.set_stretch_mode(3)
-	$VBoxContainer/LivesContainer.add_child(life_icon)
+	var LifeIcons = $VBoxContainer/LivesContainer.get_children()
+	LifeIcons[-1].queue_free()
 	pass
