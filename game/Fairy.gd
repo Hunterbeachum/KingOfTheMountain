@@ -11,6 +11,7 @@ var death_pattern : Array = []
 var enemy_gamestate_appended : bool = false
 var enemy_index : int
 var flashing : bool = false
+var dead : bool = false
 @export var bullet_handler: PackedScene
 
 
@@ -27,15 +28,13 @@ func _process(delta):
 		$EnemyDeathAnimation.show()
 		$EnemyDeathAnimation.self_modulate = $EnemyDeathAnimation.self_modulate.lerp(Color(1,1,1,0), .2)
 		$EnemyDeathAnimation.scale += $EnemyDeathAnimation.scale * .1
-	if health <= 0 and $Body.visible:
+	if health <= 0 and not dead:
 		perish()
-	if not $Body.visible:
+	if dead and $EnemyDeathTimer.time_left <= 0:
 		if len(get_tree().get_nodes_in_group("bullets" + str(enemy_index))) <= 0:
 			queue_free()
 	if flashing and Engine.get_frames_drawn() % 3 == 0:
 		flash()
-		var test = get_parent().get_children()
-		pass
 	else:
 		$Body.material.set_shader_parameter("solid_color", Color(1, 1, 1, 0))
 	if current_destination != null:
@@ -132,7 +131,7 @@ func UpdateEnemyGameState() -> void:
 func get_hit() -> void:
 	if not flashing:
 		flashing = true
-		await get_tree().create_timer(0.25).timeout
+		await get_tree().create_timer(0.15).timeout
 		flashing = false
 	health -= 5
 
@@ -141,6 +140,7 @@ func flash() -> void:
 	$Body.material.set_shader_parameter("solid_color", Color.WHITE)
 
 func perish() -> void:
+	dead = true
 	get_tree().call_group("patterns" + str(enemy_index), "stop_fire")
 	$EnemyHitBox.set_deferred("disabled", false)
 	$EnemyDeathTimer.start()

@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://d0dhj3jql6ybi" path="res://art/death.tres" id="5_ws8ta"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3w1hd"]
+resource_local_to_scene = true
 shader = ExtResource("3_v7foa")
 shader_parameter/solid_color = Color(0, 0, 0, 0)
 
@@ -445,3 +446,4 @@ texture = ExtResource("5_ws8ta")
 
 [node name="EnemyDeathTimer" type="Timer" parent="."]
 wait_time = 0.25
+one_shot = true
