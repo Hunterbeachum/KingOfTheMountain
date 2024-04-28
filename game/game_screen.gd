@@ -4,6 +4,8 @@ var game_field_instance
 var interface_instance
 
 func _ready():
+	GameState.player_lives = GameState.STARTING_LIVES
+	GameState.player_bombs = GameState.STARTING_BOMBS
 	var game_field = load("res://game/game_field_container.tscn")
 	game_field_instance = game_field.instantiate()
 	$MarginContainer/HSplitContainer.add_child(game_field_instance)

@@ -48,6 +48,7 @@ text = "Power"
 
 [node name="PowerValue" type="Label" parent="VBoxContainer/PowerContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_sp4rl")
 
 [node name="GrazeContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2

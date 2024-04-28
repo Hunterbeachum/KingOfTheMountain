@@ -3,12 +3,9 @@ extends Area2D
 var speed : int = 1000
 var velocity : Vector2 = Vector2.ZERO
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	$Body.play("marisa")
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	velocity.y = -speed * delta
 	translate(velocity)

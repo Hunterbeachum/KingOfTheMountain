@@ -9,7 +9,6 @@ var screen_size
 var direction = 0
 var current_modulate
 var opacity = 0.0
-var lives : int
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -96,13 +95,18 @@ func fire() -> void:
 			add_child(shot)
 
 func _on_body_entered(body):
-	$PlayerHitBox.set_deferred("disabled", true)
-	$DeathTimer.start()
-	$Body.hide() # Player disappears after being hit.
-	GameState.player_lives -= 1
-	if GameState.player_lives <= 0:
-		gameover.emit()
-	hit.emit()
+	if body.name == "AttractBox":
+		body.get_parent().set_magnetize(false)
+	elif body.name == "ItemHitBox":
+		get_item(body.get_parent().item_type)
+	else:
+		$PlayerHitBox.set_deferred("disabled", true)
+		$DeathTimer.start()
+		$Body.hide() # Player disappears after being hit.
+		GameState.player_lives -= 1
+		if GameState.player_lives <= 0:
+			gameover.emit()
+		hit.emit()
 	# Must be deferred as we can't change physics properties on a physics callback.
 
 func start() -> void:
@@ -123,3 +127,17 @@ func _on_start_timer_timeout():
 func _on_death_timer_timeout():
 	if GameState.player_lives >= 1:
 		start()
+
+func get_item(item_type : String) -> void:
+	if item_type == "large_power":
+		GameState.player_power += 50
+	elif item_type == "power":
+		GameState.player_power += 10
+	elif item_type == "point":
+		GameState.points += 10000 * GameState.player_graze
+	elif item_type == "full_power":
+		GameState.player_power == 255
+	elif item_type == "bomb":
+		GameState.player_bombs += 1
+	elif item_type == "life":
+		GameState.player_lives += 1

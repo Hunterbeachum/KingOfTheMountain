@@ -439,7 +439,7 @@ curve = SubResource("Curve2D_kp764")
 wait_time = 0.25
 one_shot = true
 
-[node name="DeathAnimation" type="Sprite2D" parent="."]
+[node name="EnemyDeathAnimation" type="Sprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("5_ws8ta")
 

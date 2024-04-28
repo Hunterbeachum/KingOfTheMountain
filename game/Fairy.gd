@@ -10,6 +10,7 @@ var pattern_list : Array = []
 var death_pattern : Array = []
 var enemy_gamestate_appended : bool = false
 var enemy_index : int
+var flashing : bool = false
 @export var bullet_handler: PackedScene
 
 
@@ -23,16 +24,18 @@ func _ready():
 func _process(delta):
 	UpdateEnemyGameState()
 	if $EnemyDeathTimer.time_left > 0:
-		$DeathAnimation.show()
-		$DeathAnimation.self_modulate = $DeathAnimation.self_modulate.lerp(Color(1,1,1,0), .2)
-		$DeathAnimation.scale += $DeathAnimation.scale * .1
+		$EnemyDeathAnimation.show()
+		$EnemyDeathAnimation.self_modulate = $EnemyDeathAnimation.self_modulate.lerp(Color(1,1,1,0), .2)
+		$EnemyDeathAnimation.scale += $EnemyDeathAnimation.scale * .1
 	if health <= 0 and $Body.visible:
 		perish()
 	if not $Body.visible:
 		if len(get_tree().get_nodes_in_group("bullets" + str(enemy_index))) <= 0:
 			queue_free()
-	if $EnemyFlashTimer.time_left > 0 and Engine.get_frames_drawn() % 3 == 0:
+	if flashing and Engine.get_frames_drawn() % 3 == 0:
 		flash()
+		var test = get_parent().get_children()
+		pass
 	else:
 		$Body.material.set_shader_parameter("solid_color", Color(1, 1, 1, 0))
 	if current_destination != null:
@@ -67,7 +70,7 @@ func _process(delta):
 
 func start() -> void:
 	show()
-	$DeathAnimation.hide()
+	$EnemyDeathAnimation.hide()
 	$Body.play(color + "idle")
 
 func enemy_movement(destination) -> void:
@@ -125,11 +128,16 @@ func UpdateEnemyGameState() -> void:
 	elif enemy_gamestate_appended:
 		GameState.enemy_gamestate[enemy_index] = [position.x, position.y, pattern_list]
 
+
 func get_hit() -> void:
-	$EnemyFlashTimer.start()
+	if not flashing:
+		flashing = true
+		await get_tree().create_timer(0.25).timeout
+		flashing = false
 	health -= 5
 
 func flash() -> void:
+	#TODO this is affecting all of the enemies referencing the AnimatedSprite2D bodies.
 	$Body.material.set_shader_parameter("solid_color", Color.WHITE)
 
 func perish() -> void:
