@@ -4,6 +4,7 @@ var stop_position : Vector2
 var leave_position : Vector2
 var current_destination : Vector2
 var enemy_name : String = ""
+var drop_item : String
 var speed : int = 0
 var health : int = 100
 var pattern_list : Array = []
@@ -13,6 +14,7 @@ var enemy_index : int
 var flashing : bool = false
 var dead : bool = false
 @export var bullet_handler: PackedScene
+@export var item: PackedScene
 
 
 func _ready():
@@ -119,6 +121,9 @@ func set_pattern(pattern_names : Array) -> void:
 func set_death_pattern(pattern_name : Array) -> void:
 	death_pattern = pattern_name
 
+func set_drop_item(item_name : String) -> void:
+	drop_item = item_name
+
 func UpdateEnemyGameState() -> void:
 	if not enemy_gamestate_appended:
 		enemy_index = GameState.enemy_gamestate.size()
@@ -145,3 +150,8 @@ func perish() -> void:
 	$EnemyHitBox.set_deferred("disabled", false)
 	$EnemyDeathTimer.start()
 	$Body.hide()
+	var new_item = item.instantiate()
+	new_item.set_type(drop_item)
+	new_item.position = position
+	new_item.linear_velocity = Vector2(randf_range(-23.0, 23.0), randf_range(-29.0, -23.0))
+	get_parent().add_child(new_item)

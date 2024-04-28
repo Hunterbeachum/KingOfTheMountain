@@ -16,6 +16,7 @@ func _ready():
 	set_graze(GameState.player_graze)
 
 func _process(delta):
+	set_power(GameState.player_power)
 	pass
 
 func update_lives():

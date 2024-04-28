@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://c1hk63e4h347l"]
+[gd_scene load_steps=39 format=3 uid="uid://c1hk63e4h347l"]
 
 [ext_resource type="Script" path="res://game/Player.gd" id="1_grwyw"]
 [ext_resource type="Texture2D" uid="uid://bhenfbk6tnlnc" path="res://art/MOFchara.png" id="2_dw0v3"]
@@ -220,6 +220,42 @@ animations = [{
 "speed": 15.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_abgsp"]
+atlas = ExtResource("2_dw0v3")
+region = Rect2(408, 160, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mv42g"]
+atlas = ExtResource("2_dw0v3")
+region = Rect2(424, 160, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_880s1"]
+atlas = ExtResource("2_dw0v3")
+region = Rect2(440, 160, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0t5n8"]
+atlas = ExtResource("2_dw0v3")
+region = Rect2(456, 160, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8uwoi"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_abgsp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mv42g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_880s1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0t5n8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="Player" type="Area2D"]
 collision_mask = 28
 script = ExtResource("1_grwyw")
@@ -252,6 +288,12 @@ texture = ExtResource("4_pv51q")
 [node name="DeathTimer" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
+
+[node name="PlayerShotPoint" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_8uwoi")
+frame = 1
+frame_progress = 0.0695274
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="StartTimer" to="." method="_on_start_timer_timeout"]

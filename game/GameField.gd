@@ -55,18 +55,20 @@ func spawn_wave(wave) -> void:
 	var stop_position = Vector2(wave_data["stop_position"][0], wave_data["stop_position"][1])
 	var leave_position = Vector2(wave_data["leave_position"][0], wave_data["leave_position"][1])
 	var spawn_offset = Vector2(wave_data["spawn_offset"][0], wave_data["spawn_offset"][1])
-	spawn_enemy(enemy_name, 0, spawn_position, stop_position, leave_position, spawn_offset)
+	var drop_item = wave_data["drop_item"]
+	spawn_enemy(enemy_name, 0, spawn_position, stop_position, leave_position, spawn_offset, drop_item)
 	for i in range(enemy_count - 1):
 		await get_tree().create_timer(spawn_interval / enemy_count).timeout
-		spawn_enemy(enemy_name, (i + 1), spawn_position, stop_position, leave_position, spawn_offset)
+		spawn_enemy(enemy_name, (i + 1), spawn_position, stop_position, leave_position, spawn_offset, drop_item)
 
-func spawn_enemy(enemy_name : String, i : int, spawn_position : Vector2, stop_position : Vector2, leave_position : Vector2, spawn_offset : Vector2) -> void:
+func spawn_enemy(enemy_name : String, i : int, spawn_position : Vector2, stop_position : Vector2, leave_position : Vector2, spawn_offset : Vector2, drop_item : String) -> void:
 	var enemy = load("res://game/fairy.tscn")
 	enemy_instance = enemy.instantiate()
 	enemy_instance.position = spawn_position + i * spawn_offset
 	enemy_instance.set_enemy_name(enemy_name)
 	enemy_instance.set_stop_position(stop_position + i * spawn_offset)
 	enemy_instance.set_leave_position(leave_position + i * spawn_offset)
+	enemy_instance.set_drop_item(drop_item)
 	add_child(enemy_instance)
 
 func game_over():

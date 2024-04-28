@@ -44,7 +44,8 @@
 		"spawn_position": [0, -40],
 		"stop_position": [32, 32],
 		"leave_position": [192, 680],
-		"spawn_offset": [32, 0]
+		"spawn_offset": [32, 0],
+		"drop_item": "large_power"
 		},
 	"enemy_wave_2":{
 		"enemy_name": "red_fairy_2",
@@ -53,7 +54,8 @@
 		"spawn_position": [400, -40],
 		"stop_position": [368, 32],
 		"leave_position": [192, 680],
-		"spawn_offset": [-32, 0]
+		"spawn_offset": [-32, 0],
+		"drop_item": "large_power"
 		}
 	},
 "pattern":{

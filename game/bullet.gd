@@ -1,5 +1,6 @@
 extends RigidBody2D
 var homing = true
+var collision_name = "bullet"
 @onready var bullet_lifespan = $BulletLifespan
 
 # Called when the node enters the scene tree for the first time.

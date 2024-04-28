@@ -91,22 +91,30 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_bvwi2"]
-radius = 39.0512
+radius = 49.0102
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4n4cn"]
-size = Vector2(16, 16)
+size = Vector2(12, 12)
 
 [node name="Item" type="RigidBody2D" groups=["items"]]
+collision_layer = 16
+collision_mask = 0
 mass = 0.033
 gravity_scale = 0.15
 script = ExtResource("1_nppqy")
 
 [node name="Icon" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_rg7dq")
-animation = &"full_power"
+animation = &"small_power"
 
 [node name="AttractBox" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_bvwi2")
 
 [node name="ItemHitBox" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_4n4cn")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(-19.5, -19.5)
+scale = Vector2(2.95, 2.95)
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

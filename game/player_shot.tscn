@@ -62,4 +62,9 @@ frame_progress = 0.00767698
 position = Vector2(0, -11)
 shape = SubResource("RectangleShape2D_krwx1")
 
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(0, 3.5)
+scale = Vector2(1, 1.35)
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

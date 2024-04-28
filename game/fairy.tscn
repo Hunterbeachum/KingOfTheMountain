@@ -1,8 +1,9 @@
-[gd_scene load_steps=58 format=3 uid="uid://bu3mkp8335one"]
+[gd_scene load_steps=59 format=3 uid="uid://bu3mkp8335one"]
 
 [ext_resource type="Script" path="res://game/Fairy.gd" id="1_wyogd"]
 [ext_resource type="Texture2D" uid="uid://d16kwgl7mct8d" path="res://art/MOFenemies.png" id="2_4gaof"]
 [ext_resource type="PackedScene" uid="uid://i4wshaa0jskp" path="res://game/bullet_handler.tscn" id="2_qcv3q"]
+[ext_resource type="PackedScene" uid="uid://orljy2wxgrxb" path="res://game/item.tscn" id="3_ufs31"]
 [ext_resource type="Shader" path="res://art/flash.gdshader" id="3_v7foa"]
 [ext_resource type="Texture2D" uid="uid://d0dhj3jql6ybi" path="res://art/death.tres" id="5_ws8ta"]
 
@@ -416,10 +417,11 @@ animations = [{
 
 [node name="Fairy" type="RigidBody2D"]
 collision_layer = 4
-collision_mask = 16
+collision_mask = 0
 gravity_scale = 0.0
 script = ExtResource("1_wyogd")
 bullet_handler = ExtResource("2_qcv3q")
+item = ExtResource("3_ufs31")
 
 [node name="Body" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_3w1hd")
