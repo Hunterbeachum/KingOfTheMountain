@@ -139,7 +139,7 @@ func start() -> void:
 	position = Vector2(180.0, 500.0)
 	$Body.show()
 	get_tree().call_group("option", "show")
-
+	GameState.player_power = 80
 
 func update_position() -> void:
 	GameState.player_position = position
@@ -179,14 +179,8 @@ func manage_options() -> void:
 			var option_texture = load("res://art/option.tres")
 			var option_body = Sprite2D.new()
 			option_body.set_texture(option_texture)
-			var x
-			var y
-			if calculated_options % 2 == 0:
-				x = (i - calculated_options / 2.0) * 15
-				y = -abs(i - (0.5 + calculated_options / 4)) * 15
-			else:
-				x = (i - calculated_options / 2.0) * 15
-				y = -abs(i - (1 + calculated_options / 4)) * 15
-			option_body.position = Vector2(8.0 + x, -y - 40)
+			var x = 7.5 + (i - calculated_options / 2.0) * 15
+			var y = abs(x) - 40
+			option_body.position = Vector2(x, y)
 			option_body.add_to_group("option")
 			add_child(option_body)

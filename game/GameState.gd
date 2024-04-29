@@ -5,8 +5,6 @@ var data : Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://g
 
 # Player properties
 var player_position : Vector2 = Vector2(208.0, 440.0) # Player's position
-const STARTING_LIVES : int = 3
-const STARTING_BOMBS : int = 3
 var player_lives : int
 var player_bombs : int
 var player_graze : int
@@ -25,4 +23,5 @@ var enemy_gamestate : Array = []
 
 # Constants
 const CENTERSCREEN = Vector2(180.0, 96.0)
-
+const STARTING_LIVES : int = 3
+const STARTING_BOMBS : int = 3
