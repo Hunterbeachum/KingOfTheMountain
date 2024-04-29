@@ -45,5 +45,5 @@ func set_tilt(tilt_name):
 	tilt = tilt_name
 
 # Assigns a string value to scroll_command: "low" 25%, "mid" 50%, "high" 100% speed
-func set_speed(speed_name):
-	scroll_command = speed_name
+func set_scroll(scroll_name):
+	scroll_command = scroll_name

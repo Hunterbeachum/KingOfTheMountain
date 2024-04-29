@@ -22,6 +22,12 @@ func _process(delta):
 	if not spawn_queue.is_empty():
 		if time_elapsed > spawn_queue[0][1]:
 			spawn_wave(spawn_queue.pop_front())
+	if not camera_queue.is_empty():
+		if time_elapsed > camera_queue[0][0]:
+			alter_camera(camera_queue.pop_front())
+	if not scroll_queue.is_empty():
+		if time_elapsed > scroll_queue[0][0]:
+			alter_scroll(scroll_queue.pop_front())
 	pass
 
 func load_stage(stage_name : String):
@@ -46,7 +52,7 @@ func load_stage(stage_name : String):
 func update_current_stage() -> void:
 	GameState.current_stage = current_stage
 
-func spawn_wave(wave) -> void:
+func spawn_wave(wave : Array) -> void:
 	var wave_data = GameState.data["enemy_wave"][wave[0]]
 	var enemy_count = wave_data["enemy_count"]
 	var spawn_interval = wave[2]
@@ -70,6 +76,12 @@ func spawn_enemy(enemy_name : String, i : int, spawn_position : Vector2, stop_po
 	enemy_instance.set_leave_position(leave_position + i * spawn_offset)
 	enemy_instance.set_drop_item(drop_item)
 	add_child(enemy_instance)
+
+func alter_camera(tilt_command : Array) -> void:
+	background_instance.set_tilt(tilt_command[1])
+
+func alter_scroll(scroll_command : Array) -> void:
+	background_instance.set_scroll(scroll_command[1])
 
 func game_over():
 	get_tree().call_group("bullets", "_zero_velocity")

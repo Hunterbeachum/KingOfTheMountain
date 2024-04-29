@@ -8,7 +8,7 @@ var drop_item : String
 var speed : int = 0
 var health : int = 100
 var pattern_list : Array = []
-var death_pattern : Array = []
+var death_pattern_list : Array = []
 var enemy_gamestate_appended : bool = false
 var enemy_index : int
 var flashing : bool = false
@@ -44,10 +44,8 @@ func _process(delta):
 			linear_velocity = Vector2.ZERO
 			if current_destination == stop_position:
 				for pattern in pattern_list:
-					if not pattern[1]:
-						# TODO is this changing the pattern_list or just the iterator?
-						pattern[1] = not pattern[1]
-						play_pattern(pattern[0])
+					# TODO is this changing the pattern_list or just the iterator?
+					play_pattern(pattern_list.pop_front())
 	# Manage animation based on x velocity
 	# x == 0 = reverse from L/R animation then idle
 	if linear_velocity.x == 0:
@@ -85,6 +83,7 @@ func load_enemy(name : String):
 	set_speed(GameState.data["enemy"][enemy_name]["speed"])
 	set_health(GameState.data["enemy"][enemy_name]["health"])
 	set_pattern(GameState.data["enemy"][enemy_name]["pattern"])
+	set_death_pattern(GameState.data["enemy"][enemy_name]["death_pattern"])
 
 # Instantiate a new bullethandler, set its is_boss to false, set its parent to this.name and this.index
 # then delete the pattern from the pattern_list after it finishes its loop timer
@@ -93,8 +92,6 @@ func play_pattern(pattern : String) -> void:
 	new_bullet_handler.set_parent(false, enemy_name, enemy_index, pattern)
 	add_child(new_bullet_handler)
 	new_bullet_handler.add_to_group("patterns" + str(enemy_index))
-	await get_tree().create_timer(GameState.data["pattern"][pattern]["loop_time"]).timeout
-	pattern_list.erase([pattern, true])
 
 func set_enemy_name(name : String) -> void:
 	enemy_name = name
@@ -115,11 +112,10 @@ func set_health(value : int) -> void:
 	health = value
 
 func set_pattern(pattern_names : Array) -> void:
-	for pattern in pattern_names:
-		pattern_list.append([pattern, false])
+	pattern_list = pattern_names.duplicate(true)
 
-func set_death_pattern(pattern_name : Array) -> void:
-	death_pattern = pattern_name
+func set_death_pattern(death_pattern_names : Array) -> void:
+	death_pattern_list = death_pattern_names.duplicate(true)
 
 func set_drop_item(item_name : String) -> void:
 	drop_item = item_name
@@ -141,7 +137,6 @@ func get_hit() -> void:
 	health -= 5
 
 func flash() -> void:
-	#TODO this is affecting all of the enemies referencing the AnimatedSprite2D bodies.
 	$Body.material.set_shader_parameter("solid_color", Color.WHITE)
 
 func perish() -> void:
@@ -150,6 +145,8 @@ func perish() -> void:
 	$EnemyHitBox.set_deferred("disabled", false)
 	$EnemyDeathTimer.start()
 	$Body.hide()
+	for death_pattern in death_pattern_list:
+		play_pattern(death_pattern)
 	var new_item = item.instantiate()
 	new_item.set_type(drop_item)
 	new_item.position = position

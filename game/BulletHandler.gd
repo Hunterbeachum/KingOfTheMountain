@@ -19,6 +19,7 @@ var target : String
 var direction : float
 var initial_damp : float
 var draw_speed : int = 0
+var has_fired : bool = false
 @export var bullet_scene: PackedScene
 @onready var bullet_path : PathFollow2D = $BulletPath
 @onready var loop_timer : Timer = $LoopTimer
@@ -28,11 +29,12 @@ var drawing_pattern = false
 var stop_firing : bool = false
 
 func _ready():
+	var test = GameState.data["pattern"][pattern_name]
 	load_pattern()
 	generate_pattern()
 
 func load_pattern():
-	pattern_data = GameState.data["pattern"][pattern_name]
+	pattern_data = GameState.data["pattern"][pattern_name].duplicate(true)
 	if pattern_data["position"] == "on_enemy":
 		position = Vector2(0.0, 0.0)
 	elif pattern_data["position"] == "center_screen":
@@ -78,6 +80,8 @@ func generate_pattern() -> void:
 	if current_delay <= 0:
 		if style == "free_fire":
 			free_fire()
+		elif style == "fire_once":
+			fire_once()
 		elif style == "draw":
 			draw()
 		current_delay = frame_delay
@@ -90,6 +94,15 @@ func free_fire() -> void:
 		bullet.linear_velocity = initial_velocity.rotated(calculate_targeting() + (i - (spread / 2)) * PI / 15)
 		bullet.add_to_group("bullets" + str(parent[1]))
 		add_child(bullet)
+
+func fire_once() -> void:
+	if not has_fired:
+		for i in range(spread):
+			var bullet = bullet_scene.instantiate()
+			bullet.linear_velocity = initial_velocity.rotated(calculate_targeting() + (i - (spread / 2)) * PI / 15)
+			bullet.add_to_group("bullets" + str(parent[1]))
+			add_child(bullet)
+	has_fired = true
 
 func calculate_targeting() -> float:
 	if target == "player":

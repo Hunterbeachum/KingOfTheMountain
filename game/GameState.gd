@@ -25,3 +25,8 @@ var enemy_gamestate : Array = []
 const CENTERSCREEN = Vector2(180.0, 96.0)
 const STARTING_LIVES : int = 3
 const STARTING_BOMBS : int = 3
+
+func _process(delta):
+	if data["pattern"]["enemy_1"].size() < 15:
+		pass
+	pass
