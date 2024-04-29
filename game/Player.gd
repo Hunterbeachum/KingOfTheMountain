@@ -120,7 +120,6 @@ func start() -> void:
 	$DeathAnimation.self_modulate = Color(1,1,1,1)
 	$StartTimer.start()
 	position = Vector2(180.0, 500.0)
-	GameState.player_power = 0
 	$Body.show()
 	get_tree().call_group("option", "show")
 
@@ -137,8 +136,10 @@ func _on_death_timer_timeout():
 func get_item(item_type : String) -> void:
 	if item_type == "large_power":
 		GameState.player_power += 50
+		GameState.player_power = clamp(GameState.player_power, 0, 255)
 	elif item_type == "small_power":
 		GameState.player_power += 10
+		GameState.player_power = clamp(GameState.player_power, 0, 255)
 	elif item_type == "point":
 		GameState.points += 10000 * GameState.player_graze
 	elif item_type == "full_power":
@@ -165,7 +166,6 @@ func manage_options() -> void:
 			else:
 				x = (i - calculated_options / 2.0) * 15
 				y = -abs(i - (1 + calculated_options / 4)) * 15
-			#y = -(x^2) + 30
 			option_body.position = Vector2(8.0 + x, -y - 40)
 			option_body.add_to_group("option")
 			add_child(option_body)

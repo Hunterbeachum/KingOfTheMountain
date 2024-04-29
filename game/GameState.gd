@@ -20,7 +20,7 @@ var current_boss_pattern : String = "test_pattern_1"
 var drawing_pattern : bool = false
 
 # Stage properties
-var current_stage : String = ""
+var current_stage : String = "stage_1"
 var enemy_gamestate : Array = []
 
 # Constants

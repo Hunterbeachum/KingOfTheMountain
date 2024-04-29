@@ -14,7 +14,7 @@ size = Vector2(10, 2)
 script = ExtResource("1_l5t40")
 
 [node name="Camera" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.75)
+transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 1, 1)
 fov = 65.0
 near = 0.1
 
@@ -29,6 +29,6 @@ light_color = Color(0.816406, 1, 0.995697, 1)
 light_energy = 5.0
 
 [node name="bg_plane" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 2, 0)
 material_override = SubResource("StandardMaterial3D_dkq14")
 mesh = SubResource("PlaneMesh_rem3s")
