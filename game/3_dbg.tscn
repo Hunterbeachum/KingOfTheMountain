@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://crgrkaj1f2mwc"]
 
-[ext_resource type="Script" path="res://3dbg.gd" id="1_l5t40"]
+[ext_resource type="Script" path="res://game/3dbg.gd" id="1_l5t40"]
 [ext_resource type="Texture2D" uid="uid://dj3fki62cl5kw" path="res://art/bg1.png" id="2_ppm3w"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dkq14"]

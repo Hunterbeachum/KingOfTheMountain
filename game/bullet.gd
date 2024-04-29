@@ -37,3 +37,5 @@ func accelerate(age : float, magnitude : float) -> void:
 	if 60.0 - bullet_lifespan.time_left > age:
 		linear_velocity = linear_velocity.lerp(linear_velocity * magnitude, .001)
 
+# TODO delete the bullet if it collides w/ the player
+# TODO animate bullets being deleted from collision/bombs

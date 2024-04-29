@@ -10,30 +10,31 @@ var direction = 0
 var current_modulate
 var opacity = 0.0
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	screen_size = get_viewport_rect().size
 	$Body.play("idle")
 	start()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	UpdatePosition()
+	update_position()
 	manage_options()
-	# Rotate the hitbox
+	# Rotate the hitbox sprite and the option sprites
 	direction += PI/180
 	$HitBox.set_rotation(direction)
 	get_tree().call_group("option", "set_rotation", direction)
 	var velocity = Vector2.ZERO # The player's movement vector
+	# Blink the player if they are current immune (collision disabled) else set opacity to full
 	if $PlayerHitBox.is_disabled():
 		$Body.self_modulate.a = 0.1 if Engine.get_frames_drawn() % 3 in [0, 1] else 1.0
 	else:
 		$Body.self_modulate.a = 1.0
+	# Play death animation if death timer is running, an animate it
 	if $DeathTimer.time_left > 0:
 		$DeathAnimation.show()
 		$DeathAnimation.self_modulate = $DeathAnimation.self_modulate.lerp(Color(1,1,1,0), .1)
 		$DeathAnimation.scale += $DeathAnimation.scale * .1
 	else:
+		# Handle movement input
 		if Input.is_action_pressed("move_right"):
 			velocity.x += 1
 		if Input.is_action_pressed("move_left"):
@@ -43,6 +44,7 @@ func _process(delta):
 		if Input.is_action_pressed("move_up"):
 			velocity.y -= 1
 		
+		# Handle focus input (fade in hitbox visible, slow movement by 50%)
 		if Input.is_action_pressed("focus"):
 			speed = 100
 			opacity += .1
@@ -54,16 +56,21 @@ func _process(delta):
 			opacity = clamp(opacity, 0, 1)
 			$HitBox.set_self_modulate(Color(1, 1, 1, opacity))
 		
+		# Handle attack input
 		if Input.is_action_pressed("confirm"):
 			fire()
 		
+		# Normalize velocity so diagonal movement isn't 2x speed
+		# Then move player according to input and limit player to the game_screen size
 		if velocity.length() > 0:
 			velocity = velocity.normalized() * speed
-		
 		position += velocity * delta
 		position = position.clamp(Vector2.ZERO, screen_size)
+		
+		# Player load-in - automove toward the default starting position
 		if $StartTimer.time_left > 1.75:
 			position = position.lerp($PlayerStartPosition.position, .1)
+		
 		# Manage animation based on x velocity
 		# x == 0 = reverse from L/R animation then idle
 		if velocity.x == 0:
@@ -88,6 +95,8 @@ func _process(delta):
 			elif $Body.animation != "move_left":
 				$Body.play("start_left")
 
+# Runs when 'confirm' input is pressed.
+# Every 4 frames it creates a playershot node for each option.
 func fire() -> void:
 	if Engine.get_frames_drawn() % 4 == 0:
 		for option in get_tree().get_nodes_in_group("option"):
@@ -96,6 +105,12 @@ func fire() -> void:
 			shot.top_level = true
 			option.add_child(shot)
 
+# Runs when player node scans another collisionshape overlapping PlayerHitBox
+# Player node only scans layers set on its mask in the inspector.
+# Current set to 3 (enemies), 4 (bullets), 5 (items).
+# If the body is an item, it activates the item's magnetics (then collides again with a second pickup collision)
+# If the body is a bullet or an enemy, the player is hit and loses a life before respawning (if lives > 0).
+# If the players lives <= 0, starts the gameover function in main? could be better elsewhere (TODO)
 func _on_body_entered(body):
 	if "item_type" in body:
 		if body.magnetized:
@@ -103,6 +118,7 @@ func _on_body_entered(body):
 			body.queue_free()
 		body.set_magnetize(true)
 	else:
+		# Must be deferred as we can't change physics properties on a physics callback.
 		$PlayerHitBox.set_deferred("disabled", true)
 		$DeathTimer.start()
 		$Body.hide() # Player disappears after being hit.
@@ -110,9 +126,10 @@ func _on_body_entered(body):
 		GameState.player_lives -= 1
 		if GameState.player_lives <= 0:
 			gameover.emit()
+		# TODO $DeathSound.play()
 		hit.emit()
-	# Must be deferred as we can't change physics properties on a physics callback.
 
+# Loads player in from off-screen, granting temporary invincibility
 func start() -> void:
 	$PlayerHitBox.disabled = true
 	$DeathAnimation.hide()
@@ -123,7 +140,8 @@ func start() -> void:
 	$Body.show()
 	get_tree().call_group("option", "show")
 
-func UpdatePosition() -> void:
+
+func update_position() -> void:
 	GameState.player_position = position
 
 func _on_start_timer_timeout():
@@ -149,6 +167,9 @@ func get_item(item_type : String) -> void:
 	elif item_type == "life":
 		GameState.player_lives += 1
 
+# Loads player options if not loaded, or updates their count if more are loaded than appropriate.
+# Options are bits that spawn around the player to serve as an indication of the player's current power
+# and the positional source of the player's attacks.
 func manage_options() -> void:
 	var calculated_options = (1 + GameState.player_power / 80)
 	var current_options = get_tree().get_node_count_in_group("option")
