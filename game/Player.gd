@@ -139,7 +139,7 @@ func start() -> void:
 	position = Vector2(180.0, 500.0)
 	$Body.show()
 	get_tree().call_group("option", "show")
-	GameState.player_power = 80
+	GameState.player_power = 255
 
 func update_position() -> void:
 	GameState.player_position = position

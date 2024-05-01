@@ -18,7 +18,7 @@ var dead : bool = false
 
 
 func _ready():
-	load_enemy(enemy_name)
+	load_enemy()
 	start()
 	enemy_movement(stop_position)
 	pass
@@ -77,8 +77,7 @@ func enemy_movement(destination) -> void:
 	var direction = position.angle_to_point(current_destination)
 	linear_velocity = Vector2(speed, 0.0).rotated(direction)
 
-func load_enemy(name : String):
-	enemy_name = name
+func load_enemy():
 	set_color(GameState.data["enemy"][enemy_name]["color"])
 	set_speed(GameState.data["enemy"][enemy_name]["speed"])
 	set_health(GameState.data["enemy"][enemy_name]["health"])
@@ -141,6 +140,7 @@ func flash() -> void:
 
 func perish() -> void:
 	dead = true
+	pattern_list.clear()
 	get_tree().call_group("patterns" + str(enemy_index), "stop_fire")
 	$EnemyHitBox.set_deferred("disabled", false)
 	$EnemyDeathTimer.start()

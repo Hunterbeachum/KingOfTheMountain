@@ -15,7 +15,7 @@ func _ready():
 
 func _process(delta):
 	if tilt == "top_down":
-		camera.rotation_degrees = camera.rotation_degrees.lerp(ANGLE_TOP, .1)
+		camera.rotation_degrees = camera.rotation_degrees.lerp(ANGLE_TOP, .01)
 	elif tilt == "low":
 		camera.rotation_degrees = camera.rotation_degrees.lerp(ANGLE_LOW, .01)
 	if scroll_command == "low":
