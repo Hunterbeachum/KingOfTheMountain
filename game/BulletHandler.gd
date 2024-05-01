@@ -93,7 +93,9 @@ func free_fire() -> void:
 		var bullet = bullet_scene.instantiate()
 		bullet.linear_velocity = initial_velocity.rotated(calculate_targeting() + (i - (spread / 2)) * PI / 15)
 		bullet.add_to_group("bullets" + str(parent[1]))
-		add_child(bullet)
+		bullet.position = get_parent().position
+		# First parent is Fairy or Boss scene, second is GameField scene
+		get_parent().get_parent().add_child(bullet)
 
 func fire_once() -> void:
 	if not has_fired:
@@ -101,7 +103,9 @@ func fire_once() -> void:
 			var bullet = bullet_scene.instantiate()
 			bullet.linear_velocity = initial_velocity.rotated(calculate_targeting() + (i - (spread / 2)) * PI / 15)
 			bullet.add_to_group("bullets" + str(parent[1]))
-			add_child(bullet)
+			bullet.position = get_parent().position
+			# First parent is Fairy or Boss scene, second is GameField scene
+			get_parent().get_parent().add_child(bullet)
 	has_fired = true
 
 func calculate_targeting() -> float:
@@ -130,7 +134,8 @@ func draw() -> void:
 		# bullet_velocity.rotated(n)
 		bullet.linear_velocity = initial_velocity.rotated((direction) + (i - 1) * PI / 3 )
 		bullet.add_to_group("bullets" + str(parent[1]))
-		add_child(bullet)
+		# First parent is Fairy or Boss scene, second is GameField scene
+		get_parent().get_parent().add_child(bullet)
 		var test = bullet.global_position
 		bullet.add_to_group("bullets" + str(parent[1]) + "drawn" + str(i))
 		if bullet_path.progress_ratio >= 1.0:

@@ -33,8 +33,7 @@ func _process(delta):
 	if health <= 0 and not dead:
 		perish()
 	if dead and $EnemyDeathTimer.time_left <= 0:
-		if len(get_tree().get_nodes_in_group("bullets" + str(enemy_index))) <= 0:
-			queue_free()
+		queue_free()
 	if flashing and Engine.get_frames_drawn() % 3 == 0:
 		flash()
 	else:
@@ -142,7 +141,7 @@ func perish() -> void:
 	dead = true
 	pattern_list.clear()
 	get_tree().call_group("patterns" + str(enemy_index), "stop_fire")
-	$EnemyHitBox.set_deferred("disabled", false)
+	$EnemyHitBox.queue_free()
 	$EnemyDeathTimer.start()
 	$Body.hide()
 	for death_pattern in death_pattern_list:

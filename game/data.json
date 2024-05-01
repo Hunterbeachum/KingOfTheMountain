@@ -10,18 +10,18 @@
 		"stage_enemy_layout":{
 			"enemy_wave_1":{
 				"spawn_time": 5,
-				"spawn_interval": 5
+				"spawn_interval": 10
 				},
 			"enemy_wave_2":{
-				"spawn_time": 10,
-				"spawn_interval": 5
+				"spawn_time": 18,
+				"spawn_interval": 10
 				},
 			"enemy_wave_3":{
-				"spawn_time": 15,
+				"spawn_time": 30,
 				"spawn_interval": 5
 				},
 			"enemy_wave_4":{
-				"spawn_time": 20,
+				"spawn_time": 40,
 				"spawn_interval": 5
 				}
 		},
@@ -31,28 +31,28 @@
 "enemy":{
 	"red_fairy_1":{
 		"color": "red",
-		"health": 100,
+		"health": 50,
 		"speed": 100,
 		"pattern": ["enemy_1"],
 		"death_pattern": ["enemy_death_1"]
 		},
 	"red_fairy_2":{
 		"color": "red",
-		"health": 100,
+		"health": 50,
 		"speed": 100,
 		"pattern": ["enemy_2"],
 		"death_pattern": []
 		},
 	"blue_fairy_1": {
 		"color": "blue",
-		"health": 200,
+		"health": 100,
 		"speed": 100,
 		"pattern": ["enemy_1", "enemy_2", "enemy_3"],
 		"death_pattern": []
 		},
 	"blue_fairy_2": {
 		"color": "blue",
-		"health": 200,
+		"health": 100,
 		"speed": 100,
 		"pattern": ["enemy_2"],
 		"death_pattern": []
@@ -63,41 +63,41 @@
 		"enemy_name": "red_fairy_1",
 		"enemy_count": 5,
 		"wave_duration": 10,
-		"spawn_position": [0, -40],
-		"stop_position": [48, 48],
-		"leave_position": [192, 680],
-		"spawn_offset": [48, 0],
+		"spawn_position": "off_screen_top_left",
+		"stop_position": "upper_far_left",
+		"leave_position": "off_screen_bottom_mid",
+		"spawn_offset": "offset_shift_right",
 		"drop_item": "small_power"
 		},
 	"enemy_wave_2":{
 		"enemy_name": "red_fairy_1",
 		"enemy_count": 5,
 		"wave_duration": 10,
-		"spawn_position": [400, -40],
-		"stop_position": [352, 48],
-		"leave_position": [192, 680],
-		"spawn_offset": [-48, 0],
+		"spawn_position": "off_screen_top_right",
+		"stop_position": "upper_far_right",
+		"leave_position": "off_screen_bottom_mid",
+		"spawn_offset": "offset_shift_left",
 		"drop_item": "small_power"
 		},
 	"enemy_wave_3":{
 		"enemy_name": "blue_fairy_1",
 		"enemy_count": 2,
 		"wave_duration": 10,
-		"spawn_position": [102, -40],
-		"stop_position": [102, 60],
-		"leave_position": [150, 680],
-		"spawn_offset": [90, 0],
-		"drop_item": "small_power"
+		"spawn_position": "off_screen_top_mid",
+		"stop_position": "upper_mid_left",
+		"leave_position": "off_screen_bottom_left",
+		"spawn_offset": "offset_shift_double_right",
+		"drop_item": "large_power"
 		},
 	"enemy_wave_4":{
 		"enemy_name": "blue_fairy_1",
 		"enemy_count": 2,
 		"wave_duration": 10,
-		"spawn_position": [198, -40],
-		"stop_position": [198, 48],
-		"leave_position": [198, 680],
-		"spawn_offset": [-90, 0],
-		"drop_item": "small_power"
+		"spawn_position": "off_screen_top_mid",
+		"stop_position": "upper_mid_right",
+		"leave_position": "off_screen_bottom_right",
+		"spawn_offset": "offset_shift_double_left",
+		"drop_item": "large_power"
 		}
 	},
 "pattern":{
@@ -182,5 +182,42 @@
 		"pattern_group1": ["stars", "enemy_1"],
 		"pattern_group2": ["homing_orb_line", "big_circles_360"]
 		}
+	},
+"position_presets":{
+	"upper_far_left": [48, 48],
+	"middle_far_left": [48, 72],
+	"lower_far_left": [48, 96],
+	"upper_left": [96, 48],
+	"middle_left": [96, 72],
+	"lower_left": [96, 96],
+	"upper_mid_left": [144, 48],
+	"middle_mid_left": [144, 72],
+	"lower_mid_left": [144, 96],
+	"upper_middle": [192, 48],
+	"middle": [192, 72],
+	"lower_middle": [192, 96],
+	"upper_mid_right": [240, 48],
+	"middle_mid_right": [240, 72],
+	"lower_mid_right": [240, 96],
+	"upper_right": [288, 48],
+	"middle_right": [288, 72],
+	"lower_right": [288, 96],
+	"upper_far_right": [336, 48],
+	"middle_far_right": [336, 72],
+	"lower_far_right": [336, 96],
+	"off_screen_bottom_left": [48, 680],
+	"off_screen_bottom_mid": [192, 680],
+	"off_screen_bottom_right": [336, 680],
+	"off_screen_top_left": [48, -40],
+	"off_screen_top_mid": [192, -40],
+	"off_screen_top_right": [336, -40],
+	"off_screen_left": [-40, -40],
+	"off_screen_right": [424, -40],
+	"offset_shift_right": [48, 0],
+	"offset_shift_double_right": [96, 0],
+	"offset_shift_left": [-48, 0],
+	"offset_shift_double_left": [-96, 0],
+	"offset_shift_up": [0, -48],
+	"offset_shift_down": [0, 48]
 	}
 }

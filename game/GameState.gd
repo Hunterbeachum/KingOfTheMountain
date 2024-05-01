@@ -2,6 +2,7 @@ extends Node
 
 # Game data
 var data : Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/data.json"))
+var position_presets : Dictionary = data["position_presets"]
 
 # Player properties
 var player_position : Vector2 = Vector2(208.0, 440.0) # Player's position

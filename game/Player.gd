@@ -119,15 +119,16 @@ func _on_body_entered(body):
 		body.set_magnetize(true)
 	else:
 		# Must be deferred as we can't change physics properties on a physics callback.
-		$PlayerHitBox.set_deferred("disabled", true)
-		$DeathTimer.start()
-		$Body.hide() # Player disappears after being hit.
-		get_tree().call_group("option", "hide")
-		GameState.player_lives -= 1
-		if GameState.player_lives <= 0:
-			gameover.emit()
-		# TODO $DeathSound.play()
-		hit.emit()
+		if $DeathTimer.is_stopped():
+			$PlayerHitBox.set_deferred("disabled", true)
+			$DeathTimer.start()
+			$Body.hide() # Player disappears after being hit.
+			get_tree().call_group("option", "hide")
+			GameState.player_lives -= 1
+			if GameState.player_lives <= 0:
+				gameover.emit()
+			# TODO $DeathSound.play()
+			hit.emit()
 
 # Loads player in from off-screen, granting temporary invincibility
 func start() -> void:
@@ -139,7 +140,6 @@ func start() -> void:
 	position = Vector2(180.0, 500.0)
 	$Body.show()
 	get_tree().call_group("option", "show")
-	GameState.player_power = 255
 
 func update_position() -> void:
 	GameState.player_position = position

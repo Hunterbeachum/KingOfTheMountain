@@ -57,10 +57,10 @@ func spawn_wave(wave : Array) -> void:
 	var enemy_count = wave_data["enemy_count"]
 	var spawn_interval = wave[2]
 	var enemy_name = wave_data["enemy_name"]
-	var spawn_position = Vector2(wave_data["spawn_position"][0], wave_data["spawn_position"][1])
-	var stop_position = Vector2(wave_data["stop_position"][0], wave_data["stop_position"][1])
-	var leave_position = Vector2(wave_data["leave_position"][0], wave_data["leave_position"][1])
-	var spawn_offset = Vector2(wave_data["spawn_offset"][0], wave_data["spawn_offset"][1])
+	var spawn_position = Vector2(GameState.position_presets[wave_data["spawn_position"]][0], GameState.position_presets[wave_data["spawn_position"]][1])
+	var stop_position = Vector2(GameState.position_presets[wave_data["stop_position"]][0], GameState.position_presets[wave_data["stop_position"]][1])
+	var leave_position = Vector2(GameState.position_presets[wave_data["leave_position"]][0], GameState.position_presets[wave_data["leave_position"]][1])
+	var spawn_offset = Vector2(GameState.position_presets[wave_data["spawn_offset"]][0], GameState.position_presets[wave_data["spawn_offset"]][1])
 	var drop_item = wave_data["drop_item"]
 	spawn_enemy(enemy_name, 0, spawn_position, stop_position, leave_position, spawn_offset, drop_item)
 	for i in range(enemy_count - 1):

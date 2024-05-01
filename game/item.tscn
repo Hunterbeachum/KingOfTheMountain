@@ -114,7 +114,7 @@ shape = SubResource("CircleShape2D_bvwi2")
 shape = SubResource("RectangleShape2D_4n4cn")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
-position = Vector2(-19.5, -19.5)
-scale = Vector2(2.95, 2.95)
+position = Vector2(3.8147e-06, -19.5)
+scale = Vector2(4.9, 2.95)
 
 [connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

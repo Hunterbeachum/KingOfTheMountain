@@ -48,7 +48,7 @@ animations = [{
 size = Vector2(20, 56)
 
 [node name="PlayerShot" type="Area2D"]
-collision_layer = 2
+collision_layer = 0
 collision_mask = 4
 script = ExtResource("1_dxruh")
 

@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cr7vm785mx0ly" path="res://art/MOFprojectiles.png" id="2_snw3c"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g31ms"]
-radius = 6.0
+radius = 4.0
 
 [node name="Bullet" type="RigidBody2D" groups=["bullets"]]
 collision_layer = 8
