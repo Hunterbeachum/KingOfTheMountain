@@ -157,6 +157,8 @@ func run_update(active_update_list : Array):
 				initial_velocity = initial_velocity.rotated(active_update[3] * PI/15)
 		elif update_name == "accelerate":
 			get_tree().call_group("bullets" + str(parent[1]), "accelerate", active_update[1], active_update[3])
+		elif update_name == "homing":
+			get_tree().call_group("bullets" + str(parent[1]), "home", active_update[1], active_update[3])
 
 # reset the drawing loops
 func _on_loop_timer_timeout():

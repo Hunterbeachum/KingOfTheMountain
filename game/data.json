@@ -34,7 +34,7 @@
 		"health": 50,
 		"speed": 100,
 		"pattern": ["enemy_1"],
-		"death_pattern": ["enemy_death_1"]
+		"death_pattern": []
 		},
 	"red_fairy_2":{
 		"color": "red",
@@ -48,7 +48,7 @@
 		"health": 100,
 		"speed": 100,
 		"pattern": ["enemy_1", "enemy_2", "enemy_3"],
-		"death_pattern": []
+		"death_pattern": ["enemy_death_1"]
 		},
 	"blue_fairy_2": {
 		"color": "blue",
@@ -116,7 +116,7 @@
 		"target": "player",
 		"initial_damp": 0,
 		"initial_angular_velocity": 0,
-		"updates": []
+		"updates": [["homing", 0, 60, 5]]
 		},
 	"enemy_2":{
 		"position": "on_enemy",
@@ -133,7 +133,7 @@
 		"target": "player",
 		"initial_damp": 0,
 		"initial_angular_velocity": 0,
-		"updates": [["accelerate", 0, 60, 2]]
+		"updates": [["accelerate", 0, 60, 5]]
 		},
 	"enemy_3":{
 		"position": "on_enemy",
@@ -150,7 +150,7 @@
 		"target": "none",
 		"initial_damp": 0,
 		"initial_angular_velocity": 0,
-		"updates": [["accelerate", 0, 60, 2], ["spin", 0, 60, 3]]
+		"updates": [["accelerate", 0, 60, 5], ["spin", 0, 60, 3]]
 		},
 	"enemy_death_1":{
 		"position": "on_enemy",
