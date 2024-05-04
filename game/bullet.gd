@@ -1,12 +1,14 @@
 extends RigidBody2D
 var homing = true
 var collision_name = "bullet"
+var speed : float
 @onready var bullet_lifespan = $BulletLifespan
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$BulletLifespan.start()
 	show()
+	speed = abs(linear_velocity.x) + abs(linear_velocity.y)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -39,8 +41,10 @@ func accelerate(age : float, magnitude : float) -> void:
 
 func home(age : float, magnitude : float) -> void:
 	if 60.0 - bullet_lifespan.time_left > age:
-		var direction = position.angle_to_point(GameState.player_position)
-		linear_velocity = linear_velocity.rotated(direction)
+		var direction = linear_velocity.angle()
+		var target_direction = position.angle_to_point(GameState.player_position)
+		var diff = target_direction - direction
+		linear_velocity = Vector2(speed, 0.0).rotated(target_direction + diff * .99)
 
 # TODO delete the bullet if it collides w/ the player
 # TODO animate bullets being deleted from collision/bombs
