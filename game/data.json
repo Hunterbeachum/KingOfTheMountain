@@ -8,20 +8,24 @@
 		"stage_camera_commands": [[0, "low"], [3, "top_down"], [60, "low"], [110, "top_down"]],
 		"stage_scroll_commands": [[0, "high"], [3, "mid"], [60, "high"], [110, "low"]],
 		"stage_enemy_layout":{
+			"enemy_wave_0":{
+				"spawn_time": 0,
+				"spawn_interval": 10
+				},
 			"enemy_wave_1":{
-				"spawn_time": 5,
+				"spawn_time": 60,
 				"spawn_interval": 10
 				},
 			"enemy_wave_2":{
-				"spawn_time": 18,
+				"spawn_time": 60,
 				"spawn_interval": 10
 				},
 			"enemy_wave_3":{
-				"spawn_time": 30,
+				"spawn_time": 60,
 				"spawn_interval": 5
 				},
 			"enemy_wave_4":{
-				"spawn_time": 40,
+				"spawn_time": 60,
 				"spawn_interval": 5
 				}
 		},
@@ -33,7 +37,7 @@
 		"color": "red",
 		"health": 50,
 		"speed": 100,
-		"pattern": ["enemy_1"],
+		"pattern": ["constant_stream_decelerating"],
 		"death_pattern": []
 		},
 	"red_fairy_2":{
@@ -56,9 +60,26 @@
 		"speed": 100,
 		"pattern": ["enemy_2"],
 		"death_pattern": []
+		},
+	"yellow_fairy_1": {
+		"color": "yellow",
+		"health": 50,
+		"speed": 100,
+		"pattern": ["clockwise_spinning_w_pause", "c.clockwise_spinning_w_pause", "constant_stream"],
+		"death_pattern": []
 		}
 	},
 "enemy_wave":{
+	"enemy_wave_0":{
+		"enemy_name": "yellow_fairy_1",
+		"enemy_count": 1,
+		"wave_duration": 20,
+		"spawn_position": "off_screen_top_mid",
+		"stop_position": "middle",
+		"leave_position": "off_screen_bottom_mid",
+		"spawn_offset": "offset_shift_right",
+		"drop_item": "small_power"
+		},
 	"enemy_wave_1":{
 		"enemy_name": "red_fairy_1",
 		"enemy_count": 5,
@@ -101,7 +122,7 @@
 		}
 	},
 "pattern":{
-	"enemy_1":{
+	"decelerating_5spread":{
 		"position": "on_enemy",
 		"bullet_model": "red_orb",
 		"style": "free_fire",
@@ -112,13 +133,14 @@
 		"loop_count": 1,
 		"frame_delay": 10,
 		"spread": 5,
+		"spread_PI_divisor": 15,
 		"initial_velocity": 200,
 		"target": "player",
 		"initial_damp": 0,
 		"initial_angular_velocity": 0,
-		"updates": [["homing", 0, 60, 5]]
+		"updates": [["accelerate", 0, 6000, -10]]
 		},
-	"enemy_2":{
+	"accelerating_5spread":{
 		"position": "on_enemy",
 		"bullet_model": "red_orb",
 		"style": "free_fire",
@@ -129,30 +151,50 @@
 		"loop_count": 1,
 		"frame_delay": 10,
 		"spread": 5,
+		"spread_PI_divisor": 15,
 		"initial_velocity": 200,
 		"target": "player",
 		"initial_damp": 0,
 		"initial_angular_velocity": 0,
-		"updates": [["accelerate", 0, 60, 5]]
+		"updates": [["accelerate", 0, 6000, 10]]
 		},
-	"enemy_3":{
+	"clockwise_spinning_w_pause":{
 		"position": "on_enemy",
 		"bullet_model": "red_orb",
-		"style": "free_fire",
+		"style": "spin",
 		"points": [[0, 0]],
 		"draw_speed": 0,
 		"draw_time": 3,
 		"loop_time": 5,
 		"loop_count": 1,
-		"frame_delay": 4,
+		"frame_delay": 0,
 		"spread": 1,
+		"spread_PI_divisor": 80,
 		"initial_velocity": 200,
 		"target": "none",
 		"initial_damp": 0,
 		"initial_angular_velocity": 0,
-		"updates": [["accelerate", 0, 60, 5], ["spin", 0, 60, 3]]
+		"updates": [["pause", 200, -1, 0], ["resume", 1200, -1, 1000]]
 		},
-	"enemy_death_1":{
+	"c.clockwise_spinning_w_pause":{
+		"position": "on_enemy",
+		"bullet_model": "red_orb",
+		"style": "spin",
+		"points": [[0, 0]],
+		"draw_speed": 0,
+		"draw_time": 3,
+		"loop_time": 5,
+		"loop_count": 1,
+		"frame_delay": 0,
+		"spread": 1,
+		"spread_PI_divisor": -80,
+		"initial_velocity": 200,
+		"target": "none",
+		"initial_damp": 0,
+		"initial_angular_velocity": 0,
+		"updates": [["pause", 200, -1, 0], ["resume", 1200, -1, 1000]]
+		},
+	"oneshot_circle":{
 		"position": "on_enemy",
 		"bullet_model": "red_orb",
 		"style": "fire_once",
@@ -163,11 +205,84 @@
 		"loop_count": 1,
 		"frame_delay": 4,
 		"spread": 30,
+		"spread_PI_divisor": 15,
 		"initial_velocity": 200,
 		"target": "none",
 		"initial_damp": 0,
 		"initial_angular_velocity": 0,
 		"updates": []
+		},
+	"growing_spread":{
+		"position": "on_enemy",
+		"bullet_model": "red_orb",
+		"style": "growing_spread",
+		"points": [[0, 0]],
+		"draw_speed": 0,
+		"draw_time": 1,
+		"loop_time": 2,
+		"loop_count": 4,
+		"frame_delay": 10,
+		"spread": 0,
+		"spread_PI_divisor": 30,
+		"initial_velocity": 150,
+		"target": "player",
+		"initial_damp": 0,
+		"initial_angular_velocity": 0,
+		"updates": []
+		},
+	"constant_stream":{
+		"position": "on_enemy",
+		"bullet_model": "red_orb",
+		"style": "free_fire",
+		"points": [[0, 0]],
+		"draw_speed": 0,
+		"draw_time": 4,
+		"loop_time": 4,
+		"loop_count": 1,
+		"frame_delay": 10,
+		"spread": 1,
+		"spread_PI_divisor": 30,
+		"initial_velocity": 200,
+		"target": "player",
+		"initial_damp": 0,
+		"initial_angular_velocity": 0,
+		"updates": []
+		},
+	"constant_stream_decelerating":{
+		"position": "on_enemy",
+		"bullet_model": "red_orb",
+		"style": "free_fire",
+		"points": [[0, 0]],
+		"draw_speed": 0,
+		"draw_time": 4,
+		"loop_time": 4,
+		"loop_count": 1,
+		"frame_delay": 10,
+		"spread": 1,
+		"spread_PI_divisor": 30,
+		"initial_velocity": 200,
+		"target": "player",
+		"initial_damp": 0,
+		"initial_angular_velocity": 0,
+		"updates": [["accelerate", 0, 6000, -5]]
+		},
+	"constant_stream_decelerating_3spread":{
+		"position": "on_enemy",
+		"bullet_model": "red_orb",
+		"style": "free_fire",
+		"points": [[0, 0]],
+		"draw_speed": 0,
+		"draw_time": 4,
+		"loop_time": 4,
+		"loop_count": 1,
+		"frame_delay": 13,
+		"spread": 3,
+		"spread_PI_divisor": 20,
+		"initial_velocity": 200,
+		"target": "player",
+		"initial_damp": 0,
+		"initial_angular_velocity": 0,
+		"updates": [["accelerate", 0, 6000, -10]]
 		}
 	},
 "boss":{

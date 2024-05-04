@@ -30,7 +30,6 @@ func _on_start_timer_timeout():
 	$BossSpawnTimer.start()
 	$BossMovementTimer.start()
 
-
 func game_over():
 	# TODO figure out why everything is slowing down
 	# TODO Destroy the rigidbody2D that collided
