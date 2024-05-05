@@ -141,6 +141,8 @@ func perish() -> void:
 	dead = true
 	pattern_list.clear()
 	get_tree().call_group("patterns" + str(enemy_index), "stop_fire")
+	get_tree().call_group("patterns" + str(enemy_index), "set_rune_alpha", 0.0)
+	var test = get_tree().get_node_count_in_group("patterns" + str(enemy_index))
 	$EnemyHitBox.queue_free()
 	$EnemyDeathTimer.start()
 	$Body.hide()
@@ -151,3 +153,7 @@ func perish() -> void:
 	new_item.position = position
 	new_item.linear_velocity = Vector2(randf_range(-23.0, 23.0), randf_range(-29.0, -23.0))
 	get_parent().add_child(new_item)
+
+
+func _on_visible_on_screen_notifier_2d_screen_exited():
+	queue_free()

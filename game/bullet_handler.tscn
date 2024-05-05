@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://i4wshaa0jskp"]
+[gd_scene load_steps=5 format=3 uid="uid://i4wshaa0jskp"]
 
 [ext_resource type="Script" path="res://game/BulletHandler.gd" id="1_1n73f"]
 [ext_resource type="PackedScene" uid="uid://h65kgvcii8eq" path="res://game/bullet.tscn" id="2_h6v0d"]
+[ext_resource type="PackedScene" uid="uid://m4dickkh0a4n" path="res://game/rune.tscn" id="3_tk1fs"]
 
 [sub_resource type="Curve2D" id="Curve2D_7d1yi"]
 
@@ -9,6 +10,7 @@
 curve = SubResource("Curve2D_7d1yi")
 script = ExtResource("1_1n73f")
 bullet_scene = ExtResource("2_h6v0d")
+rune_scene = ExtResource("3_tk1fs")
 metadata/_edit_group_ = true
 
 [node name="LoopTimer" type="Timer" parent="."]

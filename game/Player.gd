@@ -129,6 +129,7 @@ func _on_body_entered(body):
 				gameover.emit()
 			# TODO $DeathSound.play()
 			hit.emit()
+			get_tree().call_group("bullets", "disappear")
 
 # Loads player in from off-screen, granting temporary invincibility
 func start() -> void:

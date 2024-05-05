@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://m4dickkh0a4n"]
+
+[ext_resource type="Texture2D" uid="uid://b6eg31nr13es1" path="res://art/rune.tres" id="1_6ub6x"]
+[ext_resource type="Script" path="res://game/rune.gd" id="2_spawm"]
+[ext_resource type="Texture2D" uid="uid://jkfbmeqxho2o" path="res://art/runeaura.tres" id="3_i76lf"]
+
+[node name="Rune" type="Sprite2D"]
+modulate = Color(1, 1, 1, 0)
+texture = ExtResource("1_6ub6x")
+script = ExtResource("2_spawm")
+
+[node name="Aura" type="Sprite2D" parent="."]
+texture = ExtResource("3_i76lf")

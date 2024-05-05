@@ -13,7 +13,7 @@ gravity_scale = 0.0
 linear_damp_mode = 1
 script = ExtResource("1_m27v7")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Body" type="Sprite2D" parent="."]
 texture = ExtResource("2_snw3c")
 region_enabled = true
 region_rect = Rect2(42, 48, 16, 16)
@@ -22,6 +22,8 @@ region_rect = Rect2(42, 48, 16, 16)
 shape = SubResource("CircleShape2D_g31ms")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(0, 45.5)
+scale = Vector2(1, 5.55)
 
 [node name="BulletLifespan" type="Timer" parent="."]
 wait_time = 60.0
