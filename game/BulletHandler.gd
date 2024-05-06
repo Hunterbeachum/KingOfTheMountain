@@ -102,6 +102,7 @@ func generate_pattern() -> void:
 			elif style == "draw":
 				draw(rune)
 			current_delay = frame_delay
+		has_fired = true
 	else:
 		current_delay -= 1
 
@@ -123,14 +124,13 @@ func fire_once(rune : Node) -> void:
 	if not has_fired:
 		for i in range(spread):
 			var bullet = bullet_scene.instantiate()
-			bullet.linear_velocity = initial_velocity.rotated(calculate_targeting(rune) + (i - (spread / 2.0)) * PI / spread_divisor)
+			bullet.linear_velocity = initial_velocity.rotated(calculate_targeting(rune) + ((i + 0.5) - (spread / 2.0)) * PI / spread_divisor)
 			bullet.set_updates(updates)
 			bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
 			bullet.global_position = rune.global_position
 			bullet.angular_velocity = initial_angular_velocity
 			# First parent is Fairy or Boss scene, second is GameField scene
 			get_parent().get_parent().add_child(bullet)
-	has_fired = true
 
 func calculate_targeting(rune : Node) -> float:
 	if target[0] == "spin":
