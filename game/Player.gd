@@ -112,6 +112,7 @@ func fire() -> void:
 # If the body is a bullet or an enemy, the player is hit and loses a life before respawning (if lives > 0).
 # If the players lives <= 0, starts the gameover function in main? could be better elsewhere (TODO)
 func _on_body_entered(body):
+	var test = body.get_children()
 	if "item_type" in body:
 		if body.magnetized:
 			get_item(body.item_type)

@@ -140,8 +140,8 @@ func flash() -> void:
 func perish() -> void:
 	dead = true
 	pattern_list.clear()
-	get_tree().call_group("patterns" + str(enemy_index), "stop_fire")
-	get_tree().call_group("patterns" + str(enemy_index), "set_rune_alpha", 0.0)
+	get_tree().call_group("patterns" + str(enemy_index), "stop_fire") # TODO may be redundant
+	get_tree().call_group("runes" + str(enemy_index), "perish")
 	var test = get_tree().get_node_count_in_group("patterns" + str(enemy_index))
 	$EnemyHitBox.queue_free()
 	$EnemyDeathTimer.start()
@@ -156,4 +156,5 @@ func perish() -> void:
 
 
 func _on_visible_on_screen_notifier_2d_screen_exited():
+	get_tree().call_group("runes" + str(enemy_index), "perish")
 	queue_free()

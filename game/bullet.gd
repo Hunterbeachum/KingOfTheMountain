@@ -27,7 +27,7 @@ func _process(delta):
 		linear_velocity = Vector2.ZERO
 		$Body.self_modulate = $Body.self_modulate.lerp(Color(1,1,1,0), .1)
 		$Body.scale += $Body.scale * .01
-		if $Body.get_modulate().a < .1:
+		if $Body.get_self_modulate().a < .1:
 			queue_free()
 	if pausing:
 		linear_velocity = linear_velocity.lerp(Vector2.ZERO, .05)
