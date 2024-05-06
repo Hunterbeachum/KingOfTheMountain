@@ -81,12 +81,16 @@ func _process(delta):
 
 func generate_rune(rune_data : Array) -> void:
 	var rune = rune_scene.instantiate()
+	rune.parent_index = parent[1]
 	if rune_data[0] == "global":
 		rune.destination = Vector2(GameState.position_presets[rune_data[1]][0], GameState.position_presets[rune_data[1]][1])
+		rune.top_level = true
+	elif rune_data[0] == "circle_enemy":
+		rune.circling = true
+		rune.degrees = rune_data[1]
 	rune.add_to_group("runes" + str(parent[1]))
 	rune.add_to_group("runes" + str(parent[1]) + pattern_name)
 	rune.position = global_position
-	rune.top_level = true
 	get_parent().get_parent().add_child(rune)
 
 func generate_pattern() -> void:

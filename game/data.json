@@ -65,7 +65,7 @@
 		"color": "yellow",
 		"health": 50,
 		"speed": 100,
-		"pattern": ["3spread_spin_from_4_set_runes"],
+		"pattern": ["circling_runes"],
 		"death_pattern": []
 		}
 	},
@@ -424,6 +424,24 @@
 		"spread_PI_divisor": 30,
 		"initial_velocity": 100,
 		"target": ["spin", -80],
+		"initial_damp": 0,
+		"initial_angular_velocity": 0,
+		"updates": []
+		},
+	"circling_runes":{
+		"position": [["circle_enemy", 0], ["circle_enemy", 90], ["circle_enemy", 180], ["circle_enemy", 270]],
+		"bullet_model": "red_orb",
+		"style": "fire_once",
+		"points": [[0, 0]],
+		"draw_speed": 0,
+		"draw_time": 1,
+		"loop_time": 1,
+		"loop_count": 5,
+		"frame_delay": 1,
+		"spread": 1,
+		"spread_PI_divisor": 30,
+		"initial_velocity": 100,
+		"target": ["player"],
 		"initial_damp": 0,
 		"initial_angular_velocity": 0,
 		"updates": []

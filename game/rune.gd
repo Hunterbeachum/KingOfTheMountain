@@ -3,12 +3,18 @@ var destination : Vector2 = Vector2.ZERO
 @onready var aura = $Aura
 var rune_alpha : float = 1.0
 var disappearing : bool = false
-
+var circling : bool = false
+var degrees : float = 0.0
+var parent_index : int
 
 func _ready():
 	pass # Replace with function body.
 
 func _process(delta):
+	if circling:
+		degrees += 1
+		destination = Vector2(GameState.enemy_gamestate[parent_index][0], GameState.enemy_gamestate[parent_index][1]) + Vector2(80.0, 0.0).rotated(deg_to_rad(degrees))
+		position = position.lerp(destination, 0.2)
 	if disappearing and modulate.a < .1:
 		queue_free()
 	fade()
