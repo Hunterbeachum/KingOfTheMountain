@@ -82,15 +82,21 @@ func _process(delta):
 func generate_rune(rune_data : Array) -> void:
 	var rune = rune_scene.instantiate()
 	rune.parent_index = parent[1]
+	rune.position = global_position
+	rune.pattern_name = pattern_name
 	if rune_data[0] == "global":
 		rune.destination = Vector2(GameState.position_presets[rune_data[1]][0], GameState.position_presets[rune_data[1]][1])
 		rune.top_level = true
 	elif rune_data[0] == "circle_enemy":
 		rune.circling = true
 		rune.degrees = rune_data[1]
+	elif rune_data[0] == "at_player":
+		rune.destination = global_position + Vector2(700.0, 0.0).rotated(calculate_targeting(rune, "player"))
+		rune.speed = rune_data[1]
+		rune.fired_at_player = true
+		rune.top_level = true
 	rune.add_to_group("runes" + str(parent[1]))
 	rune.add_to_group("runes" + str(parent[1]) + pattern_name)
-	rune.position = global_position
 	get_parent().get_parent().add_child(rune)
 
 func generate_pattern() -> void:
@@ -118,7 +124,7 @@ func spin(rune : Node) -> void:
 func free_fire(rune : Node) -> void:
 	for i in range(spread):
 		var bullet = bullet_scene.instantiate()
-		bullet.linear_velocity = initial_velocity.rotated(calculate_targeting(rune) + ((i + 0.5) - (spread / 2.0)) * PI / spread_divisor)
+		bullet.linear_velocity = initial_velocity.rotated(calculate_targeting(rune, target[0]) + ((i + 0.5) - (spread / 2.0)) * PI / spread_divisor)
 		bullet.set_updates(updates)
 		bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
 		bullet.position = rune.position
@@ -129,7 +135,7 @@ func fire_once(rune : Node) -> void:
 	if not has_fired:
 		for i in range(spread):
 			var bullet = bullet_scene.instantiate()
-			bullet.linear_velocity = initial_velocity.rotated(calculate_targeting(rune) + ((i + 0.5) - (spread / 2.0)) * PI / spread_divisor)
+			bullet.linear_velocity = initial_velocity.rotated(calculate_targeting(rune, target[0]) + ((i + 0.5) - (spread / 2.0)) * PI / spread_divisor)
 			bullet.set_updates(updates)
 			bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
 			bullet.global_position = rune.global_position
@@ -137,12 +143,14 @@ func fire_once(rune : Node) -> void:
 			# First parent is Fairy or Boss scene, second is GameField scene
 			get_parent().get_parent().add_child(bullet)
 
-func calculate_targeting(rune : Node) -> float:
-	if target[0] == "spin":
+func calculate_targeting(rune : Node, target_name : String) -> float:
+	if target_name == "spin":
 		initial_velocity = initial_velocity.rotated(PI / target[1])
 		return initial_velocity.angle()
-	if target[0] == "player":
+	if target_name == "player":
 		return rune.position.angle_to_point(GameState.player_position)
+	if target_name == "random":
+		return randf_range(0.0, 2 * PI)
 	else:
 		return 0.0
 

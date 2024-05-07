@@ -12,7 +12,6 @@ func _ready():
 	var interface = load("res://game/interface.tscn")
 	interface_instance = interface.instantiate()
 	$MarginContainer/HSplitContainer.add_child(interface_instance)
-	var test = game_field_instance.get_children()[0].get_children()
 	game_field_instance.get_node("GameField/Player").connect("hit", interface_instance.update_lives)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

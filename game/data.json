@@ -65,7 +65,7 @@
 		"color": "yellow",
 		"health": 50,
 		"speed": 100,
-		"pattern": ["circling_runes"],
+		"pattern": ["rune_fired_at_player"],
 		"death_pattern": []
 		}
 	},
@@ -445,7 +445,25 @@
 		"initial_damp": 0,
 		"initial_angular_velocity": 0,
 		"updates": []
-		}
+		},
+	"rune_fired_at_player":{
+		"position": [["at_player", 100]],
+		"bullet_model": "red_orb",
+		"style": "free_fire",
+		"points": [[0, 0]],
+		"draw_speed": 0,
+		"draw_time": 5,
+		"loop_time": 5,
+		"loop_count": 1,
+		"frame_delay": 2,
+		"spread": 1,
+		"spread_PI_divisor": 30,
+		"initial_velocity": 100,
+		"target": ["random"],
+		"initial_damp": 0,
+		"initial_angular_velocity": 0,
+		"updates": []
+		}		
 	},
 "boss":{
 	"aya":{

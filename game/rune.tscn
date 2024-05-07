@@ -5,9 +5,14 @@
 [ext_resource type="Texture2D" uid="uid://jkfbmeqxho2o" path="res://art/runeaura.tres" id="3_i76lf"]
 
 [node name="Rune" type="Sprite2D"]
-modulate = Color(1, 1, 1, 0)
 texture = ExtResource("1_6ub6x")
 script = ExtResource("2_spawm")
 
 [node name="Aura" type="Sprite2D" parent="."]
 texture = ExtResource("3_i76lf")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(6.67572e-06, 33.5)
+scale = Vector2(9.8, 6.65)
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
