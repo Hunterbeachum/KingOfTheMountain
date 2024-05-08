@@ -65,7 +65,7 @@
 		"color": "yellow",
 		"health": 50,
 		"speed": 100,
-		"pattern": ["accelerating_5spread_pulse_from_4_set_runes"],
+		"pattern": ["rune_fired_at_player"],
 		"death_pattern": []
 		}
 	},
@@ -452,9 +452,9 @@
 		"style": "free_fire",
 		"points": [[0, 0]],
 		"draw_speed": 0,
-		"draw_time": 7,
-		"loop_time": 7,
-		"loop_count": 1,
+		"draw_time": 2,
+		"loop_time": 2,
+		"loop_count": 5,
 		"frame_delay": 2,
 		"spread": 1,
 		"spread_PI_divisor": 30,

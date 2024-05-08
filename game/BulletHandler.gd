@@ -51,9 +51,7 @@ func load_pattern():
 	for point in points_to_draw:
 		curve.add_point(Vector2(point[0], point[1]))
 	draw_time = pattern_data["draw_time"]
-	draw_timer.start(draw_time)
 	loop_time = pattern_data["loop_time"]
-	loop_timer.start(loop_time)
 	loop_count = pattern_data["loop_count"]
 	pattern_frames = 0
 	frame_delay = pattern_data["frame_delay"]
@@ -69,7 +67,6 @@ func load_pattern():
 	for update in pattern_data["updates"]:
 		updates.append(update)
 	add_to_group("active_patterns")
-	pass
 
 func _process(delta):
 	if not stop_firing:
@@ -97,6 +94,7 @@ func generate_rune(rune_data : Array) -> void:
 		rune.top_level = true
 	rune.add_to_group("runes" + str(parent[1]))
 	rune.add_to_group("runes" + str(parent[1]) + pattern_name)
+	rune.connect("start_pattern", start_timers)
 	get_parent().get_parent().add_child(rune)
 
 func generate_pattern() -> void:
@@ -189,6 +187,9 @@ func _on_loop_timer_timeout():
 		if not parent_is_boss:
 			get_parent().enemy_movement(get_parent().leave_position)
 	else:
+		for rune in rune_locations:
+			if rune[0] == "at_player":
+				generate_rune(rune.duplicate(true))
 		has_fired = false
 		spread = initial_spread
 		loop_timer.start(loop_time)
@@ -208,6 +209,10 @@ func set_rune_alpha(alpha : float) -> void:
 
 func UpdateDrawingPattern() -> void:
 	GameState.drawing_pattern = drawing_pattern
+
+func start_timers() -> void:
+	draw_timer.start(draw_time)
+	loop_timer.start(loop_time)
 
 func stop_fire():
 	stop_firing = true
