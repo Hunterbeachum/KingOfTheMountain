@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://dwatql4ad2xea"]
+
+[ext_resource type="Texture2D" uid="uid://iujqc680y48d" path="res://art/particle.tres" id="1_0r18r"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_s30at"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_max = 56.26
+gravity = Vector3(0, 98, 0)
+
+[node name="Particles" type="GPUParticles2D"]
+emitting = false
+amount = 60
+process_material = SubResource("ParticleProcessMaterial_s30at")
+texture = ExtResource("1_0r18r")
+lifetime = 4.0
+one_shot = true

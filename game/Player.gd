@@ -2,7 +2,9 @@ extends Area2D
 signal hit
 signal gameover
 
-@export var playershot_scene: PackedScene
+@export var particles_scene : PackedScene
+var particles : GPUParticles2D
+@export var playershot_scene : PackedScene
 @export var speed = 200
 var loading_in : bool = false
 var screen_size
@@ -13,6 +15,8 @@ var opacity = 0.0
 func _ready():
 	screen_size = get_viewport_rect().size
 	$Body.play("idle")
+	particles = particles_scene.instantiate()
+	add_child(particles)
 	start()
 
 func _process(delta):
@@ -128,12 +132,14 @@ func _on_body_entered(body):
 			GameState.player_lives -= 1
 			if GameState.player_lives <= 0:
 				gameover.emit()
+			particles.emitting = true
 			# TODO $DeathSound.play()
 			hit.emit()
 			get_tree().call_group("bullets", "disappear")
 
 # Loads player in from off-screen, granting temporary invincibility
 func start() -> void:
+	particles.emitting = false
 	$PlayerHitBox.disabled = true
 	$DeathAnimation.hide()
 	$DeathAnimation.scale = Vector2.ONE
