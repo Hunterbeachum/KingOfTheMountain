@@ -10,8 +10,13 @@ var degrees : float = 0.0
 var parent_index : int
 var pattern_name : String
 
+var t : float = 0.0
+var path_points : Array = []
+
+
 func _ready():
-	pass # Replace with function body.
+	if not circling and not fired_at_player:
+		create_path()
 
 func _process(delta):
 	if circling:
@@ -21,12 +26,34 @@ func _process(delta):
 	elif fired_at_player:
 		position = position + Vector2(speed * delta, 0.0).rotated(position.angle_to_point(destination))
 	else:
-		position = position.lerp(destination, 0.02)
+		if t < 1.0:
+			t = min(t + delta, 1.0)
+			position = _cubic_bezier(path_points[0], path_points[1], path_points[2], path_points[3])
 	if disappearing and modulate.a < .1:
 		queue_free()
 	fade()
 	rotation += PI/180
 	aura.set_rotation(-2 * rotation)
+
+func create_path() -> void:
+	const Y_DIP = 60.0
+	var start_x = GameState.enemy_gamestate[parent_index][0]
+	var start_y = GameState.enemy_gamestate[parent_index][1]
+	var x_diff = destination.x - start_x
+	var point1 = Vector2(start_x - (0.5 * x_diff), start_y + Y_DIP)
+	var point2 = Vector2(start_x + (2.0 * x_diff), start_y + Y_DIP)
+	path_points += [Vector2(start_x, start_y), point1, point2, destination]
+
+func _cubic_bezier(p0 : Vector2, p1 : Vector2, p2 : Vector2, p3 : Vector2) -> Vector2:
+	var q0 = p0.lerp(p1, t)
+	var q1 = p1.lerp(p2, t)
+	var q2 = p2.lerp(p3, t)
+	
+	var r0 = q0.lerp(q1, t)
+	var r1 = q1.lerp(q2, t)
+	
+	var s = r0.lerp(r1, t)
+	return s
 
 func fade() -> void:
 	set_modulate(modulate.lerp(Color(1,1,1,rune_alpha), .05))
