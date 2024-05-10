@@ -1,6 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://dwatql4ad2xea"]
+[gd_scene load_steps=5 format=3 uid="uid://dwatql4ad2xea"]
 
 [ext_resource type="Texture2D" uid="uid://iujqc680y48d" path="res://art/particle.tres" id="1_0r18r"]
+
+[sub_resource type="Curve" id="Curve_f56x6"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.50546, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_kdp34"]
+curve = SubResource("Curve_f56x6")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_s30at"]
 particle_flag_disable_z = true
@@ -8,6 +15,7 @@ spread = 180.0
 initial_velocity_min = 176.85
 initial_velocity_max = 176.85
 gravity = Vector3(0, 98, 0)
+alpha_curve = SubResource("CurveTexture_kdp34")
 
 [node name="Particles" type="GPUParticles2D"]
 emitting = false

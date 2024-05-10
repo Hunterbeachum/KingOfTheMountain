@@ -85,7 +85,10 @@ func generate_rune(rune_data : Array) -> void:
 		rune.destination = Vector2(GameState.position_presets[rune_data[1]][0], GameState.position_presets[rune_data[1]][1])
 		rune.top_level = true
 	elif rune_data[0] == "circle_enemy":
-		rune.circling = true
+		rune.circling = 1
+		rune.degrees = rune_data[1]
+	elif rune_data[0] == "c.circle_enemy":
+		rune.circling = -1
 		rune.degrees = rune_data[1]
 	elif rune_data[0] == "at_player":
 		rune.destination = global_position + Vector2(700.0, 0.0).rotated(calculate_targeting(rune, "player"))

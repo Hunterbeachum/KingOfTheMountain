@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://jkfbmeqxho2o" path="res://art/runeaura.tres" id="3_i76lf"]
 
 [node name="Rune" type="Sprite2D"]
+scale = Vector2(0.8, 0.8)
 texture = ExtResource("1_6ub6x")
 script = ExtResource("2_spawm")
 

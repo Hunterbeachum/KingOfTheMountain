@@ -13,6 +13,8 @@ var enemy_gamestate_appended : bool = false
 var enemy_index : int
 var flashing : bool = false
 var dead : bool = false
+var enemy_path : Path2D
+var enemy_path_follower : PathFollow2D
 @export var bullet_handler: PackedScene
 @export var item: PackedScene
 
@@ -72,9 +74,11 @@ func start() -> void:
 	$Body.play(color + "idle")
 
 func enemy_movement(destination) -> void:
-	current_destination = destination
-	var direction = position.angle_to_point(current_destination)
-	linear_velocity = Vector2(speed, 0.0).rotated(direction)
+	position = enemy_path_follower.position
+	enemy_path_follower.progress += speed
+#	current_destination = destination
+#	var direction = position.angle_to_point(current_destination)
+#	linear_velocity = Vector2(speed, 0.0).rotated(direction)
 
 func load_enemy():
 	set_color(GameState.data["enemy"][enemy_name]["color"])
@@ -82,6 +86,14 @@ func load_enemy():
 	set_health(GameState.data["enemy"][enemy_name]["health"])
 	set_pattern(GameState.data["enemy"][enemy_name]["pattern"])
 	set_death_pattern(GameState.data["enemy"][enemy_name]["death_pattern"])
+	enemy_path = Path2D.new()
+	enemy_path_follower = PathFollow2D.new()
+	add_child(enemy_path)
+	enemy_path.add_child(enemy_path_follower)
+	enemy_path.curve = Curve2D.new()
+	enemy_path.curve.add_point(position)
+	enemy_path.curve.add_point(stop_position)
+	enemy_path.curve.add_point(leave_position)
 
 # Instantiate a new bullethandler, set its is_boss to false, set its parent to this.name and this.index
 # then delete the pattern from the pattern_list after it finishes its loop timer

@@ -3,7 +3,8 @@ var destination : Vector2 = Vector2.ZERO
 @onready var aura = $Aura
 var rune_alpha : float = 1.0
 var disappearing : bool = false
-var circling : bool = false
+# Not circling == 0, clockwise == 1, c.clockwise == -1
+var circling : int = 0
 var fired_at_player : bool = false
 var speed : int
 var degrees : float = 0.0
@@ -11,34 +12,46 @@ var parent_index : int
 var pattern_name : String
 var placed : bool = false
 signal start_pattern
+
+# t = time since process began.
+# t_divisor multiplies the time before the rune is fully placed.
+# default rune placement occurs when t += delta >= 1.0
 var t : float = 0.0
+var t_divisor : float = 1.0
 var path_points : Array = []
 
 
 func _ready():
-	if not circling and not fired_at_player:
+	if circling != 0 and not fired_at_player:
 		create_path()
 
 func _process(delta):
-	t = min(t + delta, 1.0)
+	t = min(t + delta/t_divisor, 1.0)
 	signal_start()
-	if circling:
-		degrees += 1
-		destination = Vector2(GameState.enemy_gamestate[parent_index][0], GameState.enemy_gamestate[parent_index][1]) + Vector2(80.0, 0.0).rotated(deg_to_rad(degrees))
-		position = position.lerp(destination, 0.1)
+	if circling != 0:
+		degrees += circling
+		var enemy_pos = Vector2(GameState.enemy_gamestate[parent_index][0], GameState.enemy_gamestate[parent_index][1])
+		destination = enemy_pos + Vector2(80.0, 0.0).rotated(deg_to_rad(degrees))
+		position = enemy_pos.lerp(destination, t)
+		$Aura.self_modulate.a = t
+		$Aura.global_position = destination
+		$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
 	elif fired_at_player:
 		position = position + Vector2(speed * delta, 0.0).rotated(position.angle_to_point(destination))
 	else:
 		$Aura.global_position = destination
 		$Aura.self_modulate.a = t
-		$Aura.set_scale(Vector2(2.0 - t, 2.0 - t))
+		$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
 		if t < 1.0:
 			position = _cubic_bezier(path_points[0], path_points[1], path_points[2], path_points[3])
 	if disappearing and modulate.a < .1:
 		queue_free()
 	fade()
-	rotation += PI/180
-	aura.set_rotation(-2 * rotation)
+	if circling != 0:
+		rotation += PI/180 * -circling
+	else:
+		rotation += PI/180
+	aura.set_rotation(2 * rotation)
 
 func create_path() -> void:
 	const Y_DIP = 40.0
