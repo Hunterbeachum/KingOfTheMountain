@@ -188,7 +188,7 @@ func _on_loop_timer_timeout():
 	if loop_count <= 0:
 		pattern_data.clear()
 		if not parent_is_boss:
-			get_parent().enemy_movement(get_parent().leave_position)
+			get_parent().moving = true
 	else:
 		for rune in rune_locations:
 			if rune[0] == "at_player":

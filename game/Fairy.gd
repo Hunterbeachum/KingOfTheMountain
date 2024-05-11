@@ -2,7 +2,7 @@ extends RigidBody2D
 var color : String = ""
 var stop_position : Vector2
 var leave_position : Vector2
-var current_destination : Vector2
+var current_destination_index : int = 1
 var enemy_name : String = ""
 var drop_item : String
 var speed : int = 0
@@ -15,6 +15,9 @@ var flashing : bool = false
 var dead : bool = false
 var enemy_path : Path2D
 var enemy_path_follower : PathFollow2D
+var moving : bool = true
+var on_screen : bool = false
+var distance_to_stop_point : float
 @export var bullet_handler: PackedScene
 @export var item: PackedScene
 
@@ -22,12 +25,13 @@ var enemy_path_follower : PathFollow2D
 func _ready():
 	load_enemy()
 	start()
-	enemy_movement(stop_position)
 	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	UpdateEnemyGameState()
+	if moving:
+		enemy_movement(delta)
 	if $EnemyDeathTimer.time_left > 0:
 		$EnemyDeathAnimation.show()
 		$EnemyDeathAnimation.self_modulate = $EnemyDeathAnimation.self_modulate.lerp(Color(1,1,1,0), .2)
@@ -40,13 +44,14 @@ func _process(delta):
 		flash()
 	else:
 		$Body.material.set_shader_parameter("solid_color", Color(1, 1, 1, 0))
-	if current_destination != null:
-		if position.distance_to(current_destination) < 5:
-			linear_velocity = Vector2.ZERO
-			if current_destination == stop_position:
-				for pattern in pattern_list:
-					# TODO is this changing the pattern_list or just the iterator?
-					play_pattern(pattern_list.pop_front())
+	if enemy_path_follower.progress > distance_to_stop_point:
+		moving = false
+		distance_to_stop_point = 9999
+		current_destination_index += 1
+	if current_destination_index > 1 and on_screen:
+		for pattern in pattern_list:
+			# TODO is this changing the pattern_list or just the iterator?
+			play_pattern(pattern_list.pop_front())
 	# Manage animation based on x velocity
 	# x == 0 = reverse from L/R animation then idle
 	if linear_velocity.x == 0:
@@ -73,12 +78,9 @@ func start() -> void:
 	$EnemyDeathAnimation.hide()
 	$Body.play(color + "idle")
 
-func enemy_movement(destination) -> void:
+func enemy_movement(delta) -> void:
 	position = enemy_path_follower.position
-	enemy_path_follower.progress += speed
-#	current_destination = destination
-#	var direction = position.angle_to_point(current_destination)
-#	linear_velocity = Vector2(speed, 0.0).rotated(direction)
+	enemy_path_follower.progress += speed * delta
 
 func load_enemy():
 	set_color(GameState.data["enemy"][enemy_name]["color"])
@@ -91,9 +93,12 @@ func load_enemy():
 	add_child(enemy_path)
 	enemy_path.add_child(enemy_path_follower)
 	enemy_path.curve = Curve2D.new()
-	enemy_path.curve.add_point(position)
-	enemy_path.curve.add_point(stop_position)
-	enemy_path.curve.add_point(leave_position)
+	for point in [position, stop_position, leave_position]:
+		enemy_path.curve.add_point(point)
+		if point == stop_position:
+			enemy_path_follower.set_progress_ratio(1.0)
+			distance_to_stop_point = enemy_path_follower.progress
+			enemy_path_follower.set_progress_ratio(0.0)
 
 # Instantiate a new bullethandler, set its is_boss to false, set its parent to this.name and this.index
 # then delete the pattern from the pattern_list after it finishes its loop timer
@@ -168,5 +173,11 @@ func perish() -> void:
 
 
 func _on_visible_on_screen_notifier_2d_screen_exited():
-	get_tree().call_group("runes" + str(enemy_index), "perish")
-	queue_free()
+	if on_screen:
+		on_screen = false
+		get_tree().call_group("runes" + str(enemy_index), "perish")
+		queue_free()
+
+
+func _on_visible_on_screen_notifier_2d_screen_entered():
+	on_screen = true
