@@ -10,23 +10,18 @@
 		"stage_enemy_layout":{
 			"enemy_wave_0":{
 				"spawn_time": 0,
-				"spawn_interval": 10
 				},
 			"enemy_wave_1":{
 				"spawn_time": 60,
-				"spawn_interval": 10
 				},
 			"enemy_wave_2":{
 				"spawn_time": 60,
-				"spawn_interval": 10
 				},
 			"enemy_wave_3":{
 				"spawn_time": 60,
-				"spawn_interval": 5
 				},
 			"enemy_wave_4":{
 				"spawn_time": 60,
-				"spawn_interval": 5
 				}
 		},
 		"stage_soundtrack": "res://music/1.wav"
@@ -74,7 +69,8 @@
 		"enemy_name": "yellow_fairy_1",
 		"enemy_count": 1,
 		"wave_duration": 20,
-		"spawn_position": "off_screen_top_mid",
+		"spawn_interval": 10,
+		"spawn_position": "off_screen_top_left",
 		"stop_position": "middle",
 		"leave_position": "off_screen_bottom_mid",
 		"spawn_offset": "offset_shift_right",
@@ -84,6 +80,7 @@
 		"enemy_name": "red_fairy_1",
 		"enemy_count": 5,
 		"wave_duration": 10,
+		"spawn_interval": 10,
 		"spawn_position": "off_screen_top_left",
 		"stop_position": "upper_far_left",
 		"leave_position": "off_screen_bottom_mid",
@@ -94,6 +91,7 @@
 		"enemy_name": "red_fairy_1",
 		"enemy_count": 5,
 		"wave_duration": 10,
+		"spawn_interval": 10,
 		"spawn_position": "off_screen_top_right",
 		"stop_position": "upper_far_right",
 		"leave_position": "off_screen_bottom_mid",
@@ -104,6 +102,7 @@
 		"enemy_name": "blue_fairy_1",
 		"enemy_count": 2,
 		"wave_duration": 10,
+		"spawn_interval": 10,
 		"spawn_position": "off_screen_top_mid",
 		"stop_position": "upper_mid_left",
 		"leave_position": "off_screen_bottom_left",
@@ -114,6 +113,7 @@
 		"enemy_name": "blue_fairy_1",
 		"enemy_count": 2,
 		"wave_duration": 10,
+		"spawn_interval": 10,
 		"spawn_position": "off_screen_top_mid",
 		"stop_position": "upper_mid_right",
 		"leave_position": "off_screen_bottom_right",

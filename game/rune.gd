@@ -1,4 +1,6 @@
 extends Sprite2D
+
+var enemy_position : Vector2
 var destination : Vector2 = Vector2.ZERO
 @onready var aura = $Aura
 var rune_alpha : float = 1.0
@@ -22,6 +24,7 @@ var path_points : Array = []
 
 
 func _ready():
+	global_position = get_enemy_position()
 	if circling != 0 and not fired_at_player:
 		create_path()
 
@@ -30,9 +33,9 @@ func _process(delta):
 	signal_start()
 	if circling != 0:
 		degrees += circling
-		var enemy_pos = Vector2(GameState.enemy_gamestate[parent_index][0], GameState.enemy_gamestate[parent_index][1])
-		destination = enemy_pos + Vector2(80.0, 0.0).rotated(deg_to_rad(degrees))
-		position = enemy_pos.lerp(destination, t)
+		var current_enemy_position = Vector2(GameState.enemy_gamestate[parent_index][0], GameState.enemy_gamestate[parent_index][1])
+		destination = current_enemy_position + Vector2(80.0, 0.0).rotated(deg_to_rad(degrees))
+		global_position = current_enemy_position.lerp(destination, t)
 		$Aura.self_modulate.a = t
 		$Aura.global_position = destination
 		$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
@@ -75,6 +78,9 @@ func _cubic_bezier(p0 : Vector2, p1 : Vector2, p2 : Vector2, p3 : Vector2) -> Ve
 
 func fade() -> void:
 	set_modulate(modulate.lerp(Color(1,1,1,rune_alpha), .05))
+
+func get_enemy_position() -> Vector2:
+	return Vector2(GameState.enemy_gamestate[parent_index][0], GameState.enemy_gamestate[parent_index][1])
 
 func perish() -> void:
 	rune_alpha = 0.0

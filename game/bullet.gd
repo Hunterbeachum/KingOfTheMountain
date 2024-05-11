@@ -72,7 +72,7 @@ func accelerate(magnitude : float) -> void:
 
 func home(magnitude : float) -> void:
 	var direction = linear_velocity.angle()
-	var target_direction = position.angle_to_point(GameState.player_position)
+	var target_direction = global_position.angle_to_point(GameState.player_position)
 	var diff = target_direction - direction
 	linear_velocity = Vector2(initial_speed, 0.0).rotated(direction + diff * (magnitude * .001))
 

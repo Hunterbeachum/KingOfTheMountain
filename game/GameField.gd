@@ -11,9 +11,11 @@ var enemy_instance
 var player_instance
 var boss_instance
 var background_instance
+@export var enemy_wave_handler : PackedScene
 
 
 func _ready():
+	SignalBus.node_added_to_scene.connect(add_child)
 	GameState.player_lives = 3
 	load_stage(current_stage)
 
@@ -35,8 +37,7 @@ func load_stage(stage_name : String):
 	stage_data = GameState.data["stage"][stage_name]
 	for wave in stage_data["stage_enemy_layout"].keys():
 		var spawn_time = stage_data["stage_enemy_layout"][wave]["spawn_time"]
-		var spawn_interval = stage_data["stage_enemy_layout"][wave]["spawn_interval"]
-		spawn_queue.append([wave, spawn_time, spawn_interval])
+		spawn_queue.append([wave, spawn_time])
 	for command in stage_data["stage_camera_commands"]:
 		camera_queue.append(command)
 	for command in stage_data["stage_scroll_commands"]:
@@ -53,29 +54,9 @@ func update_current_stage() -> void:
 	GameState.current_stage = current_stage
 
 func spawn_wave(wave : Array) -> void:
-	var wave_data = GameState.data["enemy_wave"][wave[0]]
-	var enemy_count = wave_data["enemy_count"]
-	var spawn_interval = wave[2]
-	var enemy_name = wave_data["enemy_name"]
-	var spawn_position = Vector2(GameState.position_presets[wave_data["spawn_position"]][0], GameState.position_presets[wave_data["spawn_position"]][1])
-	var stop_position = Vector2(GameState.position_presets[wave_data["stop_position"]][0], GameState.position_presets[wave_data["stop_position"]][1])
-	var leave_position = Vector2(GameState.position_presets[wave_data["leave_position"]][0], GameState.position_presets[wave_data["leave_position"]][1])
-	var spawn_offset = Vector2(GameState.position_presets[wave_data["spawn_offset"]][0], GameState.position_presets[wave_data["spawn_offset"]][1])
-	var drop_item = wave_data["drop_item"]
-	spawn_enemy(enemy_name, 0, spawn_position, stop_position, leave_position, spawn_offset, drop_item)
-	for i in range(enemy_count - 1):
-		await get_tree().create_timer(spawn_interval / enemy_count).timeout
-		spawn_enemy(enemy_name, (i + 1), spawn_position, stop_position, leave_position, spawn_offset, drop_item)
-
-func spawn_enemy(enemy_name : String, i : int, spawn_position : Vector2, stop_position : Vector2, leave_position : Vector2, spawn_offset : Vector2, drop_item : String) -> void:
-	var enemy = load("res://game/fairy.tscn")
-	enemy_instance = enemy.instantiate()
-	enemy_instance.position = spawn_position + i * spawn_offset
-	enemy_instance.set_enemy_name(enemy_name)
-	enemy_instance.set_stop_position(stop_position + i * spawn_offset)
-	enemy_instance.set_leave_position(leave_position + i * spawn_offset)
-	enemy_instance.set_drop_item(drop_item)
-	add_child(enemy_instance)
+	var new_enemy_wave_handler = enemy_wave_handler.instantiate()
+	new_enemy_wave_handler.wave_data = GameState.data["enemy_wave"][wave[0]]
+	add_child(new_enemy_wave_handler)
 
 func alter_camera(tilt_command : Array) -> void:
 	background_instance.set_tilt(tilt_command[1])

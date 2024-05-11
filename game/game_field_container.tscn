@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqdpyaqsjwomh"]
+[gd_scene load_steps=3 format=3 uid="uid://cqdpyaqsjwomh"]
 
 [ext_resource type="Script" path="res://game/GameField.gd" id="1_7cqeg"]
+[ext_resource type="PackedScene" uid="uid://cnw5ijkg1j1u1" path="res://game/enemy_wave_handler.tscn" id="2_dkr0b"]
 
 [node name="GameFieldContainer" type="SubViewportContainer"]
 offset_right = 384.0
@@ -11,5 +12,6 @@ handle_input_locally = false
 size = Vector2i(384, 448)
 render_target_update_mode = 4
 script = ExtResource("1_7cqeg")
+enemy_wave_handler = ExtResource("2_dkr0b")
 
 [node name="StageTimer" type="Timer" parent="GameField"]

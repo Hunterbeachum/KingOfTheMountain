@@ -1,4 +1,4 @@
-extends Path2D
+extends Node2D
 
 var parent_is_boss : bool
 var parent : Array = []
@@ -22,13 +22,12 @@ var initial_angular_velocity : float
 var draw_speed : int = 0
 var has_fired : bool = false
 var updates : Array
-var texture_direction : float
-var rune_alpha : float = 1.0
 var moving : bool = false
 var rune_locations : Array = []
 @export var bullet_scene: PackedScene
 @export var rune_scene: PackedScene
-@onready var bullet_path : PathFollow2D = $BulletPath
+var rune_path : Path2D
+var rune_path_follower : PathFollow2D
 @onready var loop_timer : Timer = $LoopTimer
 @onready var draw_timer : Timer = $DrawTimer
 @onready var update_timer : Timer = $UpdateTimer
@@ -36,6 +35,7 @@ var drawing_pattern = false
 var stop_firing : bool = false
 
 func _ready():
+	var test = get_tree()
 	load_pattern()
 	for rune in rune_locations:
 		generate_rune(rune)
@@ -47,9 +47,12 @@ func load_pattern():
 		rune_locations.append(rune_position)
 	draw_speed = pattern_data["draw_speed"]
 	var points_to_draw = pattern_data["points"]
-	var curve = get_curve()
+	rune_path = Path2D.new()
+	rune_path.curve = Curve2D.new()
+	rune_path_follower = PathFollow2D.new()
+	rune_path.add_child(rune_path_follower)
 	for point in points_to_draw:
-		curve.add_point(Vector2(point[0], point[1]))
+		rune_path.curve.add_point(Vector2(point[0], point[1]))
 	draw_time = pattern_data["draw_time"]
 	loop_time = pattern_data["loop_time"]
 	loop_count = pattern_data["loop_count"]
@@ -79,7 +82,7 @@ func _process(delta):
 func generate_rune(rune_data : Array) -> void:
 	var rune = rune_scene.instantiate()
 	rune.parent_index = parent[1]
-	rune.position = global_position
+	rune.global_position = global_position
 	rune.pattern_name = pattern_name
 	if rune_data[0] == "global":
 		rune.destination = Vector2(GameState.position_presets[rune_data[1]][0], GameState.position_presets[rune_data[1]][1])
@@ -98,7 +101,7 @@ func generate_rune(rune_data : Array) -> void:
 	rune.add_to_group("runes" + str(parent[1]))
 	rune.add_to_group("runes" + str(parent[1]) + pattern_name)
 	rune.connect("start_pattern", start_timers)
-	get_parent().get_parent().add_child(rune)
+	SignalBus.node_added_to_scene.emit(rune)
 
 func generate_pattern() -> void:
 	if current_delay <= 0:
@@ -128,9 +131,9 @@ func free_fire(rune : Node) -> void:
 		bullet.linear_velocity = initial_velocity.rotated(calculate_targeting(rune, target[0]) + ((i + 0.5) - (spread / 2.0)) * PI / spread_divisor)
 		bullet.set_updates(updates)
 		bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
-		bullet.position = rune.position
+		bullet.global_position = rune.global_position
 		# First parent is Fairy or Boss scene, second is GameField scene
-		get_parent().get_parent().add_child(bullet)
+		SignalBus.node_added_to_scene.emit(bullet)
 
 func fire_once(rune : Node) -> void:
 	if not has_fired:
@@ -142,14 +145,14 @@ func fire_once(rune : Node) -> void:
 			bullet.global_position = rune.global_position
 			bullet.angular_velocity = initial_angular_velocity
 			# First parent is Fairy or Boss scene, second is GameField scene
-			get_parent().get_parent().add_child(bullet)
+			SignalBus.node_added_to_scene.emit(bullet)
 
 func calculate_targeting(rune : Node, target_name : String) -> float:
 	if target_name == "spin":
 		initial_velocity = initial_velocity.rotated(PI / target[1])
 		return initial_velocity.angle()
 	if target_name == "player":
-		return rune.position.angle_to_point(GameState.player_position)
+		return rune.global_position.angle_to_point(GameState.player_position)
 	if target_name == "random":
 		return randf_range(0.0, 2 * PI)
 	else:
@@ -161,7 +164,7 @@ func growing_spread(rune : Node) -> void:
 
 func draw(rune : Node) -> void:
 	for i in range(spread):
-		var bullet_spawn_location = bullet_path.position
+		var bullet_spawn_location = rune_path_follower.global_position
 		bullet_spawn_location.x = bullet_spawn_location.x + (i - 1) * 100
 		var direction
 		if pattern_data["position"] == "center_screen":
@@ -170,15 +173,15 @@ func draw(rune : Node) -> void:
 			direction = GameState.boss_position.angle_to_point(GameState.player_position)
 		var direction_list = []
 		var bullet = bullet_scene.instantiate()
-		bullet.position = bullet_spawn_location
+		bullet.global_position = bullet_spawn_location
 		# bullet_velocity.rotated(n)
 		bullet.linear_velocity = initial_velocity.rotated((direction) + (i - 1) * PI / 3 )
 		bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
 		# First parent is Fairy or Boss scene, second is GameField scene
-		get_parent().get_parent().add_child(bullet)
+		SignalBus.node_added_to_scene.emit(bullet)
 		var test = bullet.global_position
 		bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
-		if bullet_path.progress_ratio >= 1.0:
+		if rune_path_follower.progress_ratio >= 1.0:
 			get_tree().call_group("bullets" + str(parent[1]) + pattern_name, "set_linear_velocity", Vector2(100.0, 0.0).rotated((direction) - (i - 1) * PI / 30 ))
 			drawing_pattern = false
 
@@ -206,9 +209,6 @@ func set_parent(is_boss : bool, name : String, index : int, pattern : String):
 		parent.append(name)
 		parent.append(index)
 		pattern_name = pattern
-
-func set_rune_alpha(alpha : float) -> void:
-	rune_alpha = alpha
 
 func UpdateDrawingPattern() -> void:
 	GameState.drawing_pattern = drawing_pattern

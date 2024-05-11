@@ -419,6 +419,7 @@ animations = [{
 collision_layer = 4
 collision_mask = 0
 gravity_scale = 0.0
+angular_damp_mode = 1
 script = ExtResource("1_wyogd")
 bullet_handler = ExtResource("2_qcv3q")
 item = ExtResource("3_ufs31")
