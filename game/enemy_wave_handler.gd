@@ -2,6 +2,7 @@ extends Node2D
 
 var wave_data : Dictionary
 var enemy_count : int
+var remaining_enemy_count : int
 var spawn_interval : float
 var enemy_name : String
 var enemy_path_points : Array
@@ -12,19 +13,13 @@ var wave_enemy_index : int = 0
 var finished_spawning : bool = false
 @export var enemy_scene : PackedScene
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	load_enemy_wave_data()
 	start_spawn_cycle()
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
 
 func load_enemy_wave_data() -> void:
 	enemy_count = wave_data["enemy_count"]
+	remaining_enemy_count = enemy_count
 	spawn_interval = wave_data["spawn_interval"]
 	enemy_name = wave_data["enemy_name"]
 	var start_position = Vector2(GameState.position_presets[wave_data["spawn_position"]][0], GameState.position_presets[wave_data["spawn_position"]][1])
@@ -47,7 +42,7 @@ func spawn_enemy(enemy_iterator : int) -> void:
 	enemy_path.add_child(enemy_path_follower)
 	add_child(enemy_path)
 	var index = 0
-	enemy_count -= 1
+	remaining_enemy_count -= 1
 	for point in enemy_path_points:
 		enemy_path.curve.add_point(point + enemy_iterator * spawn_offset)
 		if index == 1:
@@ -62,7 +57,7 @@ func spawn_enemy(enemy_iterator : int) -> void:
 	enemy_path_follower.add_child(new_enemy_instance)
 
 func _on_spawn_timer_timeout():
-	if enemy_count >= 0:
+	if remaining_enemy_count > 0:
 		start_spawn_cycle()
 	else:
 		finished_spawning = true

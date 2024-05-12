@@ -1,42 +1,31 @@
 extends Area2D
-signal hit
-signal gameover
 
-@export var particles_scene : PackedScene
 var particles : GPUParticles2D
+@export var particles_scene : PackedScene
 @export var playershot_scene : PackedScene
 @export var speed = 200
-var loading_in : bool = false
 var screen_size
 var direction = 0
 var current_modulate
 var opacity = 0.0
 
 func _ready():
+	GameState.player_lives = GameState.STARTING_LIVES
+	GameState.player_bombs = GameState.STARTING_BOMBS
+	SignalBus.update_ui.emit()
 	screen_size = get_viewport_rect().size
 	$Body.play("idle")
-	particles = particles_scene.instantiate()
-	add_child(particles)
 	start()
 
 func _process(delta):
 	update_position()
 	manage_options()
-	# Rotate the hitbox sprite and the option sprites
-	direction += PI/180
-	$HitBox.set_rotation(direction)
-	get_tree().call_group("option", "set_rotation", direction)
+	rotate_children()
 	var velocity = Vector2.ZERO # The player's movement vector
-	# Blink the player if they are current immune (collision disabled) else set opacity to full
-	if $PlayerHitBox.is_disabled():
-		$Body.self_modulate.a = 0.1 if Engine.get_frames_drawn() % 3 in [0, 1] else 1.0
-	else:
-		$Body.self_modulate.a = 1.0
+	flash_if_immune()
 	# Play death animation if death timer is running, an animate it
 	if $DeathTimer.time_left > 0:
-		$DeathAnimation.show()
-		$DeathAnimation.self_modulate = $DeathAnimation.self_modulate.lerp(Color(1,1,1,0), .1)
-		$DeathAnimation.scale += $DeathAnimation.scale * .1
+		play_death_animation()
 	else:
 		# Handle movement input
 		if Input.is_action_pressed("move_right"):
@@ -111,35 +100,61 @@ func fire() -> void:
 
 # Runs when player node scans another collisionshape overlapping PlayerHitBox
 # Player node only scans layers set on its mask in the inspector.
-# Current set to 3 (enemies), 4 (bullets), 5 (items).
+# Currently set to 3 (enemies), 4 (bullets), 5 (items).
+func _on_body_entered(body):
+	if "item_type" in body:
+		collect_item(body)
+	else:
+		player_death(body)
+
 # If the body is an item, it activates the item's magnetics (then collides again with a second pickup collision)
+func collect_item(body) -> void:
+	if body.magnetized:
+		get_item(body.item_type)
+		body.queue_free()
+	else:
+		body.set_magnetize(true)
+
 # If the body is a bullet or an enemy, the player is hit and loses a life before respawning (if lives > 0).
 # If the players lives <= 0, starts the gameover function in main? could be better elsewhere (TODO)
-func _on_body_entered(body):
-	var test = body.get_children()
-	if "item_type" in body:
-		if body.magnetized:
-			get_item(body.item_type)
-			body.queue_free()
-		body.set_magnetize(true)
+func player_death(body) -> void:
+	# Must be deferred as we can't change physics properties on a physics callback.
+	$PlayerHitBox.set_deferred("disabled", true)
+	particles = particles_scene.instantiate()
+	add_child(particles)
+	particles.emitting = true
+	particles.add_to_group("player_particles")
+	$DeathTimer.start()
+	$Body.hide() # Player disappears after being hit.
+	get_tree().call_group("option", "hide")
+	GameState.player_lives -= 1
+	if GameState.player_lives <= 0:
+		SignalBus.game_over.emit()
+	# TODO $DeathSound.play()
+	SignalBus.player_hit.emit()
+	get_tree().call_group("bullets", "disappear")
+
+# Animates the death sprite by expanding it and reducing the alpha
+func play_death_animation() -> void:
+	$DeathAnimation.show()
+	$DeathAnimation.self_modulate = $DeathAnimation.self_modulate.lerp(Color(1,1,1,0), .1)
+	$DeathAnimation.scale += $DeathAnimation.scale * .1
+
+# Blink the player if they are currently immune (collision disabled) else set opacity to full
+func flash_if_immune() -> void:
+	if $PlayerHitBox.is_disabled():
+		$Body.self_modulate.a = 0.1 if Engine.get_frames_drawn() % 3 in [0, 1] else 1.0
 	else:
-		# Must be deferred as we can't change physics properties on a physics callback.
-		if $DeathTimer.is_stopped():
-			$PlayerHitBox.set_deferred("disabled", true)
-			$DeathTimer.start()
-			$Body.hide() # Player disappears after being hit.
-			get_tree().call_group("option", "hide")
-			GameState.player_lives -= 1
-			if GameState.player_lives <= 0:
-				gameover.emit()
-			particles.emitting = true
-			# TODO $DeathSound.play()
-			hit.emit()
-			get_tree().call_group("bullets", "disappear")
+		$Body.self_modulate.a = 1.0
+
+# Rotate the hitbox sprite and the option sprites
+func rotate_children() -> void:
+	direction += PI/180
+	$HitBox.set_rotation(direction)
+	get_tree().call_group("option", "set_rotation", direction)
 
 # Loads player in from off-screen, granting temporary invincibility
 func start() -> void:
-	particles.emitting = false
 	$PlayerHitBox.disabled = true
 	$DeathAnimation.hide()
 	$DeathAnimation.scale = Vector2.ONE
@@ -148,12 +163,15 @@ func start() -> void:
 	position = Vector2(180.0, 500.0)
 	$Body.show()
 	get_tree().call_group("option", "show")
+	GameState.player_bombs = GameState.STARTING_BOMBS
+	SignalBus.update_ui.emit()
 
 func update_position() -> void:
 	GameState.player_position = position
 
 func _on_start_timer_timeout():
 	$PlayerHitBox.set_deferred("disabled", false)
+	get_tree().call_group("player_particles", "queue_free")
 
 func _on_death_timer_timeout():
 	if GameState.player_lives >= 1:
@@ -174,6 +192,7 @@ func get_item(item_type : String) -> void:
 		GameState.player_bombs += 1
 	elif item_type == "life":
 		GameState.player_lives += 1
+	SignalBus.update_ui.emit()
 
 # Loads player options if not loaded, or updates their count if more are loaded than appropriate.
 # Options are bits that spawn around the player to serve as an indication of the player's current power

@@ -8,7 +8,7 @@
 		"stage_camera_commands": [[0, "low"], [3, "top_down"], [60, "low"], [110, "top_down"]],
 		"stage_scroll_commands": [[0, "high"], [3, "mid"], [60, "high"], [110, "low"]],
 		"stage_enemy_layout":{
-			"enemy_wave_0":{
+			"test_wave":{
 				"spawn_time": 0,
 				},
 			"enemy_wave_1":{
@@ -65,6 +65,17 @@
 		}
 	},
 "enemy_wave":{
+	"test_wave":{
+		"enemy_name": "red_fairy_1",
+		"enemy_count": 5,
+		"wave_duration": 10,
+		"spawn_interval": 10,
+		"spawn_position": "off_screen_top_left",
+		"stop_position": "upper_far_left",
+		"leave_position": "off_screen_bottom_mid",
+		"spawn_offset": "offset_shift_right",
+		"drop_item": "life"
+		},
 	"enemy_wave_0":{
 		"enemy_name": "yellow_fairy_1",
 		"enemy_count": 1,

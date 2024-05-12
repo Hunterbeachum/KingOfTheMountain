@@ -73,10 +73,3 @@ stretch_mode = 2
 [node name="Pointer" type="ColorRect" parent="."]
 layout_mode = 2
 color = Color(0.380392, 0.380392, 0.380392, 0.870588)
-
-[node name="StartTimer" type="Timer" parent="."]
-wait_time = 2.0
-one_shot = true
-
-[connection signal="actioned" from="MarginContainer/HSplitContainer/MainMenu" to="." method="_on_main_menu_actioned"]
-[connection signal="timeout" from="StartTimer" to="." method="_on_start_timer_timeout"]

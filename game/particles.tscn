@@ -3,13 +3,14 @@
 [ext_resource type="Texture2D" uid="uid://iujqc680y48d" path="res://art/particle.tres" id="1_0r18r"]
 
 [sub_resource type="Curve" id="Curve_f56x6"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.50546, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.399376, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CurveTexture" id="CurveTexture_kdp34"]
 curve = SubResource("Curve_f56x6")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_s30at"]
+resource_local_to_scene = true
 particle_flag_disable_z = true
 spread = 180.0
 initial_velocity_min = 176.85

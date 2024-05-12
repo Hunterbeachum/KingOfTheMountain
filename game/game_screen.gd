@@ -3,18 +3,15 @@ extends Control
 var game_field_instance
 var interface_instance
 
+
 func _ready():
-	GameState.player_lives = GameState.STARTING_LIVES
-	GameState.player_bombs = GameState.STARTING_BOMBS
 	var game_field = load("res://game/game_field_container.tscn")
 	game_field_instance = game_field.instantiate()
 	$MarginContainer/HSplitContainer.add_child(game_field_instance)
 	var interface = load("res://game/interface.tscn")
 	interface_instance = interface.instantiate()
 	$MarginContainer/HSplitContainer.add_child(interface_instance)
-	game_field_instance.get_node("GameField/Player").connect("hit", interface_instance.update_lives)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
 
@@ -30,7 +27,6 @@ func _on_start_timer_timeout():
 	$BossMovementTimer.start()
 
 func game_over():
-	# TODO figure out why everything is slowing down
 	# TODO Destroy the rigidbody2D that collided
 	# TODO $Music.stop()
 	# TODO $DeathSound.play()

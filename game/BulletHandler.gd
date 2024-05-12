@@ -87,6 +87,8 @@ func generate_rune(rune_data : Array) -> void:
 	if rune_data[0] == "global":
 		rune.destination = Vector2(GameState.position_presets[rune_data[1]][0], GameState.position_presets[rune_data[1]][1])
 		rune.top_level = true
+	elif rune_data[0] == "on_enemy":
+		rune.under_enemy = true
 	elif rune_data[0] == "circle_enemy":
 		rune.circling = 1
 		rune.degrees = rune_data[1]
@@ -132,7 +134,6 @@ func free_fire(rune : Node) -> void:
 		bullet.set_updates(updates)
 		bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
 		bullet.global_position = rune.global_position
-		# First parent is Fairy or Boss scene, second is GameField scene
 		SignalBus.node_added_to_scene.emit(bullet)
 
 func fire_once(rune : Node) -> void:
@@ -144,7 +145,6 @@ func fire_once(rune : Node) -> void:
 			bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
 			bullet.global_position = rune.global_position
 			bullet.angular_velocity = initial_angular_velocity
-			# First parent is Fairy or Boss scene, second is GameField scene
 			SignalBus.node_added_to_scene.emit(bullet)
 
 func calculate_targeting(rune : Node, target_name : String) -> float:
@@ -185,7 +185,7 @@ func draw(rune : Node) -> void:
 			get_tree().call_group("bullets" + str(parent[1]) + pattern_name, "set_linear_velocity", Vector2(100.0, 0.0).rotated((direction) - (i - 1) * PI / 30 ))
 			drawing_pattern = false
 
-# reset the drawing loops
+# Reset the drawing loops
 func _on_loop_timer_timeout():
 	loop_count -= 1
 	if loop_count <= 0:
@@ -217,5 +217,5 @@ func start_timers() -> void:
 	draw_timer.start(draw_time)
 	loop_timer.start(loop_time)
 
-func stop_fire():
-	stop_firing = true
+func set_stop_firing(argument : bool):
+	stop_firing = argument

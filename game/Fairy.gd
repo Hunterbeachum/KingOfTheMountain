@@ -18,7 +18,8 @@ var on_screen : bool = false
 var distance_to_stop_point : float
 @export var bullet_handler: PackedScene
 @export var item: PackedScene
-
+@export var particles_scene : PackedScene
+var particles : GPUParticles2D
 
 func _ready():
 	load_enemy()
@@ -31,9 +32,7 @@ func _process(delta):
 	if moving:
 		enemy_movement(delta)
 	if $EnemyDeathTimer.time_left > 0:
-		$EnemyDeathAnimation.show()
-		$EnemyDeathAnimation.self_modulate = $EnemyDeathAnimation.self_modulate.lerp(Color(1,1,1,0), .2)
-		$EnemyDeathAnimation.scale += $EnemyDeathAnimation.scale * .1
+		play_death_animation()
 	if health <= 0 and not dead:
 		perish()
 	if dead and $EnemyDeathTimer.time_left <= 0:
@@ -50,8 +49,19 @@ func _process(delta):
 		for pattern in pattern_list:
 			# TODO is this changing the pattern_list or just the iterator?
 			play_pattern(pattern_list.pop_front())
-	# Manage animation based on x velocity
-	# x == 0 = reverse from L/R animation then idle
+	play_animation()
+
+func start() -> void:
+	show()
+	$EnemyDeathAnimation.hide()
+	$Body.play(color + "idle")
+
+func enemy_movement(delta) -> void:
+	get_parent().progress += speed * delta
+
+# Manage animation based on x velocity
+# x == 0 = reverse from L/R animation then idle
+func play_animation() -> void:
 	if not moving:
 		if $Body.animation == color + "start_move" and $Body.frame == 0:
 			$Body.animation = color + "idle"
@@ -71,13 +81,12 @@ func _process(delta):
 	elif moving and GameState.enemy_gamestate[enemy_index][0] - get_parent().global_position.x < 0:
 		$Body.set_flip_h(true)
 
-func start() -> void:
-	show()
-	$EnemyDeathAnimation.hide()
-	$Body.play(color + "idle")
-
-func enemy_movement(delta) -> void:
-	get_parent().progress += speed * delta
+func play_death_animation() -> void:
+	$EnemyDeathAnimation.show()
+	$EnemyDeathAnimation.self_modulate = $EnemyDeathAnimation.self_modulate.lerp(Color(1,1,1,0), .2)
+	$EnemyDeathAnimation.scale += $EnemyDeathAnimation.scale * .05
+	if particles in get_children():
+		particles.modulate.a = $EnemyDeathTimer.time_left * 1 / $EnemyDeathTimer.wait_time
 
 func load_enemy():
 	set_color(GameState.data["enemy"][enemy_name]["color"])
@@ -93,6 +102,10 @@ func play_pattern(pattern : String) -> void:
 	new_bullet_handler.set_parent(false, enemy_name, enemy_index, pattern)
 	add_child(new_bullet_handler)
 	new_bullet_handler.add_to_group("patterns" + str(enemy_index))
+
+func play_death_patterns() -> void:
+	for death_pattern in death_pattern_list:
+		play_pattern(death_pattern)
 
 func set_enemy_name(name : String) -> void:
 	enemy_name = name
@@ -136,19 +149,30 @@ func flash() -> void:
 func perish() -> void:
 	dead = true
 	pattern_list.clear()
-	get_tree().call_group("patterns" + str(enemy_index), "stop_fire") # TODO may be redundant
+	get_tree().call_group("patterns" + str(enemy_index), "set_stop_firing", true) # TODO may be redundant
 	get_tree().call_group("runes" + str(enemy_index), "perish")
-	var test = get_tree().get_node_count_in_group("patterns" + str(enemy_index))
 	$EnemyHitBox.queue_free()
 	$EnemyDeathTimer.start()
 	$Body.hide()
-	for death_pattern in death_pattern_list:
-		play_pattern(death_pattern)
+	play_death_patterns()
+	spawn_item()
+	generate_particles("death")
+
+func spawn_item() -> void:
 	var new_item = item.instantiate()
 	new_item.set_type(drop_item)
 	new_item.position = position
 	new_item.linear_velocity = Vector2(randf_range(-23.0, 23.0), randf_range(-29.0, -23.0))
 	get_parent().add_child(new_item)
+
+func generate_particles(type : String) -> void:
+	if type == "death":
+		particles = particles_scene.instantiate()
+		add_child(particles)
+		particles.emitting = true
+		particles.process_material.scale_max = .5
+		particles.set_modulate(Color.ORANGE_RED)
+		particles.add_to_group("enemy_particles")
 
 func set_distance_to_stop_point(progress : float) -> void:
 	distance_to_stop_point = progress

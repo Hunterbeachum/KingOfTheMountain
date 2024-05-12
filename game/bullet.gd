@@ -13,6 +13,7 @@ var pausing : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	add_to_group("active_bullets")
 	$BulletLifespan.start()
 	show()
 	stored_linear_velocity = linear_velocity
@@ -25,8 +26,8 @@ func _process(delta):
 	update_current_speed()
 	if disappearing:
 		linear_velocity = Vector2.ZERO
-		$Body.self_modulate = $Body.self_modulate.lerp(Color(1,1,1,0), .1)
-		$Body.scale += $Body.scale * .01
+		$Body.self_modulate = $Body.self_modulate.lerp(Color(1,1,1,0), .2)
+		$Body.scale += $Body.scale * .1
 		if $Body.get_self_modulate().a < .1:
 			queue_free()
 	if pausing:
@@ -39,7 +40,6 @@ func _process(delta):
 	if not active_updates.is_empty():
 		run_update(active_updates)
 	pass
-
 
 func _on_visible_on_screen_notifier_2d_screen_exited():
 	queue_free()

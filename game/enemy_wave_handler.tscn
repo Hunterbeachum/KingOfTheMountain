@@ -9,3 +9,5 @@ enemy_scene = ExtResource("2_ewknf")
 
 [node name="SpawnTimer" type="Timer" parent="."]
 one_shot = true
+
+[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]

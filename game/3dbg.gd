@@ -13,6 +13,8 @@ const ANGLE_TOP = Vector3.ZERO
 func _ready():
 	set_bg_material(bg_plane, GameState.data["stage"][GameState.current_stage]["stage_texture"])
 
+# Manages the tilt and scroll speed every frame
+# Resets the 3dbg's position to create infinite scrolling
 func _process(delta):
 	if tilt == "top_down":
 		camera.rotation_degrees = camera.rotation_degrees.lerp(ANGLE_TOP, .01)
@@ -25,8 +27,6 @@ func _process(delta):
 	elif scroll_command == "high":
 		scroll_speed = scroll_speed.lerp(Vector3(SCROLL_SPEED_HIGH * delta, 0.0, 0.0), .1)
 	bg_plane.translate(scroll_speed)
-	# Infinite scrolling by jumping the entire 3D plane UP by 4.0 Y units
-	# (I can't believe this works)
 	if bg_plane.position.y < -2.0:
 		bg_plane.translate(Vector3(4.0, 0.0, 0.0))
 

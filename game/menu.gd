@@ -1,7 +1,5 @@
 class_name Menu extends VBoxContainer
 
-signal actioned(item: Control)
-
 @export var pointer: Node
 
 func _ready():
@@ -16,7 +14,7 @@ func _unhandled_input(event):
 	var item = get_focused_item()
 	if is_instance_valid(item) and event.is_action_pressed("confirm"):
 		item.focus_mode = Control.FOCUS_NONE
-		actioned.emit(item)
+		SignalBus.menu_command.emit(item.get("name"))
 
 # Called when the node enters the scene tree for the first time.
 func get_items() -> Array[Control]:

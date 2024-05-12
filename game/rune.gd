@@ -5,6 +5,7 @@ var destination : Vector2 = Vector2.ZERO
 @onready var aura = $Aura
 var rune_alpha : float = 1.0
 var disappearing : bool = false
+var under_enemy : bool = false
 # Not circling == 0, clockwise == 1, c.clockwise == -1
 var circling : int = 0
 var fired_at_player : bool = false
@@ -41,6 +42,11 @@ func _process(delta):
 		$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
 	elif fired_at_player:
 		position = position + Vector2(speed * delta, 0.0).rotated(position.angle_to_point(destination))
+	elif under_enemy:
+		var current_enemy_position = Vector2(GameState.enemy_gamestate[parent_index][0], GameState.enemy_gamestate[parent_index][1])
+		global_position = current_enemy_position
+		set_scale(Vector2(0.5, 0.5))
+		$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
 	else:
 		$Aura.global_position = destination
 		$Aura.self_modulate.a = t

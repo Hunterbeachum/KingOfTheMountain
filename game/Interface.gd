@@ -1,25 +1,26 @@
 extends Control
-var lives_displayed : int
-var bombs_displayed : int
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	SignalBus.player_hit.connect(update_lives)
+	SignalBus.update_ui.connect(update_ui)
 	var difficulty_texture = load("res://art/Normal.tres")
 	var difficulty_icon = TextureRect.new()
 	difficulty_icon.set_texture(difficulty_texture)
 	$VBoxContainer/DifficultyContainer.add_child(difficulty_icon)
-	lives_displayed = ($VBoxContainer/LivesContainer.get_child_count() - 1)
-	bombs_displayed = ($VBoxContainer/BombsContainer.get_child_count() - 1)
-	update_lives()
-	update_bombs()
-	set_power(GameState.player_power)
-	set_graze(GameState.player_graze)
+	update_ui()
 
 func _process(delta):
-	set_power(GameState.player_power)
 	pass
 
+func update_ui() -> void:
+	update_lives()
+	update_bombs()
+	update_power()
+	update_graze()
+
 func update_lives():
+	var lives_displayed = ($VBoxContainer/LivesContainer.get_child_count() - 1)
 	if lives_displayed < GameState.player_lives:
 		for i in range(GameState.player_lives - lives_displayed):
 			var life_texture = load("res://art/LifeIcon.tres")
@@ -32,9 +33,9 @@ func update_lives():
 		for i in range(lives_displayed - GameState.player_lives):
 			var LifeIcons = $VBoxContainer/LivesContainer.get_children()
 			LifeIcons[-1].queue_free()
-	lives_displayed = ($VBoxContainer/LivesContainer.get_child_count() - 1)
 
 func update_bombs():
+	var bombs_displayed = ($VBoxContainer/BombsContainer.get_child_count() - 1)
 	if bombs_displayed < GameState.player_bombs:
 		for i in range(GameState.player_bombs - bombs_displayed):
 			var bomb_texture = load("res://art/LifeIcon.tres")
@@ -46,10 +47,9 @@ func update_bombs():
 		for i in range(bombs_displayed - GameState.player_bombs):
 			var BombIcons = $VBoxContainer/BombsContainer.get_children()
 			BombIcons[-1].queue_free()
-	bombs_displayed = ($VBoxContainer/BombsContainer.get_child_count() - 1)
 
-func set_power(power):
-	$VBoxContainer/PowerContainer/PowerValue.text = str(power)
+func update_power():
+	$VBoxContainer/PowerContainer/PowerValue.text = str(GameState.player_power)
 
-func set_graze(graze):
-	$VBoxContainer/GrazeContainer/GrazeValue.text = str(graze)
+func update_graze():
+	$VBoxContainer/GrazeContainer/GrazeValue.text = str(GameState.player_graze)

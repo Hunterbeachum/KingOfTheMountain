@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://i4wshaa0jskp" path="res://game/bullet_handler.tscn" id="2_qcv3q"]
 [ext_resource type="PackedScene" uid="uid://orljy2wxgrxb" path="res://game/item.tscn" id="3_ufs31"]
 [ext_resource type="Shader" path="res://art/flash.gdshader" id="3_v7foa"]
+[ext_resource type="PackedScene" uid="uid://dwatql4ad2xea" path="res://game/particles.tscn" id="4_woyj2"]
 [ext_resource type="Texture2D" uid="uid://d0dhj3jql6ybi" path="res://art/death.tres" id="5_ws8ta"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3w1hd"]
@@ -413,8 +414,6 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xkks0"]
 
-[sub_resource type="Curve2D" id="Curve2D_kp764"]
-
 [node name="Fairy" type="RigidBody2D"]
 collision_layer = 4
 collision_mask = 0
@@ -423,6 +422,7 @@ angular_damp_mode = 1
 script = ExtResource("1_wyogd")
 bullet_handler = ExtResource("2_qcv3q")
 item = ExtResource("3_ufs31")
+particles_scene = ExtResource("4_woyj2")
 
 [node name="Body" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_3w1hd")
@@ -431,17 +431,6 @@ animation = &"bluestart_move"
 
 [node name="EnemyHitBox" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_xkks0")
-
-[node name="Path2D" type="Path2D" parent="."]
-curve = SubResource("Curve2D_kp764")
-
-[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
-
-[node name="EnemyAttackTimer" type="Timer" parent="."]
-
-[node name="EnemyFlashTimer" type="Timer" parent="."]
-wait_time = 0.25
-one_shot = true
 
 [node name="EnemyDeathAnimation" type="Sprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
