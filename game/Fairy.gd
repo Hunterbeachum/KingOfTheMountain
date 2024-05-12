@@ -16,6 +16,8 @@ var enemy_path_follower : PathFollow2D
 var moving : bool = true
 var on_screen : bool = false
 var distance_to_stop_point : float
+var fire_while_moving : bool
+var previous_frame_x_position : float = 0.0
 @export var bullet_handler: PackedScene
 @export var item: PackedScene
 @export var particles_scene : PackedScene
@@ -41,18 +43,18 @@ func _process(delta):
 		flash()
 	else:
 		$Body.material.set_shader_parameter("solid_color", Color(1, 1, 1, 0))
-	if get_parent().progress > distance_to_stop_point:
+	if get_parent().progress > distance_to_stop_point and not fire_while_moving:
 		moving = false
 		distance_to_stop_point = 9999
 		current_destination_index += 1
-	if current_destination_index > 1 and on_screen:
+	if (current_destination_index > 1 or fire_while_moving) and on_screen:
 		for pattern in pattern_list:
-			# TODO is this changing the pattern_list or just the iterator?
 			play_pattern(pattern_list.pop_front())
 	play_animation()
 
 func start() -> void:
 	show()
+	previous_frame_x_position = get_parent().global_position.x
 	$EnemyDeathAnimation.hide()
 	$Body.play(color + "idle")
 
@@ -62,7 +64,7 @@ func enemy_movement(delta) -> void:
 # Manage animation based on x velocity
 # x == 0 = reverse from L/R animation then idle
 func play_animation() -> void:
-	if not moving:
+	if get_parent().global_position.x == previous_frame_x_position:
 		if $Body.animation == color + "start_move" and $Body.frame == 0:
 			$Body.animation = color + "idle"
 		elif $Body.animation == color + "start_move":
@@ -76,10 +78,12 @@ func play_animation() -> void:
 			$Body.play(color + "start_move")
 		elif $Body.animation == color + "start_move" and $Body.frame == 3:
 			$Body.play(color + "move")
-	if moving or $Body.animation == color + "idle":
+	if $Body.animation == color + "idle" or get_parent().global_position.x > previous_frame_x_position:
 		$Body.set_flip_h(false)
-	elif moving and GameState.enemy_gamestate[enemy_index][0] - get_parent().global_position.x < 0:
+	elif get_parent().global_position.x < previous_frame_x_position:
+		var test = [get_parent().global_position.x, previous_frame_x_position]
 		$Body.set_flip_h(true)
+	previous_frame_x_position = get_parent().global_position.x
 
 func play_death_animation() -> void:
 	$EnemyDeathAnimation.show()
@@ -176,6 +180,9 @@ func generate_particles(type : String) -> void:
 
 func set_distance_to_stop_point(progress : float) -> void:
 	distance_to_stop_point = progress
+
+func set_fire_while_moving(argument : bool) -> void:
+	fire_while_moving = argument
 
 func _on_visible_on_screen_notifier_2d_screen_exited():
 	if on_screen:

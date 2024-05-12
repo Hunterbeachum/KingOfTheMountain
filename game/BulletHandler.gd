@@ -19,7 +19,7 @@ var target : Array
 var direction : float
 var initial_damp : float
 var initial_angular_velocity : float
-var draw_speed : int = 0
+var startup_time : int = 0
 var has_fired : bool = false
 var updates : Array
 var moving : bool = false
@@ -45,7 +45,7 @@ func load_pattern():
 	pattern_data = GameState.data["pattern"][pattern_name].duplicate(true)
 	for rune_position in pattern_data["position"]:
 		rune_locations.append(rune_position)
-	draw_speed = pattern_data["draw_speed"]
+	startup_time = pattern_data["startup_time"]
 	var points_to_draw = pattern_data["points"]
 	rune_path = Path2D.new()
 	rune_path.curve = Curve2D.new()
@@ -84,6 +84,7 @@ func generate_rune(rune_data : Array) -> void:
 	rune.parent_index = parent[1]
 	rune.global_position = global_position
 	rune.pattern_name = pattern_name
+	rune.startup_time = startup_time
 	if rune_data[0] == "global":
 		rune.destination = Vector2(GameState.position_presets[rune_data[1]][0], GameState.position_presets[rune_data[1]][1])
 		rune.top_level = true

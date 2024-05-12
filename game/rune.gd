@@ -3,6 +3,7 @@ extends Sprite2D
 var enemy_position : Vector2
 var destination : Vector2 = Vector2.ZERO
 @onready var aura = $Aura
+var startup_time : int = 1000
 var rune_alpha : float = 1.0
 var disappearing : bool = false
 var under_enemy : bool = false
@@ -30,7 +31,7 @@ func _ready():
 		create_path()
 
 func _process(delta):
-	t = min(t + delta/t_divisor, 1.0)
+	t = min(t + delta * (1000 / startup_time), 1.0)
 	signal_start()
 	if circling != 0:
 		degrees += circling
