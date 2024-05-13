@@ -39,6 +39,7 @@ func _process(delta):
 		perish()
 	if dead and $EnemyDeathTimer.time_left <= 0:
 		queue_free()
+		get_tree().call_group("runes" + str(enemy_index), "perish")
 	if flashing and Engine.get_frames_drawn() % 3 == 0:
 		flash()
 	else:
@@ -108,8 +109,13 @@ func play_pattern(pattern : String) -> void:
 	new_bullet_handler.add_to_group("patterns" + str(enemy_index))
 
 func play_death_patterns() -> void:
-	for death_pattern in death_pattern_list:
-		play_pattern(death_pattern)
+	if not death_pattern_list.is_empty():
+		$EnemyDeathTimer.wait_time += 1.0
+		for death_pattern in death_pattern_list:
+			var new_bullet_handler = bullet_handler.instantiate()
+			new_bullet_handler.set_parent(false, enemy_name, enemy_index, death_pattern)
+			add_child(new_bullet_handler)
+			new_bullet_handler.add_to_group("death_patterns" + str(enemy_index))
 
 func set_enemy_name(name : String) -> void:
 	enemy_name = name
@@ -155,10 +161,10 @@ func perish() -> void:
 	pattern_list.clear()
 	get_tree().call_group("patterns" + str(enemy_index), "set_stop_firing", true) # TODO may be redundant
 	get_tree().call_group("runes" + str(enemy_index), "perish")
-	$EnemyHitBox.queue_free()
-	$EnemyDeathTimer.start()
-	$Body.hide()
 	play_death_patterns()
+	$EnemyHitBox.queue_free()
+	$Body.hide()
+	$EnemyDeathTimer.start()
 	spawn_item()
 	generate_particles("death")
 
@@ -166,7 +172,7 @@ func spawn_item() -> void:
 	var new_item = item.instantiate()
 	new_item.set_type(drop_item)
 	new_item.position = position
-	new_item.linear_velocity = Vector2(randf_range(-23.0, 23.0), randf_range(-29.0, -23.0))
+	new_item.linear_velocity = Vector2(randf_range(-23.0, 23.0), randf_range(-150.0, -130.0))
 	get_parent().add_child(new_item)
 
 func generate_particles(type : String) -> void:

@@ -15,7 +15,7 @@ script = ExtResource("2_spawm")
 texture = ExtResource("3_i76lf")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
-position = Vector2(6.67572e-06, 33.5)
-scale = Vector2(9.8, 6.65)
+position = Vector2(-1.25, 111)
+scale = Vector2(13.125, 14.4)
 
 [connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

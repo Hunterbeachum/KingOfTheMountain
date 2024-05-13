@@ -5,24 +5,33 @@
 		"stage_midboss": "momiji",
 		"stage_duration": 120,
 		"stage_texture": "res://art/bg1.png",
-		"stage_camera_commands": [[0, "low"], [3, "top_down"], [60, "low"], [110, "top_down"]],
-		"stage_scroll_commands": [[0, "high"], [3, "mid"], [60, "high"], [110, "low"]],
+		"stage_camera_commands": [[0, "low"], [3, "top_down"], [30, "low"], [110, "top_down"]],
+		"stage_scroll_commands": [[0, "high"], [3, "mid"], [30, "low"], [110, "low"]],
 		"stage_enemy_layout":{
-			"test_wave":{
+			"enemy_wave_4":{
 				"spawn_time": 0,
 				},
-			"enemy_wave_1":{
+			"enemy_wave_5":{
 				"spawn_time": 5,
 				},
 			"enemy_wave_2":{
-				"spawn_time": 60,
+				"spawn_time": 10,
 				},
 			"enemy_wave_3":{
-				"spawn_time": 60,
+				"spawn_time": 15,
 				},
-			"enemy_wave_4":{
-				"spawn_time": 60,
-				}
+			"enemy_wave_0":{
+				"spawn_time": 20,
+				},			
+			"enemy_wave_1":{
+				"spawn_time": 25,
+				},			
+			"enemy_wave_6":{
+				"spawn_time": 30,
+				},			
+			"enemy_wave_7":{
+				"spawn_time": 40,
+				},
 		},
 		"stage_soundtrack": "res://music/1.wav"
 		}
@@ -32,22 +41,22 @@
 		"color": "red",
 		"health": 20,
 		"speed": 100,
-		"pattern": ["constant_stream_decelerating"],
+		"pattern": ["decelerating_5spread"],
 		"death_pattern": []
 		},
 	"red_fairy_2":{
 		"color": "red",
-		"health": 50,
-		"speed": 100,
-		"pattern": ["enemy_2"],
+		"health": 20,
+		"speed": 50,
+		"pattern": ["constant_slow_stream"],
 		"death_pattern": []
 		},
 	"blue_fairy_1": {
 		"color": "blue",
 		"health": 100,
 		"speed": 100,
-		"pattern": ["enemy_1", "enemy_2", "enemy_3"],
-		"death_pattern": ["enemy_death_1"]
+		"pattern": ["circling_runes", "growing_spread"],
+		"death_pattern": ["oneshot_circle"]
 		},
 	"blue_fairy_2": {
 		"color": "blue",
@@ -65,8 +74,32 @@
 		}
 	},
 "enemy_wave":{
-	"test_wave":{
+	"enemy_wave_0":{
 		"enemy_name": "red_fairy_1",
+		"enemy_count": 5,
+		"wave_duration": 10,
+		"spawn_interval": 5,
+		"fire_while_moving": false,
+		"spawn_position": "off_screen_top_left",
+		"stop_position": "upper_far_left",
+		"leave_position": "off_screen_bottom_right",
+		"spawn_offset": "offset_shift_right",
+		"drop_item": "small_power"
+		},
+	"enemy_wave_1":{
+		"enemy_name": "red_fairy_1",
+		"enemy_count": 5,
+		"wave_duration": 10,
+		"spawn_interval": 5,
+		"fire_while_moving": false,
+		"spawn_position": "off_screen_top_right",
+		"stop_position": "upper_far_right",
+		"leave_position": "off_screen_bottom_left",
+		"spawn_offset": "offset_shift_left",
+		"drop_item": "small_power"
+		},
+	"enemy_wave_2":{
+		"enemy_name": "red_fairy_2",
 		"enemy_count": 5,
 		"wave_duration": 10,
 		"spawn_interval": 5,
@@ -77,20 +110,8 @@
 		"spawn_offset": "zero",
 		"drop_item": "small_power"
 		},
-	"enemy_wave_0":{
-		"enemy_name": "yellow_fairy_1",
-		"enemy_count": 1,
-		"wave_duration": 20,
-		"spawn_interval": 10,
-		"fire_while_moving": false,
-		"spawn_position": "off_screen_top_left",
-		"stop_position": "middle",
-		"leave_position": "off_screen_bottom_mid",
-		"spawn_offset": "offset_shift_right",
-		"drop_item": "small_power"
-		},
-	"enemy_wave_1":{
-		"enemy_name": "red_fairy_1",
+	"enemy_wave_3":{
+		"enemy_name": "red_fairy_2",
 		"enemy_count": 5,
 		"wave_duration": 10,
 		"spawn_interval": 5,
@@ -101,42 +122,30 @@
 		"spawn_offset": "zero",
 		"drop_item": "small_power"
 		},
-	"enemy_wave_2":{
-		"enemy_name": "red_fairy_1",
-		"enemy_count": 5,
-		"wave_duration": 10,
-		"spawn_interval": 10,
-		"fire_while_moving": true,
-		"spawn_position": "off_screen_top_right",
-		"stop_position": "upper_far_right",
-		"leave_position": "off_screen_bottom_mid",
-		"spawn_offset": "offset_shift_left",
-		"drop_item": "small_power"
-		},
-	"enemy_wave_3":{
-		"enemy_name": "blue_fairy_1",
-		"enemy_count": 2,
-		"wave_duration": 10,
-		"spawn_interval": 10,
-		"fire_while_moving": true,
-		"spawn_position": "off_screen_top_mid",
-		"stop_position": "upper_mid_left",
-		"leave_position": "off_screen_bottom_left",
-		"spawn_offset": "offset_shift_double_right",
-		"drop_item": "large_power"
-		},
 	"enemy_wave_4":{
 		"enemy_name": "blue_fairy_1",
 		"enemy_count": 2,
 		"wave_duration": 10,
 		"spawn_interval": 10,
-		"fire_while_moving": true,
+		"fire_while_moving": false,
 		"spawn_position": "off_screen_top_mid",
 		"stop_position": "upper_mid_right",
 		"leave_position": "off_screen_bottom_right",
 		"spawn_offset": "offset_shift_double_left",
 		"drop_item": "large_power"
-		}
+		},
+	"enemy_wave_5":{
+		"enemy_name": "blue_fairy_1",
+		"enemy_count": 2,
+		"wave_duration": 10,
+		"spawn_interval": 10,
+		"fire_while_moving": false,
+		"spawn_position": "off_screen_top_mid",
+		"stop_position": "upper_mid_left",
+		"leave_position": "off_screen_bottom_left",
+		"spawn_offset": "offset_shift_double_right",
+		"drop_item": "large_power"
+		}, 
 	},
 "pattern":{
 	"decelerating_5spread":{
@@ -147,7 +156,7 @@
 		"startup_time": 1000,
 		"draw_time": 1,
 		"loop_time": 5,
-		"loop_count": 1,
+		"loop_count": 2,
 		"frame_delay": 10,
 		"spread": 5,
 		"spread_PI_divisor": 15,
@@ -257,6 +266,24 @@
 		"loop_time": 4,
 		"loop_count": 1,
 		"frame_delay": 10,
+		"spread": 1,
+		"spread_PI_divisor": 30,
+		"initial_velocity": 200,
+		"target": ["player"],
+		"initial_damp": 0,
+		"initial_angular_velocity": 0,
+		"updates": []
+		},
+	"constant_slow_stream":{
+		"position": [["on_enemy", "zero"]],
+		"bullet_model": "red_orb",
+		"style": "free_fire",
+		"points": [[0, 0]],
+		"startup_time": 250,
+		"draw_time": 4,
+		"loop_time": 4,
+		"loop_count": 1,
+		"frame_delay": 20,
 		"spread": 1,
 		"spread_PI_divisor": 30,
 		"initial_velocity": 200,

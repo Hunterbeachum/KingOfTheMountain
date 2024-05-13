@@ -35,17 +35,15 @@ func _process(delta):
 	signal_start()
 	if circling != 0:
 		degrees += circling
-		var current_enemy_position = Vector2(GameState.enemy_gamestate[parent_index][0], GameState.enemy_gamestate[parent_index][1])
-		destination = current_enemy_position + Vector2(80.0, 0.0).rotated(deg_to_rad(degrees))
-		global_position = current_enemy_position.lerp(destination, t)
+		destination = get_enemy_position() + Vector2(80.0, 0.0).rotated(deg_to_rad(degrees))
+		global_position = get_enemy_position().lerp(destination, t)
 		$Aura.self_modulate.a = t
 		$Aura.global_position = destination
 		$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
 	elif fired_at_player:
 		position = position + Vector2(speed * delta, 0.0).rotated(position.angle_to_point(destination))
 	elif under_enemy:
-		var current_enemy_position = Vector2(GameState.enemy_gamestate[parent_index][0], GameState.enemy_gamestate[parent_index][1])
-		global_position = current_enemy_position
+		global_position = get_enemy_position()
 		set_scale(Vector2(0.5, 0.5))
 		$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
 	else:
