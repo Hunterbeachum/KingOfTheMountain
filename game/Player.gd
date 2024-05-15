@@ -7,6 +7,7 @@ var particles : GPUParticles2D
 var shield_energy : int = 255
 var shield_stagger : int = 0
 var shield_regeneration_timer : float = 0.1
+var shield_active_last_frame : bool = false
 var screen_size
 var direction = 0
 var current_modulate
@@ -41,7 +42,7 @@ func _process(delta):
 		else:
 			focus(false)
 		# Handle shield input (make shield visible, enable shield hitbox)
-		if Input.is_action_pressed("shield") and shield_energy > 0:
+		if Input.is_action_pressed("shield") and (shield_energy > 0 or (shield_active_last_frame and shield_energy > -49.9)):
 			shield(true)
 		else:
 			shield(false)
@@ -127,6 +128,7 @@ func shield(is_shielded : bool) -> void:
 	else:
 		$Shield.hide()
 		$ShieldHitBox.set_deferred("disabled", true)
+	shield_active_last_frame = is_shielded
 
 # Reduces shield durability
 func damage_shield() -> void:
@@ -143,6 +145,7 @@ func regenerate_shield() -> void:
 
 func update_shield_bar() -> void:
 	$ShieldLifeBar.set_value_no_signal(shield_energy)
+	$ShieldLifeDebtBar.set_value_no_signal(max(0.0, -shield_energy))
 
 # Runs when 'confirm' input is pressed.
 # Every 4 frames it creates a playershot node for each option.

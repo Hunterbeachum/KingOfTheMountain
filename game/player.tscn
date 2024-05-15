@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://c1hk63e4h347l"]
+[gd_scene load_steps=41 format=3 uid="uid://c1hk63e4h347l"]
 
 [ext_resource type="Script" path="res://game/Player.gd" id="1_grwyw"]
 [ext_resource type="Texture2D" uid="uid://bhenfbk6tnlnc" path="res://art/MOFchara.png" id="2_dw0v3"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cr7vm785mx0ly" path="res://art/MOFprojectiles.png" id="3_xiplg"]
 [ext_resource type="Texture2D" uid="uid://d0dhj3jql6ybi" path="res://art/death.tres" id="4_pv51q"]
 [ext_resource type="Texture2D" uid="uid://begx1q44yii7u" path="res://art/INprojectiles.png" id="7_sstx5"]
+[ext_resource type="Texture2D" uid="uid://bcwui7mvhysw0" path="res://art/MOFhud.png" id="8_nbp13"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3xgd0"]
 atlas = ExtResource("2_dw0v3")
@@ -240,12 +241,15 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_ixuuo"]
 radius = 32.0156
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_6a7v0"]
+atlas = ExtResource("8_nbp13")
+region = Rect2(323, 322, 32, 4)
+
 [node name="Player" type="Area2D"]
 collision_mask = 28
 script = ExtResource("1_grwyw")
 particles_scene = ExtResource("2_wl3ik")
 playershot_scene = ExtResource("2_xmonj")
-metadata/_edit_group_ = true
 
 [node name="Body" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_0e17y")
@@ -282,14 +286,28 @@ shape = SubResource("CircleShape2D_ixuuo")
 disabled = true
 debug_color = Color(0.902711, 0.109201, 0.703294, 0.42)
 
-[node name="ShieldLifeBar" type="ProgressBar" parent="."]
-offset_right = 4.0
-offset_bottom = 27.0
-max_value = 255.0
-allow_lesser = true
-
 [node name="ShieldRegenerationTimer" type="Timer" parent="."]
 one_shot = true
+
+[node name="ShieldLifeBar" type="TextureProgressBar" parent="."]
+offset_left = -15.0
+offset_top = 29.0
+offset_right = 17.0
+offset_bottom = 33.0
+max_value = 255.0
+value = 100.0
+allow_lesser = true
+texture_progress = SubResource("AtlasTexture_6a7v0")
+
+[node name="ShieldLifeDebtBar" type="TextureProgressBar" parent="."]
+modulate = Color(0.890702, 0.316539, 0.165004, 1)
+offset_left = -15.0
+offset_top = 29.0
+offset_right = 17.0
+offset_bottom = 33.0
+max_value = 255.0
+value = 100.0
+texture_progress = SubResource("AtlasTexture_6a7v0")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="StartTimer" to="." method="_on_start_timer_timeout"]
