@@ -9,7 +9,9 @@ var time_passed : float
 var stored_linear_velocity : Vector2
 var disappearing : bool = false
 var pausing : bool = false
+var hitbox_active : bool = true
 @onready var bullet_lifespan = $BulletLifespan
+@onready var bullet_hitbox = $BulletHitBox
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -25,6 +27,7 @@ func _process(delta):
 	update_time_passed()
 	update_current_speed()
 	if disappearing:
+		destroy_hitbox()
 		linear_velocity = Vector2.ZERO
 		$Body.self_modulate = $Body.self_modulate.lerp(Color(1,1,1,0), .2)
 		$Body.scale += $Body.scale * .1
@@ -47,6 +50,11 @@ func _on_visible_on_screen_notifier_2d_screen_exited():
 func _zero_velocity():
 	linear_velocity = linear_velocity * .04
 	set_linear_damp(0.0)
+
+func destroy_hitbox() -> void:
+	if hitbox_active:
+		bullet_hitbox.queue_free()
+		hitbox_active = false
 
 func run_update(active_update_list : Array):
 	for active_update in active_update_list:

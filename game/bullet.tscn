@@ -18,7 +18,7 @@ texture = ExtResource("2_snw3c")
 region_enabled = true
 region_rect = Rect2(42, 48, 16, 16)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="BulletHitBox" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_g31ms")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]

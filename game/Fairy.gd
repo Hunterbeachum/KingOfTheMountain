@@ -1,4 +1,5 @@
 extends RigidBody2D
+var collision_name : String = "enemy"
 var color : String = ""
 var current_destination_index : int = 1
 var enemy_name : String = ""

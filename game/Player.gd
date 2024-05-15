@@ -4,6 +4,9 @@ var particles : GPUParticles2D
 @export var particles_scene : PackedScene
 @export var playershot_scene : PackedScene
 @export var speed = 200
+var shield_energy : int = 255
+var shield_stagger : int = 0
+var shield_regeneration_timer : float = 0.1
 var screen_size
 var direction = 0
 var current_modulate
@@ -28,65 +31,118 @@ func _process(delta):
 		play_death_animation()
 	else:
 		# Handle movement input
-		if Input.is_action_pressed("move_right"):
-			velocity.x += 1
-		if Input.is_action_pressed("move_left"):
-			velocity.x -= 1	
-		if Input.is_action_pressed("move_down"):
-			velocity.y += 1
-		if Input.is_action_pressed("move_up"):
-			velocity.y -= 1
-		
+		velocity += handle_movement_input()
+		# Normalize velocity so diagonal movement isn't 2x speed
+		if velocity.length() > 0:
+			velocity = velocity.normalized() * speed
 		# Handle focus input (fade in hitbox visible, slow movement by 50%)
 		if Input.is_action_pressed("focus"):
-			speed = 100
-			opacity += .1
-			opacity = clamp(opacity, 0, 1)
-			$HitBox.set_self_modulate(Color(1, 1, 1, opacity))
+			focus(true)
 		else:
-			speed = 200
-			opacity -= .1
-			opacity = clamp(opacity, 0, 1)
-			$HitBox.set_self_modulate(Color(1, 1, 1, opacity))
-		
+			focus(false)
+		# Handle shield input (make shield visible, enable shield hitbox)
+		if Input.is_action_pressed("shield") and shield_energy > 0:
+			shield(true)
+		else:
+			shield(false)
+		# Handle shield regeneration
+		regenerate_shield()
+		# Handle shield damage
+		if shield_stagger > 0:
+			damage_shield()
+		# Handle shield bar update
+		update_shield_bar()
 		# Handle attack input
 		if Input.is_action_pressed("confirm"):
 			fire()
-		
-		# Normalize velocity so diagonal movement isn't 2x speed
-		# Then move player according to input and limit player to the game_screen size
-		if velocity.length() > 0:
-			velocity = velocity.normalized() * speed
-		position += velocity * delta
-		position = position.clamp(Vector2.ZERO, screen_size)
-		
+		# Handle player movement
+		player_movement(velocity, delta)
 		# Player load-in - automove toward the default starting position
 		if $StartTimer.time_left > 1.75:
 			position = position.lerp($PlayerStartPosition.position, .1)
-		
-		# Manage animation based on x velocity
-		# x == 0 = reverse from L/R animation then idle
-		if velocity.x == 0:
-			if $Body.animation == "start_right" and $Body.frame == 0:
-				$Body.animation = "idle"
-			elif $Body.animation == "move_right":
-				$Body.play_backwards("start_right")
-			elif $Body.animation == "start_left" and $Body.frame == 0:
-				$Body.animation = "idle"
-			elif $Body.animation == "move_left":
-				$Body.play_backwards("start_left")
-		# x > 0 = begin R animation then loop R lean 
-		elif velocity.x > 0:
-			if $Body.animation == "start_right" and $Body.frame == 3:
-				$Body.animation = "move_right"
-			elif $Body.animation != "move_right":
-				$Body.play("start_right")
-		# x < 0 = begin L animation then loop L lean
-		elif velocity.x < 0:
-			if $Body.animation == "start_left" and $Body.frame == 3:
-				$Body.animation = "move_left"
-			elif $Body.animation != "move_left":
-				$Body.play("start_left")
+		# Handle player animation
+		play_animation(velocity)
+
+# Handle movement input
+func handle_movement_input() -> Vector2:
+	var vector_sum = Vector2.ZERO
+	if Input.is_action_pressed("move_right"):
+		vector_sum += Vector2(1.0, 0.0)
+	if Input.is_action_pressed("move_left"):
+		vector_sum += Vector2(-1.0, 0.0)
+	if Input.is_action_pressed("move_down"):
+		vector_sum += Vector2(0.0, 1.0)
+	if Input.is_action_pressed("move_up"):
+		vector_sum += Vector2(0.0, -1.0)
+	return vector_sum
+
+# Move player according to input and limit player to the game_screen size
+func player_movement(velocity : Vector2, delta : float) -> void:
+	position += velocity * delta
+	position = position.clamp(Vector2.ZERO, screen_size)
+
+# Manage animation based on x velocity
+# x == 0 = reverse from L/R animation then idle
+func play_animation(velocity : Vector2) -> void:
+	if velocity.x == 0:
+		if $Body.animation == "start_right" and $Body.frame == 0:
+			$Body.animation = "idle"
+		elif $Body.animation == "move_right":
+			$Body.play_backwards("start_right")
+		elif $Body.animation == "start_left" and $Body.frame == 0:
+			$Body.animation = "idle"
+		elif $Body.animation == "move_left":
+			$Body.play_backwards("start_left")
+	# x > 0 = begin R animation then loop R lean 
+	elif velocity.x > 0:
+		if $Body.animation == "start_right" and $Body.frame == 3:
+			$Body.animation = "move_right"
+		elif $Body.animation != "move_right":
+			$Body.play("start_right")
+	# x < 0 = begin L animation then loop L lean
+	elif velocity.x < 0:
+		if $Body.animation == "start_left" and $Body.frame == 3:
+			$Body.animation = "move_left"
+		elif $Body.animation != "move_left":
+			$Body.play("start_left")
+
+# Handle focus input (fade in hitbox visible, slow movement by 50%)
+func focus(is_focused : bool) -> void:
+	if is_focused:
+		speed = 100
+		opacity += .1
+		opacity = clamp(opacity, 0, 1)
+		$HitBox.set_self_modulate(Color(1, 1, 1, opacity))
+	else:
+		speed = 200
+		opacity -= .1
+		opacity = clamp(opacity, 0, 1)
+		$HitBox.set_self_modulate(Color(1, 1, 1, opacity))
+
+# Displays player shield, enables shield hitbox
+func shield(is_shielded : bool) -> void:
+	if is_shielded:
+		$Shield.show()
+		$ShieldHitBox.set_deferred("disabled", false)
+	else:
+		$Shield.hide()
+		$ShieldHitBox.set_deferred("disabled", true)
+
+# Reduces shield durability
+func damage_shield() -> void:
+	shield_energy -= min(10, shield_stagger)
+	shield_regeneration_timer = min(1.0, shield_regeneration_timer + .05)
+	$ShieldRegenerationTimer.start(shield_regeneration_timer)
+	shield_energy = clamp(shield_energy, -50, 255)
+	shield_stagger -= max(10, shield_stagger * .05)
+
+func regenerate_shield() -> void:
+	if $ShieldRegenerationTimer.is_stopped():
+		shield_energy += 1
+		shield_regeneration_timer = 0.1
+
+func update_shield_bar() -> void:
+	$ShieldLifeBar.set_value_no_signal(shield_energy)
 
 # Runs when 'confirm' input is pressed.
 # Every 4 frames it creates a playershot node for each option.
@@ -104,6 +160,8 @@ func fire() -> void:
 func _on_body_entered(body):
 	if "item_type" in body:
 		collect_item(body)
+	elif not $ShieldHitBox.disabled:
+		absorb_bullet(body)
 	else:
 		player_death(body)
 
@@ -114,6 +172,14 @@ func collect_item(body) -> void:
 		body.queue_free()
 	else:
 		body.set_magnetize(true)
+
+func absorb_bullet(body) -> void:
+	
+	if body.collision_name == "bullet":
+		body.disappearing = true
+		shield_stagger += 10
+	if body.collision_name == "enemy":
+		shield_stagger += 1
 
 # If the body is a bullet or an enemy, the player is hit and loses a life before respawning (if lives > 0).
 # If the players lives <= 0, starts the gameover function in main? could be better elsewhere (TODO)
