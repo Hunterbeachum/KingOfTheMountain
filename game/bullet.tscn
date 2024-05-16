@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://h65kgvcii8eq"]
+[gd_scene load_steps=5 format=3 uid="uid://h65kgvcii8eq"]
 
 [ext_resource type="Script" path="res://game/bullet.gd" id="1_m27v7"]
+[ext_resource type="PackedScene" uid="uid://dwatql4ad2xea" path="res://game/particles.tscn" id="2_pnmt2"]
 [ext_resource type="Texture2D" uid="uid://cr7vm785mx0ly" path="res://art/MOFprojectiles.png" id="2_snw3c"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g31ms"]
@@ -12,6 +13,7 @@ mass = 0.01
 gravity_scale = 0.0
 linear_damp_mode = 1
 script = ExtResource("1_m27v7")
+particles_scene = ExtResource("2_pnmt2")
 
 [node name="Body" type="Sprite2D" parent="."]
 texture = ExtResource("2_snw3c")

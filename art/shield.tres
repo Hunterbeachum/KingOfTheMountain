@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://dgr7u6odyroy7"]
+
+[ext_resource type="Texture2D" uid="uid://cr7vm785mx0ly" path="res://art/MOFprojectiles.png" id="1_doetk"]
+
+[resource]
+atlas = ExtResource("1_doetk")
+region = Rect2(461, 33, 63, 63)

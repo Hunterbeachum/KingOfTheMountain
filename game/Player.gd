@@ -3,6 +3,7 @@ extends Area2D
 var particles : GPUParticles2D
 @export var particles_scene : PackedScene
 @export var playershot_scene : PackedScene
+@export var shield_scene : PackedScene
 @export var speed = 200
 var shield_energy : int = 255
 var shield_stagger : int = 0
@@ -137,6 +138,7 @@ func damage_shield() -> void:
 	$ShieldRegenerationTimer.start(shield_regeneration_timer)
 	shield_energy = clamp(shield_energy, -50, 255)
 	shield_stagger -= max(10, shield_stagger * .05)
+	shield_stagger = clamp(shield_stagger, 0, 255)
 
 func regenerate_shield() -> void:
 	if $ShieldRegenerationTimer.is_stopped():
@@ -146,6 +148,7 @@ func regenerate_shield() -> void:
 func update_shield_bar() -> void:
 	$ShieldLifeBar.set_value_no_signal(shield_energy)
 	$ShieldLifeDebtBar.set_value_no_signal(max(0.0, -shield_energy))
+	$ShieldStaggerBar.set_value_no_signal(shield_stagger)
 
 # Runs when 'confirm' input is pressed.
 # Every 4 frames it creates a playershot node for each option.
@@ -180,6 +183,7 @@ func absorb_bullet(body) -> void:
 	
 	if body.collision_name == "bullet":
 		body.disappearing = true
+		body.generate_particles()
 		shield_stagger += 10
 	if body.collision_name == "enemy":
 		shield_stagger += 1

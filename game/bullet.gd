@@ -12,6 +12,9 @@ var pausing : bool = false
 var hitbox_active : bool = true
 @onready var bullet_lifespan = $BulletLifespan
 @onready var bullet_hitbox = $BulletHitBox
+@export var particles_scene : PackedScene
+var particles : GPUParticles2D
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -108,3 +111,11 @@ func disappear() -> void:
 	disappearing = true
 # TODO delete the bullet if it collides w/ the player
 # TODO animate bullets being deleted from collision/bombs
+
+func generate_particles() -> void:
+	particles = particles_scene.instantiate()
+	add_child(particles)
+	particles.emitting = true
+	particles.process_material.scale_max = .5
+	particles.set_modulate(Color.ORANGE_RED)
+	particles.add_to_group("bullet_particles")
