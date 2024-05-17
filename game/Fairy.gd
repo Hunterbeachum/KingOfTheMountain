@@ -174,6 +174,7 @@ func spawn_item() -> void:
 	new_item.set_type(drop_item)
 	new_item.position = position
 	new_item.linear_velocity = Vector2(randf_range(-23.0, 23.0), randf_range(-150.0, -130.0))
+	new_item.add_to_group("items")
 	get_parent().add_child(new_item)
 
 func generate_particles(type : String) -> void:

@@ -12,7 +12,6 @@ func _process(delta):
 	ripple.offset.x = -32.0 + (64.0 * progress)
 	ripple.region_rect = Rect2(0.0, 200.0 * progress * randf(), 12, 64 * sqrt(1 - 4 * pow(progress - 0.5, 2)))
 	flip()
-	pass
 
 func start_new_pulse() -> void:
 	if progress == 1.0:

@@ -64,6 +64,8 @@ func _process(delta):
 			position = position.lerp($PlayerStartPosition.position, .1)
 		# Handle player animation
 		play_animation(velocity)
+		if position.y < 148:
+			magnetize_all_items()
 
 # Handle movement input
 func handle_movement_input() -> Vector2:
@@ -192,20 +194,21 @@ func absorb_bullet(body) -> void:
 # If the players lives <= 0, starts the gameover function in main? could be better elsewhere (TODO)
 func player_death(body) -> void:
 	# Must be deferred as we can't change physics properties on a physics callback.
-	$PlayerHitBox.set_deferred("disabled", true)
-	particles = particles_scene.instantiate()
-	add_child(particles)
-	particles.emitting = true
-	particles.add_to_group("player_particles")
-	$DeathTimer.start()
-	$Body.hide() # Player disappears after being hit.
-	get_tree().call_group("option", "hide")
-	GameState.player_lives -= 1
-	if GameState.player_lives <= 0:
-		SignalBus.game_over.emit()
-	# TODO $DeathSound.play()
-	SignalBus.player_hit.emit()
-	get_tree().call_group("bullets", "disappear")
+	if $DeathTimer.is_stopped() and $StartTimer.is_stopped():
+	#	$PlayerHitBox.set_deferred("disabled", true)
+		particles = particles_scene.instantiate()
+		add_child(particles)
+		particles.emitting = true
+		particles.add_to_group("player_particles")
+		$DeathTimer.start()
+		$Body.hide() # Player disappears after being hit.
+		get_tree().call_group("option", "hide")
+		GameState.player_lives -= 1
+		if GameState.player_lives <= 0:
+			SignalBus.game_over.emit()
+		# TODO $DeathSound.play()
+		SignalBus.player_hit.emit()
+		get_tree().call_group("bullets", "disappear")
 
 # Animates the death sprite by expanding it and reducing the alpha
 func play_death_animation() -> void:
@@ -215,7 +218,8 @@ func play_death_animation() -> void:
 
 # Blink the player if they are currently immune (collision disabled) else set opacity to full
 func flash_if_immune() -> void:
-	if $PlayerHitBox.is_disabled():
+#	if $PlayerHitBox.is_disabled():
+	if not $StartTimer.is_stopped():
 		$Body.self_modulate.a = 0.1 if Engine.get_frames_drawn() % 3 in [0, 1] else 1.0
 	else:
 		$Body.self_modulate.a = 1.0
@@ -228,7 +232,7 @@ func rotate_children() -> void:
 
 # Loads player in from off-screen, granting temporary invincibility
 func start() -> void:
-	$PlayerHitBox.disabled = true
+#	$PlayerHitBox.disabled = true
 	$DeathAnimation.hide()
 	$DeathAnimation.scale = Vector2.ONE
 	$DeathAnimation.self_modulate = Color(1,1,1,1)
@@ -243,7 +247,7 @@ func update_position() -> void:
 	GameState.player_position = position
 
 func _on_start_timer_timeout():
-	$PlayerHitBox.set_deferred("disabled", false)
+#	$PlayerHitBox.set_deferred("disabled", false)
 	get_tree().call_group("player_particles", "queue_free")
 
 func _on_death_timer_timeout():
@@ -284,3 +288,6 @@ func manage_options() -> void:
 			option_body.position = Vector2(x, y)
 			option_body.add_to_group("option")
 			add_child(option_body)
+
+func magnetize_all_items() -> void:
+	get_tree().call_group("items", "set_magnetize", true)
