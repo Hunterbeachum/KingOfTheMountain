@@ -2,6 +2,7 @@ extends RigidBody2D
 var item_type : String
 var magnetized : bool = false
 var collision_name : String = "item"
+var distance_from_player_on_magnetization : float = 0.0
 
 
 func _ready():
@@ -9,8 +10,9 @@ func _ready():
 
 func _process(delta):
 	if magnetized:
+		gravity_scale = 0.0
 		$AttractBox.set_deferred("disabled", true)
-		global_position = global_position.lerp(GameState.player_position, .2)
+		global_position += Vector2(GameState.player_position - global_position).normalized() * 300.0 * delta
 	else:
 		$AttractBox.set_deferred("disabled", false)
 
@@ -19,6 +21,8 @@ func item_start():
 
 func set_magnetize(value):
 	magnetized = value
+	if magnetized and distance_from_player_on_magnetization == 0.0:
+		distance_from_player_on_magnetization = global_position.distance_to(GameState.player_position)
 
 func set_type(type_name : String) -> void:
 	item_type = type_name

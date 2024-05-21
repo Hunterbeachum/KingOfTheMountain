@@ -427,7 +427,7 @@ particles_scene = ExtResource("4_woyj2")
 [node name="Body" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_3w1hd")
 sprite_frames = SubResource("SpriteFrames_ufwwe")
-animation = &"bluestart_move"
+animation = &"blueidle"
 
 [node name="EnemyHitBox" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_xkks0")
@@ -441,6 +441,10 @@ wait_time = 0.25
 one_shot = true
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+
+[node name="TurningDelay" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
 
 [connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_entered"]
 [connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

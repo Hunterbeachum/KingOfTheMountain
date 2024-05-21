@@ -77,7 +77,6 @@ func _process(delta):
 		if not pattern_data.is_empty():
 			if not draw_timer.is_stopped():
 				generate_pattern()
-	pass
 
 func generate_rune(rune_data : Array) -> void:
 	var rune = rune_scene.instantiate()
@@ -101,8 +100,7 @@ func generate_rune(rune_data : Array) -> void:
 		rune.speed = rune_data[1]
 		rune.fired_at_player = true
 		rune.top_level = true
-	rune.add_to_group("runes" + str(parent[1]))
-	rune.add_to_group("runes" + str(parent[1]) + pattern_name)
+	make_groups(rune, "runes")
 	rune.connect("start_pattern", start_timers)
 	SignalBus.node_added_to_scene.emit(rune)
 
@@ -133,7 +131,7 @@ func free_fire(rune : Node) -> void:
 		var bullet = bullet_scene.instantiate()
 		bullet.linear_velocity = initial_velocity.rotated(calculate_targeting(rune, target[0]) + ((i + 0.5) - (spread / 2.0)) * PI / spread_divisor)
 		bullet.set_updates(updates)
-		bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
+		make_groups(bullet, "bullets")
 		bullet.global_position = rune.global_position
 		SignalBus.node_added_to_scene.emit(bullet)
 
@@ -143,7 +141,7 @@ func fire_once(rune : Node) -> void:
 			var bullet = bullet_scene.instantiate()
 			bullet.linear_velocity = initial_velocity.rotated(calculate_targeting(rune, target[0]) + ((i + 0.5) - (spread / 2.0)) * PI / spread_divisor)
 			bullet.set_updates(updates)
-			bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
+			make_groups(bullet, "bullets")
 			bullet.global_position = rune.global_position
 			bullet.angular_velocity = initial_angular_velocity
 			SignalBus.node_added_to_scene.emit(bullet)
@@ -177,11 +175,9 @@ func draw(rune : Node) -> void:
 		bullet.global_position = bullet_spawn_location
 		# bullet_velocity.rotated(n)
 		bullet.linear_velocity = initial_velocity.rotated((direction) + (i - 1) * PI / 3 )
-		bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
+		make_groups(bullet, "bullets")
 		# First parent is Fairy or Boss scene, second is GameField scene
 		SignalBus.node_added_to_scene.emit(bullet)
-		var test = bullet.global_position
-		bullet.add_to_group("bullets" + str(parent[1]) + pattern_name)
 		if rune_path_follower.progress_ratio >= 1.0:
 			get_tree().call_group("bullets" + str(parent[1]) + pattern_name, "set_linear_velocity", Vector2(100.0, 0.0).rotated((direction) - (i - 1) * PI / 30 ))
 			drawing_pattern = false
@@ -220,3 +216,8 @@ func start_timers() -> void:
 
 func set_stop_firing(argument : bool):
 	stop_firing = argument
+
+func make_groups(node_to_add : Node, group_name : String) -> void:
+	node_to_add.add_to_group(group_name)
+	node_to_add.add_to_group(group_name + str(parent[1]))
+	node_to_add.add_to_group(group_name + str(parent[1]) + pattern_name)

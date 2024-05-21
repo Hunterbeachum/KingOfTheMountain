@@ -203,10 +203,9 @@ func player_death(body) -> void:
 		$DeathTimer.start()
 		$Body.hide() # Player disappears after being hit.
 		get_tree().call_group("option", "hide")
-		GameState.player_lives -= 1
+		GameState.player_lives = clamp((GameState.player_lives - 1), 0, 8)
 		if GameState.player_lives <= 0:
 			SignalBus.game_over.emit()
-		# TODO $DeathSound.play()
 		SignalBus.player_hit.emit()
 		get_tree().call_group("bullets", "disappear")
 

@@ -19,6 +19,7 @@ var on_screen : bool = false
 var distance_to_stop_point : float
 var fire_while_moving : bool
 var previous_frame_x_position : float = 0.0
+var turning : bool = false
 @export var bullet_handler: PackedScene
 @export var item: PackedScene
 @export var particles_scene : PackedScene
@@ -66,7 +67,7 @@ func enemy_movement(delta) -> void:
 # Manage animation based on x velocity
 # x == 0 = reverse from L/R animation then idle
 func play_animation() -> void:
-	if get_parent().global_position.x == previous_frame_x_position:
+	if get_parent().global_position.x == previous_frame_x_position or turning:
 		if $Body.animation == color + "start_move" and $Body.frame == 0:
 			$Body.animation = color + "idle"
 		elif $Body.animation == color + "start_move":
@@ -80,12 +81,19 @@ func play_animation() -> void:
 			$Body.play(color + "start_move")
 		elif $Body.animation == color + "start_move" and $Body.frame == 3:
 			$Body.play(color + "move")
-	if $Body.animation == color + "idle" or get_parent().global_position.x > previous_frame_x_position:
-		$Body.set_flip_h(false)
-	elif get_parent().global_position.x < previous_frame_x_position:
-		var test = [get_parent().global_position.x, previous_frame_x_position]
-		$Body.set_flip_h(true)
+	handle_facing()
 	previous_frame_x_position = get_parent().global_position.x
+
+func handle_facing() -> void:
+	var x_difference_is_positive = get_parent().global_position.x >= previous_frame_x_position
+	if x_difference_is_positive and $Body.flip_h and $TurningDelay.is_stopped():
+		turning = true
+	elif not x_difference_is_positive and not $Body.flip_h and $TurningDelay.is_stopped():
+		turning = true
+	if $Body.animation == color + "idle" and turning:
+		$Body.set_flip_h(not $Body.flip_h)
+		$TurningDelay.start()
+		turning = false
 
 func play_death_animation() -> void:
 	$EnemyDeathAnimation.show()
@@ -172,10 +180,10 @@ func perish() -> void:
 func spawn_item() -> void:
 	var new_item = item.instantiate()
 	new_item.set_type(drop_item)
-	new_item.position = position
+	new_item.global_position = global_position
 	new_item.linear_velocity = Vector2(randf_range(-23.0, 23.0), randf_range(-150.0, -130.0))
 	new_item.add_to_group("items")
-	get_parent().add_child(new_item)
+	SignalBus.node_added_to_scene.emit(new_item)
 
 func generate_particles(type : String) -> void:
 	if type == "death":

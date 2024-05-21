@@ -15,6 +15,7 @@ var background_instance
 
 # Sets player lives to 3 and loads in the stage data
 func _ready():
+	SignalBus.game_over.connect(game_over)
 	SignalBus.node_added_to_scene.connect(add_child)
 	GameState.player_lives = 3
 	load_stage(current_stage)
@@ -71,3 +72,8 @@ func alter_camera(tilt_command : Array) -> void:
 
 func alter_scroll(scroll_command : Array) -> void:
 	background_instance.set_scroll(scroll_command[1])
+
+func game_over() -> void:
+	get_tree().call_group("bullets", "pause")
+#	get_viewport().gui_focus_changed.connect(_on_focus_changed)
+#	configure_focus()

@@ -3,6 +3,7 @@ extends Sprite2D
 var enemy_position : Vector2
 var destination : Vector2 = Vector2.ZERO
 @onready var aura = $Aura
+@onready var on_screen_notifier = $VisibleOnScreenNotifier2D
 var startup_time : int = 1000
 var rune_alpha : float = 1.0
 var disappearing : bool = false
@@ -60,6 +61,7 @@ func _process(delta):
 	else:
 		rotation += PI/180
 	aura.set_rotation(2 * rotation)
+	on_screen_notifier.global_rotation = 0.0
 
 func create_path() -> void:
 	const Y_DIP = 40.0
