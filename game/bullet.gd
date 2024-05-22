@@ -8,7 +8,7 @@ var active_updates : Array
 var time_passed : float
 var stored_linear_velocity : Vector2
 var disappearing : bool = false
-var pausing : bool = false
+var paused : bool = false
 var hitbox_active : bool = true
 @onready var bullet_lifespan = $BulletLifespan
 @onready var bullet_hitbox = $BulletHitBox
@@ -19,9 +19,9 @@ var particles : GPUParticles2D
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	name = "BULLET"
+	SignalBus.pause.connect(pause)
 	add_to_group("active_bullets")
 	$BulletLifespan.start()
-	show()
 	stored_linear_velocity = linear_velocity
 	initial_speed = abs(linear_velocity.x) + abs(linear_velocity.y)
 
@@ -37,10 +37,10 @@ func _process(delta):
 		$Body.scale += $Body.scale * .1
 		if $Body.get_self_modulate().a < .1:
 			queue_free()
-	if pausing:
-		linear_velocity = linear_velocity.lerp(Vector2.ZERO, .05)
-	elif not pausing:
-		linear_velocity = linear_velocity.lerp(stored_linear_velocity, .05)
+	if paused:
+		linear_velocity = linear_velocity.lerp(Vector2.ZERO, .1)
+	elif not paused:
+		linear_velocity = linear_velocity.lerp(stored_linear_velocity, .1)
 	if not updates_queue.is_empty():
 		if 60.0 - bullet_lifespan.time_left > updates_queue[0][1] * .001:
 			active_updates.append(updates_queue.pop_front())
@@ -68,9 +68,9 @@ func run_update(active_update_list : Array):
 		elif update_name == "homing":
 			home(active_update[3])
 		elif update_name == "pause":
-			pause()
+			pause(true)
 		elif update_name == "resume":
-			resume()
+			pause(false)
 		elif update_name == "change_direction":
 			change_direction(active_update[3])
 		if active_update[2] == -1:
@@ -88,12 +88,9 @@ func home(magnitude : float) -> void:
 	var diff = target_direction - direction
 	linear_velocity = Vector2(initial_speed, 0.0).rotated(direction + diff * (magnitude * .001))
 
-func pause() -> void:
-	pausing = true
-	stored_linear_velocity = linear_velocity
-
-func resume() -> void:
-	pausing = false
+func pause(value : bool) -> void:
+	paused = value
+	stored_linear_velocity = linear_velocity if paused else stored_linear_velocity
 
 func change_direction(magnitude : float) -> void:
 	linear_velocity = linear_velocity.rotated(PI / magnitude)

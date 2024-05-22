@@ -15,6 +15,7 @@ var dead : bool = false
 var enemy_path : Path2D
 var enemy_path_follower : PathFollow2D
 var moving : bool = true
+var paused : bool = false
 var on_screen : bool = false
 var distance_to_stop_point : float
 var fire_while_moving : bool
@@ -26,6 +27,7 @@ var turning : bool = false
 var particles : GPUParticles2D
 
 func _ready():
+	SignalBus.pause.connect(pause)
 	load_enemy()
 	start()
 	pass
@@ -33,7 +35,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	UpdateEnemyGameState()
-	if moving:
+	if moving and not paused:
 		enemy_movement(delta)
 	if $EnemyDeathTimer.time_left > 0:
 		play_death_animation()
@@ -115,6 +117,7 @@ func play_pattern(pattern : String) -> void:
 	var new_bullet_handler = bullet_handler.instantiate()
 	new_bullet_handler.set_parent(false, enemy_name, enemy_index, pattern)
 	add_child(new_bullet_handler)
+	new_bullet_handler.add_to_group("patterns")
 	new_bullet_handler.add_to_group("patterns" + str(enemy_index))
 
 func play_death_patterns() -> void:
@@ -169,7 +172,7 @@ func flash() -> void:
 func perish() -> void:
 	dead = true
 	pattern_list.clear()
-	get_tree().call_group("patterns" + str(enemy_index), "set_stop_firing", true) # TODO may be redundant
+	get_tree().call_group("patterns" + str(enemy_index), "pause", true)
 	get_tree().call_group("runes" + str(enemy_index), "perish")
 	play_death_patterns()
 	$EnemyHitBox.queue_free()
@@ -207,6 +210,12 @@ func _on_visible_on_screen_notifier_2d_screen_exited():
 		get_tree().call_group("runes" + str(enemy_index), "perish")
 		queue_free()
 
+func pause(value : bool) -> void:
+	paused = value
+	if paused:
+		$Body.pause()
+	else:
+		$Body.play()
 
 func _on_visible_on_screen_notifier_2d_screen_entered():
 	on_screen = true

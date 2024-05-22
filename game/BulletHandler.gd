@@ -32,10 +32,10 @@ var rune_path_follower : PathFollow2D
 @onready var draw_timer : Timer = $DrawTimer
 @onready var update_timer : Timer = $UpdateTimer
 var drawing_pattern = false
-var stop_firing : bool = false
+var paused : bool = false
 
 func _ready():
-	var test = get_tree()
+	SignalBus.pause.connect(pause)
 	load_pattern()
 	for rune in rune_locations:
 		generate_rune(rune)
@@ -72,7 +72,7 @@ func load_pattern():
 	add_to_group("active_patterns")
 
 func _process(delta):
-	if not stop_firing:
+	if not paused:
 		pattern_frames += 1
 		if not pattern_data.is_empty():
 			if not draw_timer.is_stopped():
@@ -214,8 +214,11 @@ func start_timers() -> void:
 	draw_timer.start(draw_time)
 	loop_timer.start(loop_time)
 
-func set_stop_firing(argument : bool):
-	stop_firing = argument
+func pause(value : bool):
+	paused = value
+	$LoopTimer.paused = value
+	$DrawTimer.paused = value
+	$UpdateTimer.paused = value
 
 func make_groups(node_to_add : Node, group_name : String) -> void:
 	node_to_add.add_to_group(group_name)

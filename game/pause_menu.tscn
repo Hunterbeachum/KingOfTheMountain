@@ -1,0 +1,75 @@
+[gd_scene load_steps=6 format=3 uid="uid://dmasq15eg8804"]
+
+[ext_resource type="FontFile" uid="uid://dnbulrnmet0bk" path="res://font/DFKakuTaiHiStd-W4.otf" id="1_h58vi"]
+[ext_resource type="Script" path="res://game/pause_menu.gd" id="2_luxt3"]
+[ext_resource type="Texture2D" uid="uid://c0hu66graq11q" path="res://art/NewGameSelected.tres" id="3_3bvjp"]
+[ext_resource type="Texture2D" uid="uid://msrrsnb6qr4o" path="res://art/OptionSelected.tres" id="4_5t0br"]
+[ext_resource type="Texture2D" uid="uid://c7iynu845d7ig" path="res://art/QuitSelected.tres" id="5_yutrr"]
+
+[node name="pause_menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -256.0
+offset_bottom = -32.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 384.0
+offset_bottom = 448.0
+color = Color(0, 0, 0, 0.854902)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 384.0
+offset_bottom = 448.0
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 200
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="MarginContainer/CenterContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("1_h58vi")
+theme_override_font_sizes/font_size = 25
+text = "Paused"
+
+[node name="PauseMenu" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("2_luxt3")
+
+[node name="NewGame" type="TextureRect" parent="MarginContainer/PauseMenu"]
+custom_minimum_size = Vector2(100, 20)
+layout_mode = 2
+texture = ExtResource("3_3bvjp")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Options" type="TextureRect" parent="MarginContainer/PauseMenu"]
+custom_minimum_size = Vector2(100, 20)
+layout_mode = 2
+texture = ExtResource("4_5t0br")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Quit" type="TextureRect" parent="MarginContainer/PauseMenu"]
+custom_minimum_size = Vector2(100, 20)
+layout_mode = 2
+texture = ExtResource("5_yutrr")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Pointer" type="ColorRect" parent="."]
+color = Color(1, 1, 1, 0.807843)

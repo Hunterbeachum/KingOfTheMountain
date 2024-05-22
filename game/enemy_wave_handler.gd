@@ -16,6 +16,7 @@ var finished_spawning : bool = false
 
 func _ready():
 	name = "ENEMY_WAVE_HANDLER"
+	SignalBus.pause.connect(pause)
 	load_enemy_wave_data()
 	start_spawn_cycle()
 
@@ -63,7 +64,11 @@ func spawn_enemy(enemy_iterator : int) -> void:
 	new_enemy_instance.set_enemy_name(enemy_name)
 	new_enemy_instance.set_drop_item(drop_item)
 	new_enemy_instance.set_fire_while_moving(fire_while_moving)
+	new_enemy_instance.add_to_group("enemies")
 	enemy_path_follower.add_child(new_enemy_instance)
+
+func pause(value : bool) -> void:
+	$SpawnTimer.paused = value
 
 func _on_spawn_timer_timeout():
 	if remaining_enemy_count > 0:

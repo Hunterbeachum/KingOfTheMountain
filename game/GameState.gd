@@ -24,5 +24,5 @@ var enemy_list : Array = []
 
 # Constants
 const CENTERSCREEN = Vector2(180.0, 96.0)
-const STARTING_LIVES : int = 3
+const STARTING_LIVES : int = 1
 const STARTING_BOMBS : int = 3

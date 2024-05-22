@@ -11,10 +11,12 @@ var enemy_instance
 var player_instance
 var boss_instance
 var background_instance
+var menu_instance
 @export var enemy_wave_handler : PackedScene
 
 # Sets player lives to 3 and loads in the stage data
 func _ready():
+	SignalBus.pause.connect(pause)
 	SignalBus.game_over.connect(game_over)
 	SignalBus.node_added_to_scene.connect(add_child)
 	GameState.player_lives = 3
@@ -65,6 +67,7 @@ func update_current_stage() -> void:
 func spawn_wave(wave : Array) -> void:
 	var new_enemy_wave_handler = enemy_wave_handler.instantiate()
 	new_enemy_wave_handler.wave_data = GameState.data["enemy_wave"][wave[1]]
+	new_enemy_wave_handler.add_to_group("wave_handlers")
 	add_child(new_enemy_wave_handler)
 
 func alter_camera(tilt_command : Array) -> void:
@@ -73,8 +76,18 @@ func alter_camera(tilt_command : Array) -> void:
 func alter_scroll(scroll_command : Array) -> void:
 	background_instance.set_scroll(scroll_command[1])
 
+func pause(value : bool) -> void:
+	$StageTimer.paused = value
+
 func game_over() -> void:
 	var test = get_tree().get_nodes_in_group("bullets")
-	get_tree().call_group("bullets", "pause")
+	SignalBus.pause.emit(true)
+	load_menu()
 #	get_viewport().gui_focus_changed.connect(_on_focus_changed)
 #	configure_focus()
+
+func load_menu() -> void:
+	var pause_menu = load("res://game/pause_menu.tscn")
+	menu_instance = pause_menu.instantiate()
+	add_child(menu_instance)
+	pass

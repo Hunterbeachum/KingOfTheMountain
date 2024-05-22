@@ -16,6 +16,7 @@ var degrees : float = 0.0
 var parent_index : int
 var pattern_name : String
 var placed : bool = false
+var paused : bool = false
 signal start_pattern
 
 # t = time since process began.
@@ -27,42 +28,46 @@ var path_points : Array = []
 
 
 func _ready():
+	SignalBus.pause.connect(pause)
 	name = "RUNE_enemy" + str(parent_index) + "_"
 	global_position = get_enemy_position()
 	if circling != 0 and not fired_at_player:
 		create_path()
 
 func _process(delta):
-	t = min(t + delta * (1000 / startup_time), 1.0)
-	signal_start()
-	if circling != 0:
-		degrees += circling
-		destination = get_enemy_position() + Vector2(80.0, 0.0).rotated(deg_to_rad(degrees))
-		global_position = get_enemy_position().lerp(destination, t)
-		$Aura.self_modulate.a = t
-		$Aura.global_position = destination
-		$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
-	elif fired_at_player:
-		position = position + Vector2(speed * delta, 0.0).rotated(position.angle_to_point(destination))
-	elif under_enemy:
-		global_position = get_enemy_position()
-		set_scale(Vector2(0.5, 0.5))
-		$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
+	if not paused:
+		t = min(t + delta * (1000 / startup_time), 1.0)
+		signal_start()
+		if circling != 0:
+			degrees += circling
+			destination = get_enemy_position() + Vector2(80.0, 0.0).rotated(deg_to_rad(degrees))
+			global_position = get_enemy_position().lerp(destination, t)
+			$Aura.self_modulate.a = t
+			$Aura.global_position = destination
+			$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
+		elif fired_at_player:
+			position = position + Vector2(speed * delta, 0.0).rotated(position.angle_to_point(destination))
+		elif under_enemy:
+			global_position = get_enemy_position()
+			set_scale(Vector2(0.5, 0.5))
+			$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
+		else:
+			$Aura.global_position = destination
+			$Aura.self_modulate.a = t
+			$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
+			if t < 1.0:
+				position = _cubic_bezier(path_points[0], path_points[1], path_points[2], path_points[3])
+		if disappearing and modulate.a < .1:
+			queue_free()
+		fade()
+		if circling != 0:
+			rotation += PI/180 * -circling
+		else:
+			rotation += PI/180
+		aura.set_rotation(2 * rotation)
+		on_screen_notifier.global_rotation = 0.0
 	else:
-		$Aura.global_position = destination
-		$Aura.self_modulate.a = t
-		$Aura.set_scale(Vector2(2.3 - t, 2.3 - t))
-		if t < 1.0:
-			position = _cubic_bezier(path_points[0], path_points[1], path_points[2], path_points[3])
-	if disappearing and modulate.a < .1:
-		queue_free()
-	fade()
-	if circling != 0:
-		rotation += PI/180 * -circling
-	else:
-		rotation += PI/180
-	aura.set_rotation(2 * rotation)
-	on_screen_notifier.global_rotation = 0.0
+		pass
 
 func create_path() -> void:
 	const Y_DIP = 40.0
@@ -93,6 +98,9 @@ func get_enemy_position() -> Vector2:
 func perish() -> void:
 	rune_alpha = 0.0
 	disappearing = true
+
+func pause(value : bool) -> void:
+	paused = value
 
 func _on_visible_on_screen_notifier_2d_screen_exited():
 	queue_free()

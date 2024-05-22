@@ -206,6 +206,7 @@ func player_death(body) -> void:
 		GameState.player_lives = clamp((GameState.player_lives - 1), 0, 8)
 		if GameState.player_lives <= 0:
 			SignalBus.game_over.emit()
+			queue_free()
 		else:
 			get_tree().call_group("bullets", "disappear")
 		SignalBus.player_hit.emit()
