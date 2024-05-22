@@ -27,6 +27,7 @@ var path_points : Array = []
 
 
 func _ready():
+	name = "RUNE_enemy" + str(parent_index) + "_"
 	global_position = get_enemy_position()
 	if circling != 0 and not fired_at_player:
 		create_path()
@@ -65,8 +66,8 @@ func _process(delta):
 
 func create_path() -> void:
 	const Y_DIP = 40.0
-	var start_x = GameState.enemy_gamestate[parent_index][0]
-	var start_y = GameState.enemy_gamestate[parent_index][1]
+	var start_x = GameState.enemy_list[parent_index][0]
+	var start_y = GameState.enemy_list[parent_index][1]
 	var x_diff = destination.x - start_x
 	var point1 = Vector2(start_x - (0.0 * x_diff), start_y + Y_DIP)
 	var point2 = Vector2(start_x + (1.5 * x_diff), start_y + Y_DIP)
@@ -87,7 +88,7 @@ func fade() -> void:
 	set_modulate(modulate.lerp(Color(1,1,1,rune_alpha), .05))
 
 func get_enemy_position() -> Vector2:
-	return Vector2(GameState.enemy_gamestate[parent_index][0], GameState.enemy_gamestate[parent_index][1])
+	return Vector2(GameState.enemy_list[parent_index][0], GameState.enemy_list[parent_index][1])
 
 func perish() -> void:
 	rune_alpha = 0.0

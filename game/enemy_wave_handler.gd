@@ -15,6 +15,7 @@ var finished_spawning : bool = false
 @export var enemy_scene : PackedScene
 
 func _ready():
+	name = "ENEMY_WAVE_HANDLER"
 	load_enemy_wave_data()
 	start_spawn_cycle()
 

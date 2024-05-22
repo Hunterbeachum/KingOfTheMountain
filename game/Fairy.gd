@@ -8,7 +8,7 @@ var speed : int = 0
 var health : int = 100
 var pattern_list : Array = []
 var death_pattern_list : Array = []
-var enemy_gamestate_appended : bool = false
+var enemy_list_appended : bool = false
 var enemy_index : int
 var flashing : bool = false
 var dead : bool = false
@@ -148,12 +148,13 @@ func set_drop_item(item_name : String) -> void:
 	drop_item = item_name
 
 func UpdateEnemyGameState() -> void:
-	if not enemy_gamestate_appended:
-		enemy_index = GameState.enemy_gamestate.size()
-		GameState.enemy_gamestate.append([global_position.x, global_position.y, pattern_list])
-		enemy_gamestate_appended = true
-	elif enemy_gamestate_appended:
-		GameState.enemy_gamestate[enemy_index] = [global_position.x, global_position.y, pattern_list]
+	if not enemy_list_appended:
+		enemy_index = GameState.enemy_list.size()
+		GameState.enemy_list.append([global_position.x, global_position.y, pattern_list])
+		enemy_list_appended = true
+		name = enemy_name + str(enemy_index)
+	elif enemy_list_appended:
+		GameState.enemy_list[enemy_index] = [global_position.x, global_position.y, pattern_list]
 
 func get_hit() -> void:
 	if not flashing:

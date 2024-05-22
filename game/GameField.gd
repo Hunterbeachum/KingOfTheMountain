@@ -74,6 +74,7 @@ func alter_scroll(scroll_command : Array) -> void:
 	background_instance.set_scroll(scroll_command[1])
 
 func game_over() -> void:
+	var test = get_tree().get_nodes_in_group("bullets")
 	get_tree().call_group("bullets", "pause")
 #	get_viewport().gui_focus_changed.connect(_on_focus_changed)
 #	configure_focus()

@@ -206,8 +206,9 @@ func player_death(body) -> void:
 		GameState.player_lives = clamp((GameState.player_lives - 1), 0, 8)
 		if GameState.player_lives <= 0:
 			SignalBus.game_over.emit()
+		else:
+			get_tree().call_group("bullets", "disappear")
 		SignalBus.player_hit.emit()
-		get_tree().call_group("bullets", "disappear")
 
 # Animates the death sprite by expanding it and reducing the alpha
 func play_death_animation() -> void:

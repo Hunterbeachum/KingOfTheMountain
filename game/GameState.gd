@@ -20,7 +20,7 @@ var drawing_pattern : bool = false
 
 # Stage properties
 var current_stage : String = "stage_1"
-var enemy_gamestate : Array = []
+var enemy_list : Array = []
 
 # Constants
 const CENTERSCREEN = Vector2(180.0, 96.0)
