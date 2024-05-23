@@ -27,7 +27,6 @@ func _on_start_timer_timeout():
 	$BossMovementTimer.start()
 
 func game_over():
-	# TODO Destroy the rigidbody2D that collided
 	# TODO $Music.stop()
 	# TODO $DeathSound.play()
 	$BossAttackTimer.stop()

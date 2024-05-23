@@ -28,7 +28,6 @@ var path_points : Array = []
 
 
 func _ready():
-	SignalBus.pause.connect(pause)
 	name = "RUNE_enemy" + str(parent_index) + "_"
 	global_position = get_enemy_position()
 	if circling != 0 and not fired_at_player:

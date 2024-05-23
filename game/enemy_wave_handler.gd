@@ -16,7 +16,6 @@ var finished_spawning : bool = false
 
 func _ready():
 	name = "ENEMY_WAVE_HANDLER"
-	SignalBus.pause.connect(pause)
 	load_enemy_wave_data()
 	start_spawn_cycle()
 

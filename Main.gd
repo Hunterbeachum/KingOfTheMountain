@@ -2,9 +2,11 @@ extends Node
 
 var title_screen_instance
 var game_screen_instance
+var pause_menu_instance
 
 # 
 func _ready():
+	SignalBus.pause.connect(toggle_pause_menu)
 	SignalBus.menu_command.connect(_menu_actioned)
 	load_title_scene()
 
@@ -17,11 +19,23 @@ func load_title_scene() -> void:
 	title_screen_instance = title_screen.instantiate()
 	add_child(title_screen_instance)
 
+func toggle_pause_menu() -> void:
+	if is_instance_valid(pause_menu_instance):
+		pause_menu_instance.queue_free()
+		get_tree().paused = false
+	else:
+		get_tree().paused = true
+		var pause_menu = load("res://game/pause_menu.tscn")
+		pause_menu_instance = pause_menu.instantiate()
+		add_child(pause_menu_instance)
+
 # Receives menu actions and runs functions based on the command
 # "NewGame" command behaves differently if title screen scene is loaded
 func _menu_actioned(command : String) -> void:
 	if command == "NewGame":
-		if title_screen_instance in get_children():
+		if get_tree().paused:
+			get_tree().paused = false
+		if is_instance_valid(title_screen_instance):
 			if title_screen_instance.fading_in:
 				title_screen_instance.close()
 			else:
@@ -36,7 +50,12 @@ func _menu_actioned(command : String) -> void:
 # Starts a new game from the title screen.
 # Deletes the title scene, and loads a new game_screen scene.
 func start_new_game() -> void:
-	title_screen_instance.queue_free()
+	if is_instance_valid(pause_menu_instance):
+		pause_menu_instance.queue_free()
+	if is_instance_valid(title_screen_instance):
+		title_screen_instance.queue_free()
+	if is_instance_valid(game_screen_instance):
+		game_screen_instance.queue_free()
 	var game_screen = load("res://game/game_screen.tscn")
 	game_screen_instance = game_screen.instantiate()
 	add_child(game_screen_instance)

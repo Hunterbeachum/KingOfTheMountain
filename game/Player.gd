@@ -23,6 +23,8 @@ func _ready():
 	start()
 
 func _process(delta):
+	if Input.is_action_just_pressed("pause"):
+		SignalBus.pause.emit()
 	update_position()
 	manage_options()
 	rotate_children()

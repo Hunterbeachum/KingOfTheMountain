@@ -1,6 +1,7 @@
 class_name Menu extends VBoxContainer
 
 @export var pointer: Node
+var t : float = 0.0
 
 func _ready():
 	get_viewport().gui_focus_changed.connect(_on_focus_changed)
@@ -60,13 +61,13 @@ func update_selection() -> void:
 	# Pointer is overlaid beneath each menu item
 	if is_instance_valid(item) and is_instance_valid(pointer) and visible:
 		item.z_index = pointer.z_index + 1
-		pointer.size = item.get_texture().get_region().size
+		pointer.size = item.get_texture().get_region().size if item.custom_minimum_size == Vector2.ZERO else item.size
 		pointer.global_position = Vector2(item.global_position.x, item.global_position.y)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+
 func _process(delta):
 	pass
-
+	
 ### Signals
 
 func _on_focus_changed(item: Control) -> void:

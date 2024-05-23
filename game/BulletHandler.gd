@@ -35,7 +35,6 @@ var drawing_pattern = false
 var paused : bool = false
 
 func _ready():
-	SignalBus.pause.connect(pause)
 	load_pattern()
 	for rune in rune_locations:
 		generate_rune(rune)

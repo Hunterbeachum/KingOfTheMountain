@@ -27,7 +27,6 @@ var turning : bool = false
 var particles : GPUParticles2D
 
 func _ready():
-	SignalBus.pause.connect(pause)
 	load_enemy()
 	start()
 	pass

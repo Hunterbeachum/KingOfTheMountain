@@ -19,7 +19,6 @@ var particles : GPUParticles2D
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	name = "BULLET"
-	SignalBus.pause.connect(pause)
 	add_to_group("active_bullets")
 	$BulletLifespan.start()
 	stored_linear_velocity = linear_velocity

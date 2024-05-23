@@ -12,7 +12,6 @@ const ANGLE_TOP = Vector3.ZERO
 @onready var camera : Camera3D = $Camera
 
 func _ready():
-	SignalBus.pause.connect(pause)
 	set_bg_material(bg_plane, GameState.data["stage"][GameState.current_stage]["stage_texture"])
 
 # Manages the tilt and scroll speed every frame

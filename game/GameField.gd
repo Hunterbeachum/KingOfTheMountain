@@ -16,7 +16,6 @@ var menu_instance
 
 # Sets player lives to 3 and loads in the stage data
 func _ready():
-	SignalBus.pause.connect(pause)
 	SignalBus.game_over.connect(game_over)
 	SignalBus.node_added_to_scene.connect(add_child)
 	GameState.player_lives = 3
@@ -80,9 +79,7 @@ func pause(value : bool) -> void:
 	$StageTimer.paused = value
 
 func game_over() -> void:
-	var test = get_tree().get_nodes_in_group("bullets")
-	SignalBus.pause.emit(true)
-	load_menu()
+	SignalBus.pause.emit()
 #	get_viewport().gui_focus_changed.connect(_on_focus_changed)
 #	configure_focus()
 
