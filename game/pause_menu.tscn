@@ -1,11 +1,25 @@
-[gd_scene load_steps=7 format=3 uid="uid://dmasq15eg8804"]
+[gd_scene load_steps=9 format=3 uid="uid://dmasq15eg8804"]
 
-[ext_resource type="FontFile" uid="uid://dnbulrnmet0bk" path="res://font/DFKakuTaiHiStd-W4.otf" id="1_h58vi"]
 [ext_resource type="Script" path="res://game/pause_menu_control.gd" id="1_n7mem"]
 [ext_resource type="Script" path="res://game/pause_menu.gd" id="2_luxt3"]
-[ext_resource type="Texture2D" uid="uid://c0hu66graq11q" path="res://art/NewGameSelected.tres" id="3_3bvjp"]
-[ext_resource type="Texture2D" uid="uid://msrrsnb6qr4o" path="res://art/OptionSelected.tres" id="4_5t0br"]
+[ext_resource type="Texture2D" uid="uid://bcwui7mvhysw0" path="res://art/MOFhud.png" id="2_phfec"]
 [ext_resource type="Texture2D" uid="uid://c7iynu845d7ig" path="res://art/QuitSelected.tres" id="5_yutrr"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gea00"]
+atlas = ExtResource("2_phfec")
+region = Rect2(576, 32, 100, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5gohy"]
+atlas = ExtResource("2_phfec")
+region = Rect2(572, 159, 111, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l8nhk"]
+atlas = ExtResource("2_phfec")
+region = Rect2(588, 63, 200, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tcafm"]
+atlas = ExtResource("2_phfec")
+region = Rect2(598, 128, 180, 30)
 
 [node name="pause_menu" type="Control"]
 process_mode = 2
@@ -37,13 +51,13 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 
-[node name="Label" type="Label" parent="MarginContainer/CenterContainer"]
+[node name="Pause" type="TextureRect" parent="MarginContainer/CenterContainer"]
 layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 10
-theme_override_fonts/font = ExtResource("1_h58vi")
-theme_override_font_sizes/font_size = 25
-text = "Paused"
+texture = SubResource("AtlasTexture_gea00")
+
+[node name="GameOver" type="TextureRect" parent="MarginContainer/CenterContainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_5gohy")
 
 [node name="PauseMenu" type="VBoxContainer" parent="MarginContainer" node_paths=PackedStringArray("pointer")]
 layout_mode = 2
@@ -52,22 +66,22 @@ size_flags_vertical = 4
 script = ExtResource("2_luxt3")
 pointer = NodePath("../../Pointer")
 
-[node name="NewGame" type="TextureRect" parent="MarginContainer/PauseMenu"]
-custom_minimum_size = Vector2(100, 20)
+[node name="Resume" type="TextureRect" parent="MarginContainer/PauseMenu"]
+custom_minimum_size = Vector2(155, 20)
 layout_mode = 2
-texture = ExtResource("3_3bvjp")
+texture = SubResource("AtlasTexture_l8nhk")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="Options" type="TextureRect" parent="MarginContainer/PauseMenu"]
-custom_minimum_size = Vector2(100, 20)
+[node name="Retry" type="TextureRect" parent="MarginContainer/PauseMenu"]
+custom_minimum_size = Vector2(155, 20)
 layout_mode = 2
-texture = ExtResource("4_5t0br")
+texture = SubResource("AtlasTexture_tcafm")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="Quit" type="TextureRect" parent="MarginContainer/PauseMenu"]
-custom_minimum_size = Vector2(100, 20)
+[node name="QuitToTitle" type="TextureRect" parent="MarginContainer/PauseMenu"]
+custom_minimum_size = Vector2(155, 20)
 layout_mode = 2
 texture = ExtResource("5_yutrr")
 expand_mode = 1

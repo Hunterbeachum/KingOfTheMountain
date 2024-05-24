@@ -1,12 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://ca0hilkx17tf7"]
+[gd_scene load_steps=8 format=3 uid="uid://ca0hilkx17tf7"]
 
 [ext_resource type="Texture2D" uid="uid://dgr7u6odyroy7" path="res://art/shield.tres" id="1_iwa60"]
 [ext_resource type="Script" path="res://game/shield.gd" id="2_ygamo"]
 [ext_resource type="Texture2D" uid="uid://dbpego8li7tdv" path="res://art/ripple.png" id="3_ds0ph"]
+[ext_resource type="Texture2D" uid="uid://bcwui7mvhysw0" path="res://art/MOFhud.png" id="4_jlo6o"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6lmuc"]
+atlas = ExtResource("4_jlo6o")
+region = Rect2(323, 322, 32, 4)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6vktw"]
+atlas = ExtResource("4_jlo6o")
+region = Rect2(323, 322, 32, 4)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vlfqr"]
+atlas = ExtResource("4_jlo6o")
+region = Rect2(323, 322, 32, 4)
 
 [node name="Shield" type="Sprite2D"]
-position = Vector2(100, 100)
 texture = ExtResource("1_iwa60")
+region_enabled = true
 script = ExtResource("2_ygamo")
 
 [node name="Ripple" type="Sprite2D" parent="."]
@@ -15,3 +28,34 @@ texture = ExtResource("3_ds0ph")
 offset = Vector2(-32, 0)
 region_enabled = true
 region_rect = Rect2(0, 0, 12, 100)
+
+[node name="ShieldStaggerBar" type="TextureProgressBar" parent="."]
+modulate = Color(1, 1, 0, 1)
+offset_left = -15.0
+offset_top = 33.0
+offset_right = 17.0
+offset_bottom = 37.0
+max_value = 255.0
+value = 255.0
+texture_progress = SubResource("AtlasTexture_6lmuc")
+
+[node name="ShieldLifeDebtBar" type="TextureProgressBar" parent="."]
+modulate = Color(0.890702, 0.316539, 0.165004, 1)
+offset_left = -15.0
+offset_top = 29.0
+offset_right = 17.0
+offset_bottom = 33.0
+max_value = 50.0
+texture_progress = SubResource("AtlasTexture_6vktw")
+
+[node name="ShieldLifeBar" type="TextureProgressBar" parent="."]
+offset_left = -15.0
+offset_top = 29.0
+offset_right = 17.0
+offset_bottom = 33.0
+max_value = 255.0
+allow_lesser = true
+texture_progress = SubResource("AtlasTexture_vlfqr")
+
+[node name="ShieldRegenerationTimer" type="Timer" parent="."]
+one_shot = true

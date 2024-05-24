@@ -19,7 +19,7 @@ theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 16
 
-[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer"]
+[node name="HSplitContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
 [node name="Background" type="TextureRect" parent="."]

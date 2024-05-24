@@ -6,6 +6,7 @@ var pause_menu_instance
 
 # 
 func _ready():
+	SignalBus.quit.connect(quit_game)
 	SignalBus.pause.connect(toggle_pause_menu)
 	SignalBus.menu_command.connect(_menu_actioned)
 	load_title_scene()
@@ -19,7 +20,7 @@ func load_title_scene() -> void:
 	title_screen_instance = title_screen.instantiate()
 	add_child(title_screen_instance)
 
-func toggle_pause_menu() -> void:
+func toggle_pause_menu(is_game_over : bool) -> void:
 	if is_instance_valid(pause_menu_instance):
 		pause_menu_instance.queue_free()
 		get_tree().paused = false
@@ -27,6 +28,7 @@ func toggle_pause_menu() -> void:
 		get_tree().paused = true
 		var pause_menu = load("res://game/pause_menu.tscn")
 		pause_menu_instance = pause_menu.instantiate()
+		pause_menu_instance.game_over = is_game_over
 		add_child(pause_menu_instance)
 
 # Receives menu actions and runs functions based on the command
@@ -66,7 +68,7 @@ func show_options() -> void:
 
 # Closes the game
 func quit_game() -> void:
-	pass
+	get_tree().quit()
 
 # Stops the game, loads the game over menu
 # TODO should this be here?

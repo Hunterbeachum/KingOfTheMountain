@@ -5,13 +5,9 @@ var particles : GPUParticles2D
 @export var playershot_scene : PackedScene
 @export var shield_scene : PackedScene
 @export var speed = 200
-var shield_energy : int = 255
-var shield_stagger : int = 0
-var shield_regeneration_timer : float = 0.1
-var shield_active_last_frame : bool = false
-var screen_size
+var shield_instance : Sprite2D
+var screen_size : Vector2
 var direction = 0
-var current_modulate
 var opacity = 0.0
 
 func _ready():
@@ -20,11 +16,16 @@ func _ready():
 	SignalBus.update_ui.emit()
 	screen_size = get_viewport_rect().size
 	$Body.play("idle")
+	instantiate_shield()
 	start()
+
+func instantiate_shield() -> void:
+	shield_instance = shield_scene.instantiate()
+	add_child(shield_instance)
 
 func _process(delta):
 	if Input.is_action_just_pressed("pause"):
-		SignalBus.pause.emit()
+		SignalBus.pause.emit(false)
 	update_position()
 	manage_options()
 	rotate_children()
@@ -44,19 +45,10 @@ func _process(delta):
 			focus(true)
 		else:
 			focus(false)
-		# Handle shield input (make shield visible, enable shield hitbox)
-		if Input.is_action_pressed("shield") and (shield_energy > 0 or (shield_active_last_frame and shield_energy > -49.9)):
-			shield(true)
+		if Input.is_action_pressed("shield") and (shield_instance.shield_energy > 0 or (shield_instance.shield_active_last_frame and shield_instance.shield_energy > -49.9)):
+			shield_instance.shield(delta, true)
 		else:
-			shield(false)
-		# Handle shield regeneration
-		regenerate_shield()
-		# Handle shield damage
-		if shield_stagger > 0:
-			damage_shield()
-		# Handle shield bar update
-		update_shield_bar()
-		# Handle attack input
+			shield_instance.shield(delta, false)
 		if Input.is_action_pressed("confirm"):
 			fire()
 		# Handle player movement
@@ -128,31 +120,9 @@ func focus(is_focused : bool) -> void:
 # Displays player shield, enables shield hitbox
 func shield(is_shielded : bool) -> void:
 	if is_shielded:
-		$Shield.show()
 		$ShieldHitBox.set_deferred("disabled", false)
 	else:
-		$Shield.hide()
 		$ShieldHitBox.set_deferred("disabled", true)
-	shield_active_last_frame = is_shielded
-
-# Reduces shield durability
-func damage_shield() -> void:
-	shield_energy -= min(10, shield_stagger)
-	shield_regeneration_timer = min(1.0, shield_regeneration_timer + .05)
-	$ShieldRegenerationTimer.start(shield_regeneration_timer)
-	shield_energy = clamp(shield_energy, -50, 255)
-	shield_stagger -= max(10, shield_stagger * .05)
-	shield_stagger = clamp(shield_stagger, 0, 255)
-
-func regenerate_shield() -> void:
-	if $ShieldRegenerationTimer.is_stopped():
-		shield_energy += 1
-		shield_regeneration_timer = 0.1
-
-func update_shield_bar() -> void:
-	$ShieldLifeBar.set_value_no_signal(shield_energy)
-	$ShieldLifeDebtBar.set_value_no_signal(max(0.0, -shield_energy))
-	$ShieldStaggerBar.set_value_no_signal(shield_stagger)
 
 # Runs when 'confirm' input is pressed.
 # Every 4 frames it creates a playershot node for each option.
@@ -184,13 +154,12 @@ func collect_item(body) -> void:
 		body.set_magnetize(true)
 
 func absorb_bullet(body) -> void:
-	
 	if body.collision_name == "bullet":
 		body.disappearing = true
 		body.generate_particles()
-		shield_stagger += 10
+		shield_instance.shield_stagger += 10
 	if body.collision_name == "enemy":
-		shield_stagger += 1
+		shield_instance.shield_stagger += 1
 
 # If the body is a bullet or an enemy, the player is hit and loses a life before respawning (if lives > 0).
 # If the players lives <= 0, starts the gameover function in main? could be better elsewhere (TODO)

@@ -10,6 +10,7 @@ var player_lives : int
 var player_bombs : int
 var player_graze : int
 var player_power : int
+var shield
 
 # Boss properties
 var boss_position : Vector2 = Vector2(0.0, 0.0)

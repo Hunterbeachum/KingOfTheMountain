@@ -1,10 +1,14 @@
 extends Control
 @onready var pointer = $Pointer
+var game_over : bool = false
 var t : float = 0.0
 
 func _ready():
-	pass # Replace with function body.
-
+	if game_over:
+		$MarginContainer/CenterContainer/Pause.queue_free()
+		$MarginContainer/PauseMenu/Resume.set_modulate(Color(0.5,0.5,0.5,0.5))
+	else:
+		$MarginContainer/CenterContainer/GameOver.queue_free()
 
 func _process(delta):
 	if Input.is_action_just_pressed("pause"):

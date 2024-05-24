@@ -79,7 +79,7 @@ func pause(value : bool) -> void:
 	$StageTimer.paused = value
 
 func game_over() -> void:
-	SignalBus.pause.emit()
+	SignalBus.pause.emit(true)
 #	get_viewport().gui_focus_changed.connect(_on_focus_changed)
 #	configure_focus()
 
