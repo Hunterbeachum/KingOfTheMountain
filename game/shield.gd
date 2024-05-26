@@ -11,8 +11,12 @@ var load_progress : float = 0.0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	start_new_pulse()
-	rotate(deg_to_rad(1))
-	ripple.rotation = -rotation + pulse_starting_rotation
+	if load_progress >= 1.0:
+		ripple.show()
+		rotate(deg_to_rad(1))
+		ripple.rotation = -rotation + pulse_starting_rotation
+	elif load_progress <= 0.0:
+		rotation = 0.0
 	pulse_progress += delta
 	pulse_progress = clamp(pulse_progress, 0.0, 1.0)
 	shape_shield()
@@ -33,6 +37,7 @@ func shape_shield() -> void:
 	var xy = 32.0 - 32.0 * load_progress
 	var wh = load_progress * 64.0
 	set_region_rect(Rect2(0.0, xy, 64.0, wh))
+	self_modulate.a = load_progress
 
 func start_new_pulse() -> void:
 	if pulse_progress == 1.0:

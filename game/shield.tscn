@@ -18,6 +18,7 @@ atlas = ExtResource("4_jlo6o")
 region = Rect2(323, 322, 32, 4)
 
 [node name="Shield" type="Sprite2D"]
+self_modulate = Color(1, 1, 1, 0)
 texture = ExtResource("1_iwa60")
 region_enabled = true
 script = ExtResource("2_ygamo")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://drx7rpanh7acp"]
+[gd_scene load_steps=9 format=3 uid="uid://drx7rpanh7acp"]
 
 [ext_resource type="Script" path="res://game/TitleScreen.gd" id="1_52xef"]
 [ext_resource type="Texture2D" uid="uid://cvgjkig8ylt03" path="res://art/TitleBackground.tres" id="1_xkw0r"]
@@ -6,7 +6,11 @@
 [ext_resource type="Texture2D" uid="uid://c0hu66graq11q" path="res://art/NewGameSelected.tres" id="3_hif3n"]
 [ext_resource type="Script" path="res://game/MainMenu.gd" id="3_yox6m"]
 [ext_resource type="Texture2D" uid="uid://msrrsnb6qr4o" path="res://art/OptionSelected.tres" id="4_2rxtd"]
-[ext_resource type="Texture2D" uid="uid://c7iynu845d7ig" path="res://art/QuitSelected.tres" id="5_82g2e"]
+[ext_resource type="Texture2D" uid="uid://dhgerhh88n7gr" path="res://art/MOFmenu.png" id="7_1vh10"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5te7p"]
+atlas = ExtResource("7_1vh10")
+region = Rect2(690, 304, 64, 32)
 
 [node name="TitleScreen" type="Control"]
 layout_mode = 3
@@ -67,7 +71,7 @@ stretch_mode = 2
 
 [node name="Quit" type="TextureRect" parent="MarginContainer/HSplitContainer/MainMenu"]
 layout_mode = 2
-texture = ExtResource("5_82g2e")
+texture = SubResource("AtlasTexture_5te7p")
 stretch_mode = 2
 
 [node name="Pointer" type="ColorRect" parent="."]
