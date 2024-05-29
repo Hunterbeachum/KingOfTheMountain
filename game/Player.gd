@@ -43,12 +43,14 @@ func _process(delta):
 		# Handle focus input (fade in hitbox visible, slow movement by 50%)
 		if Input.is_action_pressed("focus"):
 			focus(true)
+			if not shield_instance.shield_ready:
+				shield_instance.cast_shield(delta, true)
 		else:
 			focus(false)
-		if Input.is_action_pressed("shield") and (shield_instance.shield_energy > 0 or (shield_instance.shield_active_last_frame and shield_instance.shield_energy > -49.9)):
-			shield_instance.shield(delta, true)
-		else:
-			shield_instance.shield(delta, false)
+			if not shield_instance.shield_ready:
+				shield_instance.cast_shield(delta, false)
+		if Input.is_action_pressed("shield") and shield_instance.shield_ready:
+			shield_instance.shield()
 		if Input.is_action_pressed("confirm"):
 			fire()
 		# Handle player movement
