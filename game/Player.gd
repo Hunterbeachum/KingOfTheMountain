@@ -5,6 +5,7 @@ var particles : GPUParticles2D
 @export var playershot_scene : PackedScene
 @export var shield_scene : PackedScene
 @export var speed = 200
+var burst_hit_box_instance : CollisionShape2D
 var shield_instance : Sprite2D
 var screen_size : Vector2
 var direction = 0
@@ -14,6 +15,7 @@ func _ready():
 	GameState.player_lives = GameState.STARTING_LIVES
 	GameState.player_bombs = GameState.STARTING_BOMBS
 	SignalBus.update_ui.emit()
+	SignalBus.shield_burst.connect(start_shield_burst)
 	screen_size = get_viewport_rect().size
 	$Body.play("idle")
 	instantiate_shield()
@@ -35,7 +37,10 @@ func _process(delta):
 	if $DeathTimer.time_left > 0:
 		play_death_animation()
 	else:
+		shield_burst()
 		# Handle movement input
+		shield()
+		shield_instance.cast_shield(delta, true)
 		velocity += handle_movement_input()
 		# Normalize velocity so diagonal movement isn't 2x speed
 		if velocity.length() > 0:
@@ -43,14 +48,10 @@ func _process(delta):
 		# Handle focus input (fade in hitbox visible, slow movement by 50%)
 		if Input.is_action_pressed("focus"):
 			focus(true)
-			if not shield_instance.shield_ready:
-				shield_instance.cast_shield(delta, true)
 		else:
 			focus(false)
-			if not shield_instance.shield_ready:
-				shield_instance.cast_shield(delta, false)
-		if Input.is_action_pressed("shield") and shield_instance.shield_ready:
-			shield_instance.shield()
+		if Input.is_action_pressed("shield"):
+			shield_instance.deploy_shield()
 		if Input.is_action_pressed("confirm"):
 			fire()
 		# Handle player movement
@@ -120,11 +121,24 @@ func focus(is_focused : bool) -> void:
 		$HitBox.set_self_modulate(Color(1, 1, 1, opacity))
 
 # Displays player shield, enables shield hitbox
-func shield(is_shielded : bool) -> void:
-	if is_shielded:
+func shield() -> void:
+	if shield_instance.shield_active:
 		$ShieldHitBox.set_deferred("disabled", false)
 	else:
 		$ShieldHitBox.set_deferred("disabled", true)
+
+func shield_burst() -> void:
+	if not $BurstTimer.is_stopped():
+		if not is_instance_valid(burst_hit_box_instance):
+			burst_hit_box_instance = CollisionShape2D.new()
+			var burst_hit_box_shape = CircleShape2D.new()
+			burst_hit_box_shape.radius = 32.0
+			burst_hit_box_instance.shape = burst_hit_box_shape
+			add_child(burst_hit_box_instance)
+		burst_hit_box_instance.scale = Vector2(4.0 - (6 * $BurstTimer.time_left), 4.0 - (6 * $BurstTimer.time_left))
+	else:
+		if is_instance_valid(burst_hit_box_instance):
+			burst_hit_box_instance.queue_free()
 
 # Runs when 'confirm' input is pressed.
 # Every 4 frames it creates a playershot node for each option.
@@ -140,12 +154,16 @@ func fire() -> void:
 # Player node only scans layers set on its mask in the inspector.
 # Currently set to 3 (enemies), 4 (bullets), 5 (items).
 func _on_body_entered(body):
-	if "item_type" in body:
+	if body.collision_name == "item":
 		collect_item(body)
-	elif not $ShieldHitBox.disabled:
-		absorb_bullet(body)
-	else:
-		player_death(body)
+	elif body.collision_name == "bullet":
+		if not $ShieldHitBox.disabled or is_instance_valid(burst_hit_box_instance):
+			absorb_bullet(body)
+		elif not body.grazed:
+			body.graze()
+			graze()
+		else:
+			player_death(body)
 
 # If the body is an item, it activates the item's magnetics (then collides again with a second pickup collision)
 func collect_item(body) -> void:
@@ -159,9 +177,19 @@ func absorb_bullet(body) -> void:
 	if body.collision_name == "bullet":
 		body.disappearing = true
 		body.generate_particles()
-		shield_instance.shield_stagger += 10
+		shield_instance.shield_stagger += 100 if $BurstTimer.is_stopped() else 0
 	if body.collision_name == "enemy":
-		shield_instance.shield_stagger += 1
+		shield_instance.shield_stagger += 10 if $BurstTimer.is_stopped() else 0
+
+func graze():
+	shield_instance.shield_charge_bar.set_value_no_signal(shield_instance.shield_charge_bar.value + 100)
+	var particles_instance = particles_scene.instantiate()
+	add_child(particles_instance)
+	particles_instance.emitting = true
+	particles_instance.add_to_group("player_particles")
+
+func start_shield_burst() -> void:
+	$BurstTimer.start()
 
 # If the body is a bullet or an enemy, the player is hit and loses a life before respawning (if lives > 0).
 # If the players lives <= 0, starts the gameover function in main? could be better elsewhere (TODO)

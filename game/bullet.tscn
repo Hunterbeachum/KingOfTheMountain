@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://h65kgvcii8eq"]
+[gd_scene load_steps=6 format=3 uid="uid://h65kgvcii8eq"]
 
 [ext_resource type="Script" path="res://game/bullet.gd" id="1_m27v7"]
 [ext_resource type="PackedScene" uid="uid://dwatql4ad2xea" path="res://game/particles.tscn" id="2_pnmt2"]
@@ -6,6 +6,9 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g31ms"]
 radius = 4.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mg172"]
+radius = 11.0
 
 [node name="Bullet" type="RigidBody2D" groups=["bullets"]]
 collision_layer = 8
@@ -30,5 +33,8 @@ scale = Vector2(1, 5.55)
 [node name="BulletLifespan" type="Timer" parent="."]
 wait_time = 60.0
 one_shot = true
+
+[node name="BulletGrazeBox" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_mg172")
 
 [connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

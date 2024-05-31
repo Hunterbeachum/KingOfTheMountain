@@ -10,11 +10,11 @@ var stored_linear_velocity : Vector2
 var disappearing : bool = false
 var paused : bool = false
 var hitbox_active : bool = true
+var grazed : bool = false
 @onready var bullet_lifespan = $BulletLifespan
 @onready var bullet_hitbox = $BulletHitBox
 @export var particles_scene : PackedScene
 var particles : GPUParticles2D
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,7 +23,6 @@ func _ready():
 	$BulletLifespan.start()
 	stored_linear_velocity = linear_velocity
 	initial_speed = abs(linear_velocity.x) + abs(linear_velocity.y)
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -103,6 +102,11 @@ func set_updates(updates : Array) -> void:
 
 func update_current_speed() -> void:
 	current_speed = abs(linear_velocity.x) + abs(linear_velocity.y)
+
+func graze() -> void:
+	if not grazed:
+		$BulletGrazeBox.queue_free()
+		grazed = true
 
 func disappear() -> void:
 	disappearing = true

@@ -1,58 +1,44 @@
-[gd_scene load_steps=9 format=3 uid="uid://ca0hilkx17tf7"]
+[gd_scene load_steps=8 format=3 uid="uid://cof6231ttqpso"]
 
-[ext_resource type="Script" path="res://game/shield.gd" id="2_ygamo"]
-[ext_resource type="Texture2D" uid="uid://dbpego8li7tdv" path="res://art/ripple.png" id="3_ds0ph"]
-[ext_resource type="Texture2D" uid="uid://bcwui7mvhysw0" path="res://art/MOFhud.png" id="4_jlo6o"]
-[ext_resource type="FontFile" uid="uid://dnbulrnmet0bk" path="res://font/DFKakuTaiHiStd-W4.otf" id="5_2gecc"]
-[ext_resource type="Texture2D" uid="uid://bw64j6x8ik1f0" path="res://art/shield.png" id="5_5xf43"]
+[ext_resource type="Texture2D" uid="uid://bw64j6x8ik1f0" path="res://art/shield.png" id="1_rv3c8"]
+[ext_resource type="Script" path="res://game/shield2.gd" id="2_x7ubl"]
+[ext_resource type="Texture2D" uid="uid://dbpego8li7tdv" path="res://art/ripple.png" id="3_vi347"]
+[ext_resource type="Texture2D" uid="uid://bcwui7mvhysw0" path="res://art/MOFhud.png" id="4_gkg33"]
+[ext_resource type="FontFile" uid="uid://dnbulrnmet0bk" path="res://font/DFKakuTaiHiStd-W4.otf" id="5_tuf88"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vwpah"]
-atlas = ExtResource("4_jlo6o")
+atlas = ExtResource("4_gkg33")
 region = Rect2(132, 108, 48, 4)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6vktw"]
-atlas = ExtResource("4_jlo6o")
-region = Rect2(323, 322, 32, 4)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vlfqr"]
-atlas = ExtResource("4_jlo6o")
+atlas = ExtResource("4_gkg33")
 region = Rect2(323, 322, 32, 4)
 
 [node name="Shield" type="Sprite2D"]
 self_modulate = Color(1, 1, 1, 0)
-texture = ExtResource("5_5xf43")
+texture = ExtResource("1_rv3c8")
 region_enabled = true
 region_rect = Rect2(0, 0, 62, 62)
-script = ExtResource("2_ygamo")
+script = ExtResource("2_x7ubl")
 
 [node name="Ripple" type="Sprite2D" parent="."]
 z_index = 1
 texture_repeat = 2
-texture = ExtResource("3_ds0ph")
+texture = ExtResource("3_vi347")
 offset = Vector2(-32, 0)
 region_enabled = true
 region_rect = Rect2(0, 0, 12, 100)
 
 [node name="CastProgressBar" type="TextureProgressBar" parent="."]
 offset_left = -24.0
-offset_top = 33.0
+offset_top = 28.0
 offset_right = 24.0
-offset_bottom = 37.0
-pivot_offset = Vector2(24, -33)
+offset_bottom = 32.0
+pivot_offset = Vector2(24, -28)
 max_value = 5000.0
 nine_patch_stretch = true
 texture_under = SubResource("AtlasTexture_vwpah")
 texture_progress = SubResource("AtlasTexture_6vktw")
-
-[node name="ShieldLifeBar" type="TextureProgressBar" parent="."]
-offset_left = -16.0
-offset_top = 29.0
-offset_right = 16.0
-offset_bottom = 33.0
-pivot_offset = Vector2(16, -29)
-max_value = 255.0
-allow_lesser = true
-texture_progress = SubResource("AtlasTexture_vlfqr")
 
 [node name="ShieldReadyTimer" type="Timer" parent="."]
 wait_time = 0.5
@@ -66,9 +52,9 @@ offset_right = 30.0
 offset_bottom = 30.0
 max_value = 5000.0
 fill_mode = 8
-texture_under = ExtResource("5_5xf43")
-texture_over = ExtResource("5_5xf43")
-texture_progress = ExtResource("5_5xf43")
+texture_under = ExtResource("1_rv3c8")
+texture_over = ExtResource("1_rv3c8")
+texture_progress = ExtResource("1_rv3c8")
 tint_under = Color(0, 0, 0, 0.156863)
 tint_over = Color(1, 1, 1, 0)
 tint_progress = Color(1, 1, 1, 0.231373)
@@ -84,8 +70,6 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = -2
 theme_override_constants/shadow_offset_y = 2
 theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("5_2gecc")
+theme_override_fonts/font = ExtResource("5_tuf88")
 theme_override_font_sizes/font_size = 12
 text = "Shield Ready!"
-
-[connection signal="timeout" from="ShieldReadyTimer" to="." method="_on_shield_ready_timer_timeout"]
